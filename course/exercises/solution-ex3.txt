@@ -1,0 +1,77 @@
+##
+## Our solution to Exercise #3 (multidimensional scaling)
+##
+
+## Perform an MDS analysis of the Italian NN compound data, based on
+## (scaled versions) of the sets of cues we described in class.
+
+## Read the data in and scale them:
+
+d <- read.table("comp.stats.txt",header=TRUE)
+scaled <- scale(d[,4:9])
+
+
+## 1. MDS operates on a distance matrix, a symmetric matrix of 
+## distances between each point in the data-set and each other 
+## point. Thus, the first thing you will need to do is to generate
+## a distance matrix from the cue matrix. Look at the documentation
+## for the dist() function, and use it to generate distance matrices
+## using two different methods to compute distance. 
+
+## default is Euclidean distance:
+
+euc.mat <- dist(scaled)
+
+## we also try another distance measure, e.g., maximum distance:
+
+max.mat <- dist(scaled,method="maximum")
+
+
+## 2. In order to perform MDS, you will use the cmdscale() function:
+## take a look at its documentation, and run MDS on each of your 
+## distance matrices
+
+euc.mds <- cmdscale(euc.mat)
+max.mds <- cmdscale(max.mat)
+
+## by default, we get two coordinates:
+
+summary(euc.mds)
+summary(max.mds)
+
+
+## 3. Plot the compounds in the first two dimensions produced by 
+## the MDS analyses, using different colours for relational and 
+## attributive compounds. 
+
+## a compact way to do it:
+
+plot(euc.mds,col=as.numeric(d$TYPE))
+plot(max.mds,col=as.numeric(d$TYPE))
+
+## alternatively:
+
+plot(euc.mds,type="n")
+points(euc.mds[d$TYPE=="at",],col="black")
+points(euc.mds[d$TYPE=="re",],col="red")
+
+plot(max.mds,type="n")
+points(max.mds[d$TYPE=="at",],col="black")
+points(max.mds[d$TYPE=="re",],col="red")
+
+
+## 4. Try k-means clustering on the MDS outputs, and look at 
+## performance by cross-tabulating the clusters and the 
+## relational/attributive labels.
+
+## we cluster in two dimensions
+
+euc.km <- kmeans(euc.mds,2,nstart=10)
+max.km <- kmeans(max.mds,2,nstart=10)
+
+## results with Euclidean distance comparable to those
+## obtained with PCA, whereas Maximum distance is completely
+## off:
+
+table(euc.km$cluster,d$TYPE)
+table(max.km$cluster,d$TYPE)

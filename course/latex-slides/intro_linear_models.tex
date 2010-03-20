@@ -1,0 +1,482 @@
+\documentclass[t]{beamer}
+%\documentclass[handout,t]{beamer}
+
+\usetheme{StefanPlain}
+\usepackage{beamer-tools-stefan} % standard packages, definitions and macros
+
+%%%% uncomment the following macro libraries as needed
+%% \input{lib/pgf}   % basic PGF utility functions
+\input{lib/text}  % some macros for typesetting text
+\input{lib/math}  % basic mathematical notation
+\input{lib/stat}  % notation for probability theory and statistics
+\input{lib/vector}% convenience macros for vectors and matrices
+%% \input{lib/grid}  % grid-like layout of text and graphics in PGF picture
+%% \input{lib/tree}  % typesetting parse trees with PGF
+%% \input{lib/chart} % demonstrating chart parsers with PGF
+%% \input{lib/fl}    % some notation for formal language theory
+
+\renewcommand{\bar}[1]{\overline{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Titlepage
+
+\title[SIGIL: Linear Models]{Statistical Analysis of Corpus Data with R}
+\subtitle{A short introduction to regression and linear models}
+
+\author[Baroni \& Evert]{Designed by Marco Baroni\inst{1} and Stefan Evert\inst{2}}
+\institute[Trento/Osnabr\"uck]{
+  \inst{1}Center for Mind/Brain Sciences (CIMeC)\\
+  University of Trento
+  \and
+  \inst{2}Institute of Cognitive Science (IKW)\\
+  University of Onsabrück
+}
+\date{}
+
+
+\begin{document}
+
+\frame{\titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Outline
+
+\section*{Outline}
+\frame{ 
+  \frametitle{Outline}
+  \tableofcontents
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Regression}
+
+\subsection{Simple linear regression}
+
+\begin{frame}
+  \frametitle{Linear regression}
+  %\framesubtitle{}
+
+  \begin{itemize}
+  \item Can random variable $Y$ be predicted from r.~v.\ $X$?
+    \begin{itemize}
+    \item[\hand] focus on linear relationship between variables
+    \item[]
+    \end{itemize}
+  \item Linear predictor: 
+    \[
+    Y \approx \beta_0 + \beta_1\cdot X
+    \]
+    \ungap[1]
+    \begin{itemize}
+    \item $\beta_0$ = intercept of regression line
+    \item $\beta_1$ = slope of regression line
+    \item[]
+    \end{itemize}
+    \pause
+  \item Least-squares regression minimizes prediction error
+    \[
+    Q = \sum_{i=1}^n \bigl[ y_i - (\beta_0 + \beta_1 x_i) \bigr]^2
+    \]
+    for data points $(x_1,y_1), \ldots, (x_n, y_n)$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Simple linear regression}
+  %\framesubtitle{}
+
+  \begin{itemize}
+  \item Coefficients of least-squares line
+    \begin{align*}
+      \hat{\beta}_1 &= \frac{
+        \sum_{i=1}^n x_i y_i - n \bar{x}_n \bar{y}_n 
+      }{
+        \sum_{i=1}^n x_i^2 - n \bar{x}_n^2
+      }
+      \\[2mm]
+      \hat{\beta}_0 &= \bar{y}_n - \hat{\beta}_1 \bar{x}_n
+    \end{align*}
+    \pause
+  \item Mathematical derivation of regression coefficients
+    \begin{itemize}
+    \item minimum of $Q(\beta_0, \beta_1)$ satisfies $\partial Q
+      / \partial \beta_0 = \partial Q / \partial \beta_1 = 0$
+    \item leads to normal equations (system of 2 linear equations)
+      \begin{footnotesize}
+      \begin{align*}
+        -2 \sum_{i=1}^n \bigl[y_i - (\beta_0 + \beta_1 x_i)\bigr] 
+        &= 0 \quad \so
+        &
+        \beta_0 \primary{n} 
+        + \beta_1 \primary{\sum_{i=1}^n x_i}
+        &= \secondary{\sum_{i=1}^n y_i}
+        \\
+        -2 \sum_{i=1}^n x_i \bigl[y_i - (\beta_0 + \beta_1 x_i)\bigr] 
+        &= 0 \quad \so
+        &
+        \beta_0 \primary{\sum_{i=1}^n x_i}
+        + \beta_1 \primary{\sum_{i=1}^n x_i^2}
+        &= \secondary{\sum_{i=1}^n x_i y_i}
+      \end{align*}
+      \end{footnotesize}
+    \item regression coefficients = unique solution $\hat{\beta}_0, \hat{\beta}_1$
+    \item[]
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The Pearson correlation coefficient}
+  %\framesubtitle{}
+
+  \begin{itemize}
+  \item Measuring the ``goodness of fit'' of the linear prediction
+    \begin{itemize}
+    \item variation among observed values of $Y$ = sum of squares $S_y^2$
+    \item closely related to (sample estimate for) variance of $Y$
+      \[
+      S_y^2 = \sum_{i=1}^n (y_i - \bar{y}_n)^2
+      \]
+    \item residual variation wrt.\ linear prediction: $S^2_{\text{resid}} = Q$
+    \item[]
+    \end{itemize}
+    \pause
+  \item Pearson correlation = amount of variation ``explained'' by $X$
+    \[
+    R^2 = 1 - \frac{S^2_{\text{resid}}}{S_y^2}
+    = 1 - \frac{
+      \sum_{i=1}^n (y_i - \beta_0 - \beta_1 x_i)^2
+    }{
+      \sum_{i=1}^n (y_i - \bar{y}_n)^2
+    }
+    \]
+    \begin{itemize}
+    \item[\hand] correlation \vs slope of regression line
+      \[
+      R^2 = \hat{\beta}_1(y \sim x) \cdot \hat{\beta}_1(x \sim y)
+      \]
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\subsection{General linear regression}
+
+\begin{frame}
+  \frametitle{Multiple linear regression}
+  %\framesubtitle{}
+
+  \begin{itemize}
+  \item Linear regression with multiple predictor variables
+    \[
+    Y \approx \beta_0 + \beta_1X_1 + \dots + \beta_k X_k
+    \]
+    minimises
+    \[
+    Q = \sum_{i=1}^n \bigl[ y_i - (\beta_0 + \beta_1 x_{i1} + \dots + \beta_k x_{ik}) \bigr]^2
+    \]
+    for data points $\bigl( x_{11},\ldots,x_{1k},y_1 \bigr),\; \ldots,\; \bigl(
+    x_{n1},\ldots,x_{nk}, y_n \bigr)$
+  \item[]
+  \item Multiple linear regression fits $n$-dimensional hyperplane instead of
+    regression line
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multiple linear regression: The design matrix}
+  %\framesubtitle{}
+
+  \begin{itemize}
+  \item Matrix notation of linear regression problem
+    \[
+    \mathbf{y} \approx \mathbf{Z} \mathbf{\beta}
+    \]
+  \item ``Design matrix'' $\mathbf{Z}$ of the regression data
+    \begin{align*}
+      \mathbf{Z} &=
+      \begin{bmatrix}
+        1 & x_{11} & x_{12} & \cdots & x_{1k} \\
+        1 & x_{21} & x_{22} & \cdots & x_{2k} \\
+        \vdots & \vdots & \vdots &  & \vdots \\
+        1 & x_{n1} & x_{n2} & \cdots & x_{nk} \\
+      \end{bmatrix}
+      \\
+      \mathbf{y} &=
+      \begin{bmatrix}
+        y_1 & y_2 & \ldots & y_n
+      \end{bmatrix}'
+      \\
+      \mathbf{\beta} &=
+      \begin{bmatrix}
+        \beta_0 & \beta_1 & \beta_2 & \ldots & \beta_k
+      \end{bmatrix}'
+    \end{align*}
+    \ungap[1.5]
+    \begin{itemize}
+    \item[\hand] $\mathbf{A}'$ denotes transpose of a matrix; $\mathbf{y},
+      \mathbf{\beta}$ are column vectors
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{General linear regression}
+  %\framesubtitle{}
+
+  \begin{itemize}
+  \item Matrix notation of linear regression problem
+    \[
+    \mathbf{y} \approx \mathbf{Z} \mathbf{\beta}
+    \]
+  \item Residual error
+    \[
+    Q = (\mathbf{y}-\mathbf{Z}\mathbf{\beta})'
+    (\mathbf{y}-\mathbf{Z}\mathbf{\beta})
+    \]
+    \pause\ungap[1]
+  \item System of normal equations satisfying $\nabla_{\beta}\, Q = 0$:
+    \[
+    \mathbf{Z}' \mathbf{Z} \mathbf{\beta} = \mathbf{Z}' \mathbf{y}
+    \]
+    \pause\ungap[1]
+  \item Leads to regression coefficients
+    \[
+    \mathbf{\hat{\beta}} = (\mathbf{Z}' \mathbf{Z})^{-1} \mathbf{Z'} \mathbf{y}
+    \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{General linear regression}
+  %\framesubtitle{}
+
+  \begin{itemize}
+  \item Predictor variables can also be functions of the observed variables
+    \so regression only has to be linear in coefficients $\mathbf{\beta}$
+  \item[]
+  \item E.g.\ polynomial regression with design matrix
+    \[
+    \mathbf{Z} =
+    \begin{bmatrix}
+      1 & x_1 & x_1^2 & \cdots & x_1^k \\
+      1 & x_2 & x_2^2 & \cdots & x_2^k \\
+      \vdots & \vdots & \vdots &  & \vdots \\
+      1 & x_n & x_n^2 & \cdots & x_n^k \\
+    \end{bmatrix}
+    \]
+    corresponding to regression model
+    \[
+    Y \approx \beta_0 + \beta_1 X + \beta_2 X^2 + \dots + \beta_k X^k
+    \]
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Linear statistical models}
+
+\subsection{A statistical model of linear regression}
+
+\begin{frame}
+  \frametitle{Linear statistical models}
+  %\framesubtitle{}
+  
+  \begin{itemize}
+  \item Linear statistical model ($\epsilon$ = random error)
+    \begin{align*}
+      Y &= \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k + \epsilon \\
+      \epsilon &\sim N(0, \sigma^2)
+    \end{align*}
+    \ungap[1.5]
+    \begin{itemize}
+    \item[\hand] $x_1, \ldots, x_k$ are not treated as random variables!
+    \item $\sim$ = ``is distributed as''; $N(\mu, \sigma^2)$ = normal distribution
+    \item[]\pause
+    \end{itemize}
+  \item Mathematical notation:
+    \[
+    Y \,|\, x_1, \ldots, x_k 
+    \sim N\bigl(\beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k, \sigma^2\bigr)
+    \]
+    \ungap\pause
+  \item Assumptions
+    \begin{itemize}
+    \item error terms $\epsilon_i$ are i.i.d.\ (independent, same distribution)
+    \item error terms follow normal (Gaussian) distributions
+    \item equal (but unknown) variance $\sigma^2$ = homoscedasticity
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Linear statistical models}
+  %\framesubtitle{}
+
+  \begin{itemize}
+  \item Probability density function for simple linear model
+    \[
+    \pC{\mathbf{y}}{\mathbf{x}}
+    = \frac{1}{(2\pi \sigma^2)^{n/2}} \cdot
+    \exp \left[
+      -\frac{1}{2\sigma^2} \sum_{i=1}^n (y_i - \beta_0 - \beta_1 x_i)^2
+    \right]
+    \]
+    \ungap[1]
+    \begin{itemize}
+    \item $\mathbf{y}=(y_1,\ldots,y_n)$ = observed values of $Y$ (sample size $n$)
+    \item $\mathbf{x}=(x_1,\ldots,x_n)$ = observed values of $X$
+    \item[]
+    \end{itemize}
+    \pause
+  \item Log-likelihood has a familiar form:
+    \[
+    \log \pC{\mathbf{y}}{\mathbf{x}}
+    = C - \frac{1}{2\sigma^2} \sum_{i=1}^n (y_i - \beta_0 - \beta_1 x_i)^2
+    \propto Q
+    \]
+  \item[\So] MLE parameter estimates $\hat{\beta}_0, \hat{\beta}_1$ from linear regression
+  \end{itemize}
+\end{frame}
+
+\subsection{Statistical inference}
+
+\begin{frame}
+  \frametitle{Statistical inference for linear models}
+  %\framesubtitle{}
+
+  \begin{itemize}
+  \item Model comparison with ANOVA techniques
+    \begin{itemize}
+    \item Is variance reduced significantly by taking a specific
+      explanatory factor into account?
+    \item intuitive: proportion of variance explained (like $R^2$)
+    \item mathematical: $F$ statistic \so $p$-value
+    \item[]
+    \end{itemize}
+    \pause
+  \item Parameter estimates $\hat{\beta}_0, \hat{\beta}_1, \ldots$ are random
+    variables
+    \begin{itemize}
+    \item $t$-tests ($H_0: \beta_j = 0$) and confidence intervals for $\beta_j$
+    \item confidence intervals for new predictions
+    \item[]
+    \end{itemize}
+    \pause
+  \item Categorical factors: dummy-coding with binary variables
+    \begin{itemize}
+    \item e.g.\ factor $x$ with levels \emph{low}, \emph{med}, \emph{high} is
+      represented by three binary dummy variables $x_{\text{low}}, x_{\text{med}}, x_{\text{high}}$
+    \item one parameter for each factor level:
+      $\beta_{\text{low}}, \beta_{\text{med}}, \beta_{\text{high}}$
+    \item NB: $\beta_{\text{low}}$ is ``absorbed'' into intercept $\beta_0$\\
+      model parameters are usually $\beta_{\text{med}} - \beta_{\text{low}}$
+      and $\beta_{\text{high}} - \beta_{\text{low}}$
+    \item[\hand] mathematical basis for standard ANOVA
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Interaction terms}
+  %\framesubtitle{}
+
+  \begin{itemize}
+  \item Standard linear models assume independent, additive contribution from
+    each predictor variable $x_j$ ($j = 1, \ldots, k$)
+  \item Joint effects of variables can be modelled by adding interaction terms
+    to the design matrix (+ parameters)
+  \item Interaction of numerical variables (interval scale)
+    \begin{itemize}
+    \item interaction term for variables $x_i$ and $x_j$ = product $x_i\cdot x_j$
+    \item e.g.\ in multivariate polynomial regression:\\
+      $Y = p(x_1,\ldots, x_k) + \epsilon$ with polynomial $p$ over $k$
+      variables
+    \end{itemize}
+  \item Interaction of categorical factor variables (nominal scale)
+    \begin{itemize}
+    \item interaction of $x_i$ and $x_j$ coded by one dummy variable for each
+      combination of a level of $x_i$ with a level of $x_j$
+    \item alternative codings e.g.\ to have separate parameters for
+      independent additive effects of $x_i$ and $x_j$
+    \end{itemize}
+  \item Interaction of categorical factor with numerical variable
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\section{Generalised linear models}
+
+\begin{frame}
+  \frametitle{Generalised linear models}
+  %\framesubtitle{}
+
+  \begin{itemize}
+  \item Linear models are flexible analysis tool, but they \ldots
+    \begin{itemize}
+    \item only work for a numerical response variable (interval scale)
+    \item assume independent (i.i.d.) Gaussian error terms
+    \item assume equal variance of errors (homoscedasticity)
+    \item cannot limit the range of predicted values
+    \end{itemize}
+  \item Linguistic frequency data problematic in all four respects
+    \begin{itemize}
+    \item[\hand] each data point $y_i$ = frequency $f_i$ in one text sample
+    \item $f_i$ are discrete variables with binomial distribution (or more
+      complex distribution if there are non-randomness effects)
+    \item[\hand] linear model uses relative frequencies $p_i = f_i / n_i$
+    \item Gaussian approximation not valid for small text size $n_i$
+    \item sampling variance depends on text size $n_i$ and ``success
+      probability'' $\pi_i$ (= relative frequency predicted by model)
+    \item model predictions must be restricted to range $0\leq p_i\leq 1$
+    \end{itemize}
+  \item[\So] General\emph{ised} linear models (GLM) 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Generalised linear model for corpus frequency data}
+  %\framesubtitle{}
+
+  \begin{itemize}
+  \item Sampling family (binomial)
+    \[
+    f_i \sim B(n_i, \pi_i)
+    \]
+    \pause\ungap[1]
+  \item Link function (success probability $\pi$ $\leftrightarrow$ odds $\theta$)
+    \[
+    \pi_i = \frac{1}{1 + e^{-\theta_i}}
+    \]
+    \pause\ungap[1]
+  \item Linear predictor
+    \[
+    \theta_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_k x_{ik}
+    \]
+    \pause\ungap[1]
+  \item[\So] Estimation and ANOVA based on likelihood ratios
+    \begin{itemize}
+    \item[\hand] iterative methods needed for parameter estimation
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{}
+
+% \begin{frame}
+%   \frametitle{}
+%   %\framesubtitle{}
+
+% \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% References (if any)
+
+%% \frame[allowframebreaks]{
+%%   \frametitle{References}
+%%   \bibliographystyle{natbib-stefan}
+%%   \begin{scriptsize}
+%%     \bibliography{stefan-publications,stefan-literature}
+%%   \end{scriptsize}
+%% }
+
+\end{document}
