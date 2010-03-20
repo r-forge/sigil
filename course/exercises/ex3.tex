@@ -1,0 +1,96 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{vmargin}
+\setpapersize[portrait]{A4}
+%% \setmarginsrb{25mm}{10mm}{20mm}{20mm}% left, top, right, bottom
+%% {12pt}{15mm}% head heigth / separation
+%% {0pt}{15mm}% bottom height / separation
+\setmargnohfrb{20mm}{20mm}{20mm}{20mm}
+
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{\medskipamount}
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}  % this can break some outline symbols in CM fonts, use only if absolutely necessary
+
+%% \usepackage{stefan-fonts}  % commercial Charter fonts with full math support
+
+% \usepackage{mathptmx}  % use Adobe Times as standard font with simulated math support
+\usepackage[sc]{mathpazo}  % use Adobe Palatino as standard font with simulated math support
+\usepackage{courier}
+
+%% \usepackage{pifont}
+%% \usepackage{eucal}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx,rotating}
+\usepackage{color}
+\usepackage{array,hhline,booktabs}
+\usepackage{xspace}
+\usepackage{url}
+\usepackage{alltt}
+%% \usepackage{ifthen,calc,hyphenat}
+%% \usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade,xcolor,colortbl}
+
+\newcommand{\REM}[1]{\textrm{\color[rgb]{.7,.2,.1}\# #1}}
+
+\begin{document}
+
+\emph{Marco Baroni \& Stefan Evert} \hfill %
+{\small \url{http://purl.org/stefan.evert/SIGIL}}
+
+\begin{center}
+  \textbf{\Large Statistical Analysis of Corpus Data with R}
+
+  \textbf{\large Exercise Sheet \#3}
+\end{center}
+
+\emph{Multi-dimensional scaling} (MDS) is another popular
+dimensionality reduction technique (see, e.g., Cox and Cox, 2001,
+\emph{Multidimensional Scaling}, Chapman \& Hall).
+
+Perform an MDS analysis of the Italian NN compound data, based on
+(scaled versions) of the cues described in the course slides.
+
+\begin{enumerate}
+\item MDS operates on a \emph{distance} matrix, a symmetric matrix of
+  distances between each point in the data-set and each other
+  point. Thus, the first thing you will need to do is to generate a
+  distance matrix from the cue matrix. Look at the documentation for
+  the \texttt{dist()} function, and use it to generate distance
+  matrices using two different methods to compute distance.
+\item In order to perform MDS, you will use the \texttt{cmdscale()}
+  function: take a look at its documentation, and run MDS on each of
+  your distance matrices (if you want to perform some further
+  exploration of MDS, consider also the \texttt{sammon()} and
+  \texttt{isoMDS()} functions in the venerable \texttt{MASS} package).
+\item Plot the compounds in the first two dimensions produced by the
+  MDS analyses, using different colours for relational and attributive
+  compounds.
+\item Try \emph{k-means} clustering on the MDS outputs, and look at
+  performance by cross-tabulating the clusters and the
+  relational/attributive labels.
+\end{enumerate}
+
+
+
+
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Appendix: Multi-Dimensional Scaling}
+%   \begin{alltt}
+% mds<-cmdscale(dist(scaled))
+% plot(mds,type="n")
+% points(mds[TYPE=="re",],col="blue")
+% points(mds[TYPE=="at",],col="red")
+
+% \REM{see also sammon, isoMDS in the
+% # MASS package}
+%   \end{alltt}
+% \end{frame}
+
+\end{document}

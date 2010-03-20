@@ -1,0 +1,102 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{vmargin}
+\setpapersize[portrait]{A4}
+%% \setmarginsrb{25mm}{10mm}{20mm}{20mm}% left, top, right, bottom
+%% {12pt}{15mm}% head heigth / separation
+%% {0pt}{15mm}% bottom height / separation
+\setmargnohfrb{20mm}{20mm}{20mm}{20mm}
+
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{\medskipamount}
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}  % this can break some outline symbols in CM fonts, use only if absolutely necessary
+
+%% \usepackage{stefan-fonts}  % commercial Charter fonts with full math support
+
+% \usepackage{mathptmx}  % use Adobe Times as standard font with simulated math support
+\usepackage[sc]{mathpazo}  % use Adobe Palatino as standard font with simulated math support
+\usepackage{courier}
+
+%% \usepackage{pifont}
+%% \usepackage{eucal}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx,rotating}
+\usepackage{color}
+\usepackage{array,hhline,booktabs}
+\usepackage{xspace}
+\usepackage{url}
+\usepackage{alltt}
+%% \usepackage{ifthen,calc,hyphenat}
+%% \usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade,xcolor,colortbl}
+
+\newcommand{\REM}[1]{\textrm{\color[rgb]{.7,.2,.1}\# #1}}
+
+\begin{document}
+
+\emph{Marco Baroni \& Stefan Evert} \hfill %
+{\small \url{http://purl.org/stefan.evert/SIGIL}}
+
+\begin{center}
+  \textbf{\Large Statistical Analysis of Corpus Data with R}
+
+  \textbf{\large Exercise Sheet \#4}
+\end{center}
+
+In the first part of this exercise, you will practise collocational analysis
+as explained in the lecture slides by applying the procedure to a new data set
+based on \emph{surface cooccurrence}.  The second part focuses on the
+application of association measures to \emph{keyword extraction}, searching
+for words that are particularly characteristic of spoken or written English.
+The two data sets used for this exercise are part of the \texttt{corpora}
+package available from CRAN.
+
+\begin{itemize}
+\item If you haven't done so already, download and install the
+  \texttt{corpora} package from CRAN.  On Windows and Mac OS X, use the
+  package installer included in the R GUI.  If you are working with R on the
+  command line, experiment with the function \texttt{install.packages()}
+  (start by reading the help page, \texttt{?install.packages}).
+\item We will use the \texttt{BNCInChargeOf} and \texttt{BNCcomparison} data
+  sets included in the \texttt{corpora} package. After loading the package
+  (\texttt{library(corpora)}), familiarise yourself with the data sets by
+  reading the respective help pages (\texttt{?BNCInChargeOf} and
+  \texttt{?BNCcomparison}).
+\item The \texttt{BNCInChargeOf} data set contains positional collocates for
+  the phrase \emph{in charge of}, extracted from the British National Corpus.
+  You can load this data set into your R session with the command
+  \texttt{data(BNCInChargeOf)}.  Re-read the description of contingency tables
+  for surface cooccurrences in the lecture slides, then calculate the
+  contingency table of observed frequencies from the provided frequency
+  information (\texttt{f.in}, \texttt{N.in}, \texttt{f.out}, \texttt{N.out}).
+  Use \texttt{transform()} to add the new variables \texttt{O11},
+  \texttt{O12}, \texttt{O21} and \texttt{O22} to the data set.
+\item Compute the expected frequencies, row/column marginals, sample size, and
+  association scores for a selection of measures, following the instructions
+  in the lecture slides.  Rank the data set according to each association
+  measure.  Which measure gives the intuitively most plausible ranking?
+\item Association measures can also be used to identify characteristic
+  \emph{keywords}, which are much more frequent in spoken than in written
+  English, or vice versa.  The data set \texttt{BNCcomparison} lists the
+  frequencies of a selection of English words in the written and spoken part
+  of the British National Corpus.
+\item Construct appropriate contingency tables for the frequency comparison
+  setting, as explained in the lecture on \emph{Hypothesis Testing for Corpus
+    Frequency Data}.  First, determine the written and spoken sample sizes by
+  summing over all rows of the data set.  Then calculate the observed
+  frequencies \texttt{O11}, \texttt{O12}, \texttt{O21} and \texttt{O22} for
+  each word (= row), and add them to the data set.
+\item Which association measures might be sensible for keyword extraction?
+  Compute the respective association scores using the same procedure as above,
+  and rank the data set by \emph{keyness} for written or spoken English.  Do
+  high/low association scores correspond to written or to spoken keyness?
+  Compare the keywords identified by different measures.  Do you notice any
+  specific problems of individual measures?
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,119 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{vmargin}
+\setpapersize[portrait]{A4}
+%% \setmarginsrb{25mm}{10mm}{20mm}{20mm}% left, top, right, bottom
+%% {12pt}{15mm}% head heigth / separation
+%% {0pt}{15mm}% bottom height / separation
+\setmargnohfrb{20mm}{20mm}{20mm}{20mm}
+
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{\medskipamount}
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}  % this can break some outline symbols in CM fonts, use only if absolutely necessary
+
+%% \usepackage{stefan-fonts}  % commercial Charter fonts with full math support
+
+% \usepackage{mathptmx}  % use Adobe Times as standard font with simulated math support
+\usepackage[sc]{mathpazo}  % use Adobe Palatino as standard font with simulated math support
+\usepackage{courier}
+
+%% \usepackage{pifont}
+%% \usepackage{eucal}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx,rotating}
+\usepackage{color}
+\usepackage{array,hhline,booktabs}
+\usepackage{xspace}
+\usepackage{url}
+\usepackage{alltt}
+%% \usepackage{ifthen,calc,hyphenat}
+%% \usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade,xcolor,colortbl}
+
+\newcommand{\REM}[1]{\textrm{\color[rgb]{.7,.2,.1}\# #1}}
+
+\begin{document}
+
+\emph{Marco Baroni \& Stefan Evert} \hfill %
+{\small \url{http://purl.org/stefan.evert/SIGIL}}
+
+\begin{center}
+  \textbf{\Large Statistical Analysis of Corpus Data with R}
+
+  \textbf{\large Exercise Sheet \#1}
+\end{center}
+
+In this first exercise, you will familiarise yourself with basic R
+operations, reading the R documentation, and working with data frames, which
+are the fundamental statistical data structure used by R.  For this purpose,
+we have provided a table containing metadata information for all texts in the
+\emph{British National Corpus}.%
+\footnote{See \url{http://www.natcorp.ox.ac.uk/} for more information about
+  the BNC and available metadata.} %
+The table can be downloaded from the course homepage as a file in
+TAB-delimited format, named \verb|bnc_metadata.tbl|.  Download this file to
+your desktop and load it into an R session with
+
+\begin{alltt}
+  > BNC <- read.delim(file.choose()) \REM{for reading tab-delimited files safely}
+  > attach(BNC)                      \REM{for convenient access to columns}
+\end{alltt}
+
+Here are some things to do with the metadata table.  You should try yourself
+on all these tasks for full credit. Notice that not all the commands are in
+the course slides: explore the documentation and other R teaching materials.
+
+\begin{enumerate}
+\item How many rows and columns does the metadata table have?  How many
+  meta-information variables are annotated?
+\item How many different genres are there in the BNC?  Which genre contains
+  the smallest number of texts?  (Hint: use \texttt{table()} to obtain
+  frequency counts for the levels of a factor variable.)
+  %% > sort(table(genre))
+  %% fiction/drama (2), lectures/commerce (3), essay/university (3)
+\item Save the metadata table to a \texttt{.csv} file (recall that CSV stands
+  for \emph{comma-separated values}), which you can load into a spreadsheet
+  application such as Microsoft Excel or OpenOffice.org Calc.  Use the
+  spreadsheet to explore the metadata tables.
+\item Summarise the distribution of text lengths (measured either in number of
+  words \verb|n_words| or number of sentences \verb|n_s|).  The text type
+  \emph{written-to-be-spoken} contains some ``outliers'', i.e.\ texts with
+  rather unusual lengths.  Use \texttt{boxplot()} to identify these outliers.  
+  %% > boxplot(n_words[text_type=="written-to-be-spoken"])
+  Can you list the titles of the outlier texts?
+  %% > title[ text_type == "written-to-be-spoken" & n_words <= 20000 ]
+  %% [1] [Miscellaneous prayers]. Sample containing about 7193 words of material written to be spoken (domain: belief and thought)
+  %% [2] [Sermons]. Sample containing about 14430 words of material written to be spoken (domain: belief and thought)             
+  %% [3] Speeches by Tony Hall. Sample containing about 8137 words of material written to be spoken (domain: social science)      
+  %% [4] Scottish TV -- sports news scripts. Sample containing about 2686 words of material written to be spoken (domain: leisure)
+  %% [5] [Central television news scripts]. Sample containing about 6789 words of material written to be spoken (domain: leisure) 
+\item Do text lengths differ between text types?  Do they differ between male
+  and female authors?  (You can use the ``formula'' interface to
+  \texttt{boxplot()} for this task, but you will have to remove outliers first
+  or rescale the plot.)
+  %% > boxplot(n_words ~ text_type, ylim=c(0,100000))
+\item Later in the course, we might perform machine-learning experiments to
+  distinguish between male and female authors.  Produce a subset of the
+  metadata table containing only texts for which author sex is known, omitting
+  the title and irrelevant metadata columns (esp.\ those which have only a
+  single value in the subset).
+  %% > B2 <- subset(BNC, author_sex == "male" | author_sex == "female")
+  %% > summary(B2)  # to identify irrelevant variables, then select in subset() command
+\item The number of words and number of sentences as measures of text length
+  should be highly correlated.  Illustrate this correlation with a suitable
+  plot.  Give the correlation coefficient for these two variables and its 95\%
+  confidence interval.  Judging from the plot, do you think there is a single
+  linear relationship?
+  %% > plot(n_words, n_s, xlim=c(0,100000), ylim=c(0,10000))
+  %% > cor.test(n_words, n_s)
+
+\end{enumerate}
+
+
+
+\end{document}

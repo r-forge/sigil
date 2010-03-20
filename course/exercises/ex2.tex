@@ -1,0 +1,98 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{vmargin}
+\setpapersize[portrait]{A4}
+%% \setmarginsrb{25mm}{10mm}{20mm}{20mm}% left, top, right, bottom
+%% {12pt}{15mm}% head heigth / separation
+%% {0pt}{15mm}% bottom height / separation
+\setmargnohfrb{20mm}{20mm}{20mm}{20mm}
+
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{\medskipamount}
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}  % this can break some outline symbols in CM fonts, use only if absolutely necessary
+
+%% \usepackage{stefan-fonts}  % commercial Charter fonts with full math support
+
+% \usepackage{mathptmx}  % use Adobe Times as standard font with simulated math support
+\usepackage[sc]{mathpazo}  % use Adobe Palatino as standard font with simulated math support
+\usepackage{courier}
+
+%% \usepackage{pifont}
+%% \usepackage{eucal}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx,rotating}
+\usepackage{color}
+\usepackage{array,hhline,booktabs}
+\usepackage{xspace}
+\usepackage{url}
+\usepackage{alltt}
+%% \usepackage{ifthen,calc,hyphenat}
+%% \usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade,xcolor,colortbl}
+
+\newcommand{\REM}[1]{\textrm{\color[rgb]{.7,.2,.1}\# #1}}
+
+\begin{document}
+
+\emph{Marco Baroni \& Stefan Evert} \hfill %
+{\small \url{http://purl.org/stefan.evert/SIGIL}}
+
+\begin{center}
+  \textbf{\Large Statistical Analysis of Corpus Data with R}
+
+  \textbf{\large Exercise Sheet \#2}
+\end{center}
+
+In this exercise, you will familiarize yourself with the \emph{zipfR}
+package, although, especially for the second part, some more general R
+skills will also come in handy.  
+% Please return a text file with the full list of commands you used, inserting
+% answers to questions, observations etc.~as R comments (i.e., in lines that
+% begin with \#).
+
+\section{Type richness of German NP and PP constructions}
+
+Although the notions of productivity and type richness have been used mostly
+in morphology, similar ideas can also be applied to the study of syntax.  The
+\emph{zipfR} package comes with data sets reporting frequency information
+about the ``expansions'' of the German NP and PP phrases in the German TIGER
+treebank (use \texttt{?TigerNP.spc} for more information).
+
+Import the German NP and PP data sets. For the data set with more tokens,
+compute a binomially interpolated vocabulary growth curve (VGC).  For the
+smaller one, estimate an LNRE model (pick your favorite model, or try them
+all) and use it to compute an expected VGC up to the size of the larger data
+set.  Plot the interpolated and extrapolated VGCs, and determine which of the
+two constructions appears to be more productive (in terms of type growth).
+
+
+\section{Data lost with cut-off points}
+
+Before you tackle this part of the exercise, read the second case study in
+the \emph{zipfR} tutorial.
+
+It is common, in collocation studies and similar work, to discard bigrams
+(i.e., sequences of two words) below a certain occurrence threshold, typically
+$f < 2$ (discarding bigrams that occur once, the \emph{hapax legomena}) and $f
+< 5$ (discarding bigrams that occur 4 times or less).  In this exercise, we
+try to assess the effect that such cuts have on the proportion of types
+considered, on the basis of a sample from a relatively small corpus.
+
+First, load the file \texttt{bigrams.100k.tfl} (containing bigrams extracted
+from the first 100,000 tokens of the Brown corpus) as a \emph{zipfR} type
+frequency list, and generate a frequency spectrum from this (see the
+\emph{zipfR} documentation).
+
+What proportion of bigram types occur only once? What proportion of types
+occur 4 times or less?
+
+Now, suppose that we want to use our data to estimate the proportion
+of bigram types that would be lost by using the same two frequency
+cut-offs if we had a 1 million word corpus.  How will you go about it?
+
+\end{document}

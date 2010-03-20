@@ -1,0 +1,844 @@
+\documentclass{beamer}
+%\documentclass[handout]{beamer}
+
+\usetheme{default}
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+\input{macros.tex}
+
+\title[R for Computational Linguists]{Statistical Analysis of Corpus Data with R}
+\subtitle{A Gentle Introduction\\ for Computational Linguists and Similar Creatures}
+
+\author[Baroni \& Evert]{Designed by Marco Baroni\inst{1} and Stefan Evert\inst{2}}
+\institute{
+  \inst{1}Center for Mind/Brain Sciences (CIMeC)\\
+  University of Trento
+  \and
+  \inst{2}Institute of Cognitive Science (IKW)\\
+  University of Onsabrück
+}
+\date{}
+
+
+\begin{document}
+
+\frame{\titlepage}
+
+
+ \begin{frame}
+   \frametitle{Outline}
+   \tableofcontents
+ \end{frame}
+
+\section{General Information}
+
+\subsection{What is R?}
+
+\begin{frame}
+  \frametitle{Why do we need statistics?}
+
+  \begin{itemize}
+  \item<2-> \h{Significance} (control for sampling variation)
+    \begin{itemize}
+    \item all linguistic data are samples (of language, speakers, \ldots)
+    \item observed effects may be coincidence of particular sample
+    \item[\So] \textbf{inferential statistics}
+    \item[]
+    \end{itemize}
+  \item<3-> Managing \h{large data sets}
+    \begin{itemize}
+    \item statistical summaries, data analysis, visualisation
+    \item e.g.\ collocations as compact summary of word usage
+    \item[\So] \textbf{descriptive statistics}
+    \item[]
+    \end{itemize}
+  \item<4-> Discovering \h{latent} (hidden) \h{properties}
+    \begin{itemize}
+    \item clustering, multivariate analysis, distributional semantics
+    \item advanced statistical modelling (e.g.\ mixed-effects models)
+    \item[\So] \textbf{exploratory data analysis}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\textbf{R} -- An environment for statistical programming}
+
+  \begin{itemize}
+  \item<1-> ``Traditional'' statistical software packages offer specialised
+    procedures (e.g.\ SAS) or interactive GUI (e.g.\ SPSS)
+    \begin{itemize}
+    \item[]
+    \end{itemize}
+  \item<2-> New approach: statistical programming language \hh{S} with interactive
+    environment (Bell Labs, since 1976)
+    \begin{itemize}
+    \item \emph{White Book} (version 3, 1992); \emph{Green Book} (version
+      4, 1998)
+    \item commercial: S-Plus (Insightful Corporation, since 1987)
+    \item[]
+    \end{itemize}
+  \item<3-> \hh{R} is an open-source implementation of the S language
+    \begin{itemize}
+    \item originally by Ross Ihaka and Robert Gentleman (Auckland)
+    \item open-source development since mid-1997
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\textbf{R} -- An environment for statistical programming}
+  
+  \vspace{5mm}
+  \begin{columns}
+    \begin{column}{35mm}
+      \includegraphics[width=4cm]{img/Rlogo}
+    \end{column}
+    \begin{column}{7cm}
+      \begin{itemize}
+      \item binary packages available for Linux, Mac OS X and Windows
+      \item 64-bit versions on Linux and OS X
+      \item extensive documentation \& tutorials
+      \item hundreds of add-on packages ready to install from CRAN
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{8mm}
+  \begin{center}
+    \h{\LARGE\url{http://www.R-project.org/}}
+    
+    \vspace{6mm}
+    Recommended Windows GUI:\\
+    \h{Tinn-R} from \url{http://www.sciviews.org/}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{More about \textbf{R}}
+  
+  \begin{itemize}
+  \item Advantages of R
+    \begin{itemize}
+    \item free \& open source
+    \item many add-on packages with state-of-the-art algorithms
+    \item large, enthusiastic and helpful user community
+    \item easy to automate and extend (every analysis is a program)
+    \item no point \& click interface
+    \item[]
+    \end{itemize}
+  \item<2-> Disadvantages
+    \begin{itemize}
+    \item learning curve sometimes rather steep
+    \item not good at manipulating non-English text (yet)
+    \item no built-in data editor (spreadsheet)
+    \item no point \& click interface
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\subsection{About this course}
+
+\begin{frame}
+  \frametitle{Goals of the course}
+
+  \begin{itemize}
+  \item Learn R basics and elementary R programming
+  \item Get to know R implementations of statistical techniques, data analysis
+    and visualisation that are useful in various areas of (computational)
+    linguistics
+  \item A little bit of background in the statistical analysis of corpus
+    frequency data along the way
+  \item Practice your R skills on real-life data-sets
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{What this course is \emph{not} about}
+
+  \begin{itemize}
+  \item Theoretical foundations of statistics
+  \item Specific statistical methods
+  \item Cookbook recipes for particular analyses with R
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}%% <beamer:0| handout:0> %% TEMP
+  \frametitle{What you should know}
+
+  \begin{itemize}
+  \item Very basic math and statistics\\ (vectors, logarithms,
+    correlation, $t$-tests, \ldots)
+  \item Some familiarity with programming/scripting\\
+    and/or with a command-line environment
+  \item Interest in (computational) linguistics
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}%% <beamer:0| handout:0> %% TEMP
+  \frametitle{Course syllabus}
+  
+  \begin{itemize}
+  \item Introduction to R: set-up, data manipulation and exploration,
+    plotting, basic statistics, input/output
+  \item Hypothesis tests for corpus frequency data
+  \item Using an R extension package:\\ 
+    modelling word frequency distributions with zipfR
+  \item Unsupervised multivariate data exploration:\\
+    principal component analysis and clustering
+  \item Co-occurrence statistics and frequency comparisons:
+    contingency tables, association measures, evaluation
+  \item Efficient data processing using vector operations
+  \item The limitations of random sampling models for corpus data
+  \end{itemize}
+\end{frame}
+
+%%% Saarbruecken 2009
+% \begin{frame}
+%   \frametitle{Course schedule}
+
+%   \h{Wednesday}
+%   \begin{itemize}
+%   \item Introduction: installing R, data manipulation, input/output
+%   \item Practice: your first steps in R
+%   \item Hypothesis tests for frequency data (\so inferential)
+%   \item Practice: frequency comparisons on CroCo
+%   \item[]
+%   \end{itemize}
+
+%   \h{Thursday}
+%   \begin{itemize}
+%   \item Clustering \& multivariate data analysis (\so exploratory)
+%   \item Practice: clustering texts from CroCo
+%   \item Collocations -- theory \& implementation (\so descriptive)
+%   \item Practice: large-scale collocation analysis in R
+%   \end{itemize}
+% \end{frame}
+
+\begin{frame}<beamer:1| handout:0>
+  \frametitle{Introductions}
+
+  \begin{center}
+    \includegraphics[height=6cm]{img/uncle-sam-wants-you}
+
+    \vspace{5mm}
+    \begin{huge}
+      \hh{Who are you?}
+    \end{huge}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{R textbooks for (computational) linguists}
+  \framesubtitle{Much more comprehensive theoretical background and cookbook examples}
+
+  \begin{itemize}
+  \item Stefan Th.\ Gries (to appear). \h{\emph{Statistics for Lingustics with R:
+        A practical introduction}}. Mouton de Gruyter.
+    \begin{itemize}
+    \item German original is already available
+    \item[]
+    \end{itemize}
+  \item Shravan Vasishth (2006--2009). \h{\emph{The foundations of statistics: A
+        simulation-based approach}}.
+    \begin{itemize}
+    \item http://www.ling.uni-potsdam.de/\textasciitilde{}vasishth/SFLS.html
+    \item[]
+    \end{itemize}
+  \item R.~Harald Baayen (2008). \h{\emph{Analyzing Linguistic Data: A practical
+        introduction to statistics}}. CUP.
+    \begin{itemize}
+    \item http://www.ualberta.ca/\textasciitilde{}baayen/publications.html
+    \item if you download the PDF, you should also buy the book
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Other recommended textbooks on statistics and R}
+
+  \begin{itemize}
+  \item Peter Dalgaard (2008). \h{\emph{Introductory Statistics with R}}, 2nd ed. New York:
+    Springer.
+    \begin{itemize}
+    \item[]
+    \end{itemize}
+  \item Morris H.\ DeGroot and Mark J.\ Schervish (2002). \h{\emph{Probability and
+      Statistics}}, 3rd ed. Addison Wesley.
+    \begin{itemize}
+    \item Stefan's favourite statistics textbook
+    \item[]
+    \end{itemize}
+  \item John M.\ Chambers (2008). \h{\emph{Software for Data Analysis:
+        Programming with R}}. New York: Springer.
+    \begin{itemize}
+    \item[]
+    \end{itemize}
+  \item Christopher Butler (1985), \h{\emph{Statistics in Linguistics}}. Oxford:
+    Blackwell.
+    \begin{itemize}
+    \item out of print and available online for free download
+    \item \url{http://www.uwe.ac.uk/hlss/llas/statistics-in-linguistics/bkindex.shtml}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Course materials}
+
+  \begin{itemize}
+  \item Handouts, example scripts and data sets are available on our homepage
+    for this course:\\[4mm]
+    \begin{center}\color{blue}
+      \textbf{\url{http://purl.org/stefan.evert/SIGIL/}}
+    \end{center}
+  \item[]
+  \item You will also find additional material, software and\\
+    links to background reading there
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Outline}
+    \tableofcontents[current,currentsection]
+  \end{frame}
+}
+
+
+\AtBeginSubsection[]
+{
+  \begin{frame}
+    \frametitle{Outline}
+    \tableofcontents[current,currentsubsection]
+  \end{frame}
+}
+
+\section{R Basics}
+
+% \begin{frame}
+%   \frametitle{R}
+
+%   \begin{itemize}
+%   \item \url{http://www.r-project.org/}
+%   \item Free, open-source implementation of the S language developed by
+%     Venables and Ripley
+%   \item Available for Linux/Unix, Mac and Windows
+%   \item Command-line interface and GUI (for Mac and Windows)
+%     \begin{itemize}
+%     \item for Windows, we recommend \url{www.sciviews.org} GUI
+%     \end{itemize}
+%   \item Non-interactive use possible via scripting
+%   \item Less user-friendly than other statistical software,\\
+%     but immensely more powerful
+%   \item Offers a wealth of extension packages implementing an impressive range
+%     of classic and cutting edge statistical\\ and data analysis techniques
+%   \end{itemize}
+% \end{frame}
+
+\subsection{Basic functionalities}
+
+\begin{frame}[fragile]
+  \frametitle{R as an oversized calculator}
+  
+\begin{alltt}
+> 1+1
+[1] 2
+
+> a <- 2     \REM{assignment does \emph{not} print anything by default}
+
+> a * 2
+[1] 4
+
+> log(a)     \REM{natural, i.e.\ base-\(e\) logarithm}
+[1] 0.6931472
+
+> log(a,2)   \REM{base-2 logarithm}
+[1] 1
+\end{alltt}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Basic session management}
+  \framesubtitle{Some of it is not necessary if you only use the GUI}
+  
+\begin{alltt}
+\REM{to start R on command line, simply type \texttt{\textbf{R}}}
+
+setwd("path/to/data")  \REM{or use GUI menus}
+
+ls()                   \REM{probably empty for now}
+
+ls                     \REM{notice difference with previous line}
+
+quit()                 \REM{or use GUI menus}
+quit(save="yes")
+quit(save="no")
+
+\REM{NB: at least some interfaces support history recall, tab completion}
+\end{alltt}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Vectorial math}
+
+\begin{alltt}
+> a <- c(1,2,3) \REM{\texttt{\textbf{c}} (for \emph{combine}) creates vectors}
+
+> a * 2   \REM{operators are applied to each element of a vector}
+[1] 2 4 6
+
+> log(a)  \REM{also works for most standard functions}
+[1] 0.0000000 0.6931472 1.0986123
+
+> sum(a)  \REM{basic vector operations: sum, length, product, \ldots}
+[1] 6
+
+> length(a)
+[1] 3
+
+> sum(a)/length(a)
+[1] 2
+\end{alltt}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Initializing vectors}
+
+\begin{alltt}
+> a <- 1:100            \REM{integer sequence}
+> a
+
+> a <- 10^(1:100)
+
+> a <- seq(from=0, to=10, by=0.1) \REM{general sequence}
+
+> a <- rnorm(100)       \REM{100 random numbers}
+
+> a <- runif(100, 0, 5) \REM{what you're used to from Java etc.}
+\end{alltt}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Summary statistics}
+
+\begin{alltt}
+> length(a)
+
+> summary(a)  \REM{statistical summary of numeric vector} \begin{Rout}
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.02717 0.51770 1.05200 1.74300 2.32600 9.11100  \end{Rout}
+
+> mean(a)
+
+> median(a)
+
+> sd(a)       \REM{standard deviation is not included in summary}
+
+> quantile(a) \begin{Rout}
+    0%    25%    50%    75%   100% 
+0.0272 0.5177 1.0518 2.3261 9.1107 \end{Rout}
+
+> quantile(a,.75)
+\end{alltt}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Basic plotting}
+
+\begin{alltt}
+> a<-2^(1:100)        \REM{don't forget the parentheses!}
+> plot(a)
+
+> x<-1:100            \REM{most often: plot \(x\) against \(y\)}
+> plot(x,a)
+
+> plot(x,a,log="y")   \REM{various logarithmic plots}
+> plot(x,a,log="x")
+> plot(x,a,log="xy")
+> plot(log(x),log(a))
+
+> hist(rnorm(100))    \REM{histogram and density estimation}
+> hist(rnorm(1000))
+> plot(density(rnorm(100000)))
+\end{alltt}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{(Slightly less) basic plotting}
+
+\begin{alltt}
+> a <- rbinom(10000,100,.5)
+> hist(a)
+
+> hist(a, probability=TRUE)
+> lines(density(a))
+
+> hist(a, probability=TRUE)
+> lines(density(a), col="red", lwd=3)
+
+> hist(a, probability=TRUE, 
+  main="Some Distribution", xlab="value",
+  ylab="probability")
+\REM{better to type command on a single line!}
+> lines(density(a), col="red", lwd=3)
+\end{alltt}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Help!}
+
+\begin{alltt}
+> help("hist")  \REM{R has excellent online documentation}
+> ?hist         \REM{short, convenient form of the help command} 
+
+> help.search("histogram")
+
+> ?help.search
+
+> help.start()  \REM{searchable HTML documentation}
+
+\REM{or use GUI menus to access \& search documentation}
+\end{alltt}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Installing add-on packages}
+
+  \begin{itemize}
+  \item Much of R's power comes from its add-on packages
+  \item Can be downloaded from CRAN with GUI installer
+    \begin{itemize}
+    \item automatically installs other required packages
+    \item Mac OS X: check ``install dependencies''
+    \item Windows: only most essential dependencies installed
+    \item[]\pause
+    \end{itemize}
+  \item The ``sumo'' package for linguists: \h{\texttt{languageR}}
+    \begin{itemize}
+    \item data sets \& utilities for Baayen (2008)
+    \item also installs most other packages that you'll need
+    \end{itemize}
+  \item Magic command:
+    \texttt{install.packages("languageR",\\ .libPaths()[1],
+      dependencies=TRUE)}
+    \begin{itemize}
+    \item[]\pause
+    \end{itemize}
+  \item Other highly recommended packages:
+    \begin{itemize}
+    \item \texttt{corpora} for a few data sets used in this course
+    \item \texttt{rgl} and \texttt{misc3d} for interactive 3D graphics
+    \item \texttt{plyr} and \texttt{gsubfn} for convenience
+    \item advanced: \texttt{rggobi} for high-dimensional visualisation
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Your first R script}
+
+  \begin{itemize}
+  \item Simply type R commands into a text file \& save it
+  \item Use built-in GUI functionality or external text editor
+    \begin{itemize}
+    \item Microsoft Word is \emph{not} a text editor!
+    \item nor is Apple's TextEdit application \ldots
+    \end{itemize}
+  \item[]
+  \item Execute R script from GUI editor or by typing
+    \begin{alltt}
+> source("my_script.R") \REM{more about files later}
+> source(file.choose()) \REM{select with file dialog box}
+    \end{alltt}
+  \item Just typing a variable name will not automatically print its value in
+    a script: use \verb_print(sd(a))_ instead of \verb_sd(a)_
+  \end{itemize}
+\end{frame}
+
+\subsection{External files and data-frames}
+
+\begin{frame}[fragile]
+  \frametitle{Input from an external file}
+
+  \begin{itemize}
+  \item We like to keep our data in space- or TAB-delimited text files with a
+    first row (``header'') labeling the fields, like so:
+\begin{verbatim}
+word  frequency cat
+dog   15        noun
+bark  10        verb 
+\end{verbatim}
+  \item This is an easy format to import into R, and it is easy to
+    convert from/to other tabular formats using standard tools
+  \item We assume that external input is always in this format\\ (or can
+    easily be converted to it)
+    \begin{itemize}
+    \item spreadsheet applications prefer CSV format (comma-separated values)
+    \item Microsoft Excel is a nice table editor,\\ but beware of localised
+      number formats
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Reading a TAB-delimited file with header}
+  
+\begin{alltt}
+> brown <- read.table("brown.stats.txt",
+  header=TRUE)
+\REM{if file is not in working directory, you must specify the full path}
+\REM{(or use \texttt{setwd()} function we introduced before)}
+
+\REM{exact behaviour of \texttt{file.choose()} depends on operating system}
+> brown <- read.table(file.choose(), header=TRUE)
+
+\REM{more robust if you are sure file is in tab-delimited format}
+> brown <- read.delim("brown.stats.txt")
+\end{alltt}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Reading and writing CSV files}
+  
+\begin{alltt}
+\REM{R can also read and write files in CSV format}
+> write.csv(brown, "brown.stats.csv",
+  row.names=FALSE)
+\REM{this is convenient for exchanging data with database and}
+\REM{spreadsheet software (or using Excel as a data editor)}
+
+\REM{NB: comma-separated values are not always separated by commas}
+\REM{(e.g.\ in German; use \texttt{write.csv2} if Excel doesn't recognise columns)}
+> write.csv2(brown, "brown.stats.csv",
+  row.names=FALSE)
+
+\REM{TASK: load \texttt{brown.stats.csv} into Excel or OpenOffice.org}
+
+\REM{check generated CSV file (use \texttt{read.csv2} with \texttt{write.csv2} above)}
+> brown.csv <- read.csv("brown.stats.csv")
+> all.equal(brown.csv, brown)
+\end{alltt}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Data-frames}
+
+  \begin{itemize}
+  \item The commands above create a \h{data frame}
+  \item This is the basic data structure (object)\\
+    used to represent statistical tables in R
+    \begin{itemize}
+    \item rows = objects or ``observations''
+    \item columns = variables, i.e.\ measured quantities
+    \item[]
+    \end{itemize}
+  \item Different types of variables
+    \begin{itemize}
+    \item numerical variables (what we've used so far)
+    \item Boolean variables
+    \item factor variables (nominal or ordinal classification)
+    \item string variables
+    \item[]
+    \end{itemize}
+  \item Technically, data frames are collections of column vectors (of the same
+    length), and we will think of them as such
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Data-frames}
+
+\begin{alltt}
+> summary(brown)
+
+> colnames(brown)
+
+> dim(brown)       \REM{number of rows and columns}
+
+> head(brown)
+
+> plot(brown)
+\end{alltt}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Access vectors inside a data frame}
+
+\begin{alltt}
+> brown$to
+
+> head(brown$to)
+
+\REM{TASK: compute summary statistics (length, mean, max, etc.)}
+\REM{for vectors in the Brown data frame}
+
+\REM{what does the following do?}
+> summary(brown$ty / brown$to)
+
+> attach(brown)   \REM{attach data frame for convenient access}
+> summary(ty/to)
+> detach()  \REM{better to detach before you attach another frame}
+\end{alltt}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{More data access}
+
+\begin{alltt}
+> brown$ty[1]    \REM{vector indexing starts with 1}
+> brown[1,2]     \REM{row, column}
+
+> brown$ty[1:10] \REM{use arbitrary vectors as indices}
+> brown[1:10,2]
+
+> brown[1,]
+> brown[,2]
+\end{alltt}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Conditional selection}
+
+
+\begin{alltt}
+> brown[brown$to < 2200, ]  \REM{index with Boolean vector}
+> length(brown$ty[brown$to >= 2200])
+> sum(brown$to >= 2200)    \REM{standard way to count matches}
+
+> subset(brown, to < 2200)  \REM{no need to attach here}
+> lessdata <- subset(brown, to < 2200)
+
+> a <- brown$ty[brown$to >= 2200]
+
+\REM{equality: == (also works for strings)}
+\REM{inequality: !=}
+\REM{complex constraints: and &, or |, not !}
+\REM{NB: always use single characters, not && or ||}
+\end{alltt}
+
+\end{frame}
+
+
+\subsection{A simple case study: comparing Brown and LOB documents}
+
+\begin{frame}
+  \frametitle{Type, token and word length counts 
+    \\in the Brown and LOB documents}
+
+  Variables:
+  \begin{description}
+  \item[to] Token count
+  \item[ty] Type count (\emph{distinct} words)
+  \item[se] Sentence count
+  \item[towl] Average word length\\ (averaged across tokens in document)
+  \item[tywl] Average word length\\ (averaged across distinct types in
+    document)
+  \end{description}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Procedure}
+
+    \begin{itemize}
+    \item Collect basic summary statistics for the two corpora
+    \item Check if there is a significant difference in the token counts
+      (since document length was controlled by corpus builders)
+    \item If difference is significant (we will see that it is), then
+      type counts are not directly comparable, and sentence
+      counts should be normalized (divide by token count)
+    \item Is word length correlated to document length? (in which
+      case, corpus comparison would also not be appropriate)
+      \pause
+    \item Please read the LOB data set into a data frame named \texttt{lob}
+      now, and take a look at its basic statistics
+    \item Also, plot the data frame for a first impression of correlations
+      between the variables
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Comparing token counts}
+
+\begin{alltt}
+> boxplot(brown$to,lob$to)
+> boxplot(brown$to,lob$to,names=c("brown","lob"))
+> boxplot(brown$to,lob$to,names=c("brown","lob"),
+  ylim=c(1500,3000))
+> ?boxplot
+
+> t.test(brown$to, lob$to)
+> wilcox.test(brown$to, lob$to)
+
+> brown.to.center <- brown$to[brown$to > 2200 
+  & brown$to < 2400]
+> lob.to.center <- lob$to[lob$to > 2200 
+  & lob$to < 2400]
+
+> t.test(brown.to.center, lob.to.center)
+
+\REM{how about sentence length?}
+\end{alltt}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Is word length correlated with token count?}
+
+\begin{alltt}
+\REM{average word length by tokens and types almost identical:}
+
+> plot(brown$towl, brown$tywl)
+> cor.test(brown$towl, brown$tywl)
+> cor.test(brown$towl, brown$tywl,
+  method="spearman")
+
+\REM{correlation with token count}
+
+> plot(brown$to, brown$towl)
+> cor.test(brown$to, brown$towl)
+\end{alltt}
+
+\end{frame}
+
+\end{document}

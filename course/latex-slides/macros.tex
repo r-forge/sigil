@@ -1,0 +1,58 @@
+%%
+%%  some useful macro definitions & configuration settings
+%%
+
+\usepackage{latexsym}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{alltt}              % code examples with nicely formatted comments
+\usepackage{xcolor}
+\usepackage{pifont}
+\usepackage{xspace}
+\usepackage{array,booktabs}
+
+\definecolor{quietred}{rgb}{.6,.2,.1}
+\definecolor{quietblue}{rgb}{.1,.2,.7}
+\definecolor{brightred}{rgb}{.9,0,.1}
+
+%% > plot(x,y)      \REM{this produces a scatterplot}
+\newcommand{\REM}[1]{\textsf{\small\color{quietred}\# #1}}
+
+%% nice colour for R output: \begin{Rout} .. \end{Rout}
+\newenvironment{Rout}{%
+  \begin{footnotesize}\color{quietblue}\bfseries}{%
+  \color{black}\mdseries\end{footnotesize}}
+
+%% ... This is something \h{important}. ...
+\newcommand<>{\h}[1]{\textbf#2{\color#2{quietred}#1}}
+\newcommand<>{\hh}[1]{\textbf#2{\color#2{brightred}#1}}
+
+%% cite \textcite{some text} in roman italic font
+\newcommand{\textcite}[1]{\textrm{\textit{#1}}}
+
+%% how can you live without the arrow (\so) and the hand (\hand) ?
+\newcommand{\so}{\ding{234}\xspace}
+\newcommand{\So}{\hh{\ding{229}}\xspace}
+\newcommand{\hand}{\ding{43}\xspace}
+
+%% \p{X=k};  \pC{X=k}{Y=l};  \bigp{X_i = k};   \pscale{\frac{Z}{S^2}};
+%% probability P(X=k) and conditional probability P(X=k|Y=l), also with larger or scaled parentheses
+%% \p[\theta]{X=k};  \pC[\text{interpolated}]{X=k}{Y=l};  ...
+%% with optional subscripts (for model probability, null probability, etc.)
+\newcommand{\p}[2][]{\mathop{\text{Pr}_{#1}}(#2)}
+\newcommand{\pscale}[2][]{\mathop{\text{Pr}_{#1}}\!\left(#2\right)}
+\newcommand{\bigp}[2][]{\mathop{\text{Pr}_{#1}}\bigl(#2\bigr)}
+\newcommand{\pC}[3][]{\p[#1]{#2\,|\,#3}} 
+\newcommand{\pCscale}[3][]{\pscale[#1]{#2\left|\,#3\right.\!}} 
+\newcommand{\bigpC}[3][]{\bigp[#1]{#2\bigm|#3}} 
+
+%% \Exp{X};  \Var{X};  \Exp[0]{X};  \Var[0]{X};  
+%% \bigExp{X}; \bigVar{X}; \Expscale{X};  \Varscale{X};
+%% expectation E[X] and variance V[X], expectation and variance under null hypothesis, 
+%% and variants with largeer or scaled brackets
+\newcommand{\Exp}[2][]{\text{E}_{#1}[#2]}
+\newcommand{\Var}[2][]{\mathop{\text{Var}}_{#1}[#2]}
+\newcommand{\bigExp}[2][]{\text{E}_{#1}\!\bigl[#2\bigr]}
+\newcommand{\bigVar}[2][]{\mathop{\text{Var}}_{#1}\bigl[#2\bigr]}
+\newcommand{\Expscale}[2][]{\text{E}_{#1}\left[#2\right]}
+\newcommand{\Varscale}[2][]{\mathop{\text{Var}}_{#1}\left[#2\right]}
