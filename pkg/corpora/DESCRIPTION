@@ -9,4 +9,4 @@ Maintainer: Stefan Evert <stefan.evert@uos.de>
 Description: Utility functions and data sets for the statistical analysis of corpus frequency data, used in the SIGIL statistics course.
 License: GPL-3
 URL: http://SIGIL.R-Forge.R-Project.org/
-LazyLoad: yes
+LazyData: yes
