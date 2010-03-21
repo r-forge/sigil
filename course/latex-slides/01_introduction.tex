@@ -23,7 +23,7 @@
   University of Trento, Italy
   \and
   \inst{2}Institute of Cognitive Science (IKW)\\
-  University of OsnabrÃ¼ck, Germany
+  University of Osnabrück, Germany
 }
 \date[sigil.r-forge.r-project.org]{%
   \light{\tiny Copyright \textcopyright\ 2007--2010 Baroni \& Evert}}
@@ -571,6 +571,7 @@ quit(save="no")
   \frametitle{Summary statistics}
   \framesubtitle{More about these summary statistics in Unit 3}
 
+  \ungap[1]
 \begin{alltt}
 > length(a)
 
@@ -597,19 +598,22 @@ quit(save="no")
 \begin{frame}[fragile]
   \frametitle{Basic plotting}
 
+  \ungap[1.5]
 \begin{alltt}
-> a<-2^(1:100)        \REM{don't forget the parentheses!}
+> a <- 2^(1:100)        \REM{don't forget the parentheses!}
 > plot(a)
 
-> x<-1:100            \REM{most often: plot \(x\) against \(y\)}
-> plot(x,a)
+> x <- 1:100            \REM{most often: plot \(x\) against \(y\)}
+> y <- sqrt(x)
+> plot(x, y)
 
-> plot(x,a,log="y")   \REM{various logarithmic plots}
-> plot(x,a,log="x")
-> plot(x,a,log="xy")
-> plot(log(x),log(a))
+> plot(x, a)
+> plot(x, a, log="y")   \REM{various logarithmic plots}
+> plot(x, a, log="x")
+> plot(x, a, log="xy")
+> plot(log(x), log(a))
 
-> hist(rnorm(100))    \REM{histogram and density estimation}
+> hist(rnorm(100))      \REM{histogram and density estimation}
 > hist(rnorm(1000))
 > plot(density(rnorm(100000)))
 \end{alltt}
@@ -619,6 +623,7 @@ quit(save="no")
 \begin{frame}[fragile]
   \frametitle{(Slightly less) basic plotting}
 
+  \ungap[1]
 \begin{alltt}
 > a <- rbinom(10000,100,.5)
 > hist(a)
@@ -631,8 +636,7 @@ quit(save="no")
 
 > hist(a, probability=TRUE, 
   main="Some Distribution", xlab="value",
-  ylab="probability")
-\REM{better to type command on a single line!}
+  ylab="probability")  \REM{better to type command on a single line!}
 > lines(density(a), col="red", lwd=3)
 \end{alltt}
 
@@ -667,45 +671,53 @@ quit(save="no")
     \begin{itemize}
     \item Microsoft Word is \emph{not} a text editor!
     \item nor is Apple's TextEdit application \ldots
+    \item[]
     \end{itemize}
-  \item[]
   \item Execute R script from GUI editor or by typing
     \begin{alltt}
 > source("my_script.R") \REM{more about files later}
 > source(file.choose()) \REM{select with file dialog box}
     \end{alltt}
-  \item Just typing a variable name will not automatically print its value in
-    a script: use \verb_print(sd(a))_ instead of \verb_sd(a)_
+  \item Many GUI editors can execute scripts line by line
+    \begin{itemize}
+    \item check your editor's documentation for keyboard shortcuts
+    \item[]
+    \end{itemize}
+  \item Just typing an expression will not automatically print the result in a
+    script: use \verb_print(sd(a))_ instead of \verb_sd(a)_
   \end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{External files and data-frames}
 
+{
+\newcommand{\tri}{{\color{secondary!60!white}\scriptsize $\,^{\blacktriangleright}$}}
 \begin{frame}[fragile]
   \frametitle{Input from an external file}
 
   \begin{itemize}
   \item We like to keep our data in space- or TAB-delimited text files with a
-    first row (``header'') labeling the fields, like so:
-\begin{verbatim}
-word  frequency cat
-dog   15        noun
-bark  10        verb 
-\end{verbatim}
+    first row (``header'') labeling the fields:
+\begin{alltt}
+word\tri frequency\tri cat
+dog\tri  15\tri        noun
+bark\tri 10\tri        verb 
+\end{alltt}
   \item This is an easy format to import into R, and it is easy to
-    convert from/to other tabular formats using standard tools
+    convert to/from other tabular formats using standard tools
   \item We assume that external input is always in this format\\ (or can
     easily be converted to it)
     \begin{itemize}
-    \item spreadsheet applications prefer CSV format (comma-separated values)
+    \item spreadsheet applications prefer CSV (comma-separated values),
+      which R also reads and writes quite well
     \item Microsoft Excel is a nice table editor,\\ but beware of localised
       number formats
     \end{itemize}
   \end{itemize}
 
 \end{frame}
-
+}
 
 
 \begin{frame}[fragile]
@@ -730,6 +742,7 @@ bark  10        verb
 \begin{frame}[fragile]
   \frametitle{Reading and writing CSV files}
   
+  \ungap[1.5]
 \begin{alltt}
 \REM{R can also read and write files in CSV format}
 > write.csv(brown, "brown.stats.csv",
@@ -753,7 +766,7 @@ bark  10        verb
 
 
 \begin{frame}
-  \frametitle{Data-frames}
+  \frametitle{Data frames}
 
   \begin{itemize}
   \item The commands above create a \h{data frame}
@@ -772,15 +785,15 @@ bark  10        verb
     \item string variables
     \item[]
     \end{itemize}
-  \item Technically, data frames are collections of column vectors (of the same
-    length), and we will think of them as such
+  \item Technically, data frames are collections of column vectors\\
+    (of the same length), and we will think of them as such
   \end{itemize}
 
 \end{frame}
 
 
 \begin{frame}[fragile]
-  \frametitle{Data-frames}
+  \frametitle{Data frames}
 
 \begin{alltt}
 > summary(brown)
@@ -797,9 +810,32 @@ bark  10        verb
 \end{frame}
 
 
+\begin{frame}
+  \frametitle{Type/token counts and word lengths for Brown \& LOB texts}
+
+  Data files in TAB-delimited format:
+  \begin{itemize}
+  \item \url{brown.stats.txt}: information for Brown corpus (AmE)
+  \item \url{lob.stats.txt}: information for LOB corpus (BrE)
+  \end{itemize}
+
+  \gap
+  Variables:
+  \begin{description}
+  \item[to] Token count
+  \item[ty] Type count (\emph{distinct} words)
+  \item[se] Sentence count
+  \item[towl] Average word length\\ (averaged across tokens in document)
+  \item[tywl] Average word length\\ (averaged across distinct types in
+    document)
+  \end{description}
+\end{frame}
+
+
 \begin{frame}[fragile]
   \frametitle{Access vectors inside a data frame}
 
+\ungap[1]
 \begin{alltt}
 > brown$to
 
@@ -842,7 +878,7 @@ bark  10        verb
 \begin{alltt}
 > brown[brown$to < 2200, ]  \REM{index with Boolean vector}
 > length(brown$ty[brown$to >= 2200])
-> sum(brown$to >= 2200)    \REM{standard way to count matches}
+> sum(brown$to >= 2200)     \REM{standard way to count matches}
 
 > subset(brown, to < 2200)  \REM{no need to attach here}
 > lessdata <- subset(brown, to < 2200)
@@ -858,87 +894,87 @@ bark  10        verb
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{A simple case study: comparing Brown and LOB documents}
+% \subsection{A simple case study: comparing Brown and LOB documents}
 
-\begin{frame}
-  \frametitle{Type, token and word length counts 
-    \\in the Brown and LOB documents}
+% \begin{frame}
+%   \frametitle{Type, token and word length counts 
+%     \\in the Brown and LOB documents}
 
-  Variables:
-  \begin{description}
-  \item[to] Token count
-  \item[ty] Type count (\emph{distinct} words)
-  \item[se] Sentence count
-  \item[towl] Average word length\\ (averaged across tokens in document)
-  \item[tywl] Average word length\\ (averaged across distinct types in
-    document)
-  \end{description}
-\end{frame}
+%   Variables:
+%   \begin{description}
+%   \item[to] Token count
+%   \item[ty] Type count (\emph{distinct} words)
+%   \item[se] Sentence count
+%   \item[towl] Average word length\\ (averaged across tokens in document)
+%   \item[tywl] Average word length\\ (averaged across distinct types in
+%     document)
+%   \end{description}
+% \end{frame}
 
-\begin{frame}
-  \frametitle{Procedure}
+% \begin{frame}
+%   \frametitle{Procedure}
 
-    \begin{itemize}
-    \item Collect basic summary statistics for the two corpora
-    \item Check if there is a significant difference in the token counts
-      (since document length was controlled by corpus builders)
-    \item If difference is significant (we will see that it is), then
-      type counts are not directly comparable, and sentence
-      counts should be normalized (divide by token count)
-    \item Is word length correlated to document length? (in which
-      case, corpus comparison would also not be appropriate)
-      \pause
-    \item Please read the LOB data set into a data frame named \texttt{lob}
-      now, and take a look at its basic statistics
-    \item Also, plot the data frame for a first impression of correlations
-      between the variables
-    \end{itemize}
+%     \begin{itemize}
+%     \item Collect basic summary statistics for the two corpora
+%     \item Check if there is a significant difference in the token counts
+%       (since document length was controlled by corpus builders)
+%     \item If difference is significant (we will see that it is), then
+%       type counts are not directly comparable, and sentence
+%       counts should be normalized (divide by token count)
+%     \item Is word length correlated to document length? (in which
+%       case, corpus comparison would also not be appropriate)
+%       \pause
+%     \item Please read the LOB data set into a data frame named \texttt{lob}
+%       now, and take a look at its basic statistics
+%     \item Also, plot the data frame for a first impression of correlations
+%       between the variables
+%     \end{itemize}
 
-\end{frame}
+% \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Comparing token counts}
+% \begin{frame}[fragile]
+%   \frametitle{Comparing token counts}
 
-\begin{alltt}
-> boxplot(brown$to,lob$to)
-> boxplot(brown$to,lob$to,names=c("brown","lob"))
-> boxplot(brown$to,lob$to,names=c("brown","lob"),
-  ylim=c(1500,3000))
-> ?boxplot
+% \begin{alltt}
+% > boxplot(brown$to,lob$to)
+% > boxplot(brown$to,lob$to,names=c("brown","lob"))
+% > boxplot(brown$to,lob$to,names=c("brown","lob"),
+%   ylim=c(1500,3000))
+% > ?boxplot
 
-> t.test(brown$to, lob$to)
-> wilcox.test(brown$to, lob$to)
+% > t.test(brown$to, lob$to)
+% > wilcox.test(brown$to, lob$to)
 
-> brown.to.center <- brown$to[brown$to > 2200 
-  & brown$to < 2400]
-> lob.to.center <- lob$to[lob$to > 2200 
-  & lob$to < 2400]
+% > brown.to.center <- brown$to[brown$to > 2200 
+%   & brown$to < 2400]
+% > lob.to.center <- lob$to[lob$to > 2200 
+%   & lob$to < 2400]
 
-> t.test(brown.to.center, lob.to.center)
+% > t.test(brown.to.center, lob.to.center)
 
-\REM{how about sentence length?}
-\end{alltt}
+% \REM{how about sentence length?}
+% \end{alltt}
 
-\end{frame}
+% \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Is word length correlated with token count?}
+% \begin{frame}[fragile]
+%   \frametitle{Is word length correlated with token count?}
 
-\begin{alltt}
-\REM{average word length by tokens and types almost identical:}
+% \begin{alltt}
+% \REM{average word length by tokens and types almost identical:}
 
-> plot(brown$towl, brown$tywl)
-> cor.test(brown$towl, brown$tywl)
-> cor.test(brown$towl, brown$tywl,
-  method="spearman")
+% > plot(brown$towl, brown$tywl)
+% > cor.test(brown$towl, brown$tywl)
+% > cor.test(brown$towl, brown$tywl,
+%   method="spearman")
 
-\REM{correlation with token count}
+% \REM{correlation with token count}
 
-> plot(brown$to, brown$towl)
-> cor.test(brown$to, brown$towl)
-\end{alltt}
+% > plot(brown$to, brown$towl)
+% > cor.test(brown$to, brown$towl)
+% \end{alltt}
 
-\end{frame}
+% \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% References (if any)

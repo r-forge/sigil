@@ -1,7 +1,7 @@
 ##    Author: Stefan Evert
 ##   Purpose: R code examples from introduction session
 ##   Created: Mon Jul 21 09:48:26 2008
-##  Modified: Mon Jul 21 10:59:03 2008 (severt)   
+##  Modified: Sun Mar 21 20:28:28 2010 (severt)   
 
 1+1
 a <- 2     # assignment does \emph{not} print anything by default
@@ -52,8 +52,10 @@ a<-2^(1:100)        # don't forget the parentheses!
 plot(a)
 
 x<-1:100            # most often: plot \(x\) against \(y\)
-plot(x,a)
+y<-sqrt(x)
+plot(x,y)
 
+plot(x,a)
 plot(x,a,log="y")   # various logarithmic plots
 plot(x,a,log="x")
 plot(x,a,log="xy")
