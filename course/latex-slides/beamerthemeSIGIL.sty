@@ -1,20 +1,22 @@
-\ProvidesPackage{beamerthemeStefanPlain}
+\ProvidesPackage{beamerthemeSIGIL}
 
-\definecolor{osnared}{rgb}{.7,.05,.15}      % main colour for slides
+\definecolor{osnared}{rgb}{.65,.05,.10}      % UOS-style red (with slight magenta tint)
+\definecolor{osnablue}{rgb}{.03, .09, .56}   % dark blue that harmonises with UOS red
 
-\definecolor{primary}{named}{osnared}       % primary = structure
-\definecolor{secondary}{rgb}{.1, 0, .5}     % secondary = dark blue
-\definecolor{counterpoint}{rgb}{.1, .4, 0}  % counterpoint = dark green
-\definecolor{foreground}{rgb}{0, 0, 0}      % foreground = black
-\definecolor{light}{rgb}{.5, .4, .6}        % light colour = grey with blueish tint
+\definecolor{primary}{named}{osnared}        % primary = UOS red
+\definecolor{secondary}{named}{osnablue}     % secondary = UOS blue
+\definecolor{counterpoint}{rgb}{.1, .4, .03} % counterpoint = dark green
+\definecolor{foreground}{rgb}{0, 0, 0}       % foreground = black
+\definecolor{light}{rgb}{.4, .44, .5}        % light colour = grey with blueish tint
+\definecolor{standout}{rgb}{.9, 0, .1}       % alert colour = bright red
 
-\definecolor{purered}{rgb}{.7, 0, 0}        % "pure" red, green and blue
+\definecolor{purered}{rgb}{.7, 0, 0}         % "pure" red, green and blue
 \definecolor{puregreen}{rgb}{0, .5, 0}
 \definecolor{pureblue}{rgb}{0, 0, .7}
 
 \mode<presentation>             % ==========
 
-\useinnertheme[shadow]{rounded}
+\useinnertheme{default}
 \useoutertheme{infolines}
 
 % Tills' opinion: should be done in an inner theme, not here.
@@ -32,16 +34,16 @@
 \newcommand{\showLogo}{\logo{\pgfuseimage{uos-logo}}}
 \newcommand{\hideLogo}{\logo{}}
 
-\usecolortheme[named=osnared]{structure}
+\usecolortheme[named=osnablue]{structure}
 \usecolortheme{rose}
-\setbeamercolor{frametitle}{fg=osnared,bg=white}
+\setbeamercolor{frametitle}{fg=secondary,bg=white}
 \setbeamercolor{logo}{fg=black,bg=white}
 %% coloured math can be quite annoying (esp. if mixed in displayed formulas with underbraces etc.)
 % \setbeamercolor{math text inlined}{fg=secondary} 
 
-\setbeamercolor*{palette primary}{use=structure,fg=black,bg=structure.fg!30!white}
-\setbeamercolor*{palette secondary}{use=structure,fg=white,bg=structure.fg!50!white}
-\setbeamercolor*{palette tertiary}{use=structure,fg=white,bg=structure.fg!80!white}
+\setbeamercolor*{palette primary}{fg=black,bg=primary!30!white}
+\setbeamercolor*{palette secondary}{fg=white,bg=primary!60!white}
+\setbeamercolor*{palette tertiary}{fg=white,bg=primary!80!white}
 \setbeamercolor*{palette quaternary}{fg=white,bg=black}
 
 

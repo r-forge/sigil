@@ -1,43 +1,50 @@
-\documentclass{beamer}
-%\documentclass[handout]{beamer}
+%% \documentclass[handout,t]{beamer} % HANDOUT
+%% \documentclass[handout,notes=show,t]{beamer} % NOTES
+\documentclass[t]{beamer} % SLIDES
 
-\usetheme{default}
+\usetheme{SIGIL}
+\usepackage{beamer-tools-sigil}
 
-\usepackage[english]{babel}
-\usepackage[latin1]{inputenc}
+\input{lib/math}  % basic mathematical notation
+\input{lib/stat}  % notation for probability theory and statistics
+\input{lib/vector}% convenience macros for vectors and matrices
 
-\usepackage{times}
-\usepackage[T1]{fontenc}
+\input{local/config} % local adjustments to configuration and macros
 
-\input{macros.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Titlepage
 
-\title[R for Computational Linguists]{Statistical Analysis of Corpus Data with R}
-\subtitle{A Gentle Introduction\\ for Computational Linguists and Similar Creatures}
-
-\author[Baroni \& Evert]{Designed by Marco Baroni\inst{1} and Stefan Evert\inst{2}}
-\institute{
+\title[1.\ Introduction]{Statistical Inference: a Gentle Introduction
+  for Linguists and similar creatures (SIGIL)}
+\subtitle{With practical examples in GNU R}
+\author[SIGIL]{Designed by Marco Baroni\inst{1} and Stefan Evert\inst{2}}
+\institute[Baroni \& Evert]{
   \inst{1}Center for Mind/Brain Sciences (CIMeC)\\
-  University of Trento
+  University of Trento, Italy
   \and
   \inst{2}Institute of Cognitive Science (IKW)\\
-  University of Onsabrück
+  University of OsnabrÃ¼ck, Germany
 }
-\date{}
-
+\date[sigil.r-forge.r-project.org]{%
+  \light{\tiny Copyright \textcopyright\ 2007--2010 Baroni \& Evert}}
 
 \begin{document}
 
 \frame{\titlepage}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
- \begin{frame}
-   \frametitle{Outline}
-   \tableofcontents
- \end{frame}
+\section*{Outline}
+\frame{ 
+  \frametitle{Outline}
+  \tableofcontents
+}
 
-\section{General Information}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{General Introduction}
 
-\subsection{What is R?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Statistical inference and GNU R}
 
 \begin{frame}
   \frametitle{Why do we need statistics?}
@@ -63,6 +70,28 @@
     \item advanced statistical modelling (e.g.\ mixed-effects models)
     \item[\So] \textbf{exploratory data analysis}
     \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What everyone needs to know about statistics}
+
+  \begin{itemize}
+  \item<2-> Population \vs sample
+  \item<3-> Random variables \& scales of measurement
+  \item<4-> Basic principles of statistical inference
+  \item<5-> Statistical tests: null hypothesis, p-value, assumptions
+  \item<6-> Significance \vs effect size (relevance)
+  \item<7-> Estimation: MLE, confidence interval
+  \item<8-> Statistical modelling (regression, general linear model, \ldots)
+  \item<9-> Applicability and limitations of statistical methods
+  \item<10->[\hand] Gain practical experience with statistical software
+  \end{itemize}
+
+  \gap\onslide<11->
+  What you can do on your own:
+  \begin{itemize}
+  \item Learn about specific statistical tests and procedures
   \end{itemize}
 \end{frame}
 
@@ -95,14 +124,14 @@
   \frametitle{\textbf{R} -- An environment for statistical programming}
   
   \vspace{5mm}
-  \begin{columns}
+  \begin{columns}[c]
     \begin{column}{35mm}
       \includegraphics[width=4cm]{img/Rlogo}
     \end{column}
     \begin{column}{7cm}
       \begin{itemize}
       \item binary packages available for Linux, Mac OS X and Windows
-      \item 64-bit versions on Linux and OS X
+      \item 64-bit versions on Linux and OS X\\ (experimental version for Windows)
       \item extensive documentation \& tutorials
       \item hundreds of add-on packages ready to install from CRAN
       \end{itemize}
@@ -110,7 +139,7 @@
   \end{columns}
   \vspace{8mm}
   \begin{center}
-    \h{\LARGE\url{http://www.R-project.org/}}
+    \hh{\large\url{http://www.R-project.org/}}
     
     \vspace{6mm}
     Recommended Windows GUI:\\
@@ -141,152 +170,126 @@
   \end{itemize}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{About this course}
 
 \begin{frame}
   \frametitle{Goals of the course}
 
   \begin{itemize}
-  \item Learn R basics and elementary R programming
-  \item Get to know R implementations of statistical techniques, data analysis
-    and visualisation that are useful in various areas of (computational)
-    linguistics
-  \item A little bit of background in the statistical analysis of corpus
-    frequency data along the way
-  \item Practice your R skills on real-life data-sets
+  \item Basic principles of statistical inference
+  \item Elementary hypothesis tests, estimators \& models
+  \item Hands-on work with R on real-life data sets
+  \item Data manipulation and basic R programming skills
+  \item Get to know R implementations of statistical techniques,\\
+    data analysis and visualisation methods that are useful in various areas
+    of (computational) linguistics along the way
   \end{itemize}
 
-\end{frame}
-
-\begin{frame}
-  \frametitle{What this course is \emph{not} about}
-
+  \pause\gap
+  What this course is \emph{\primary{not}} about:
   \begin{itemize}
-  \item Theoretical foundations of statistics
-  \item Specific statistical methods
+  \item Mathematical foundations of statistics
+  \item Specific (advanced) statistical methods
   \item Cookbook recipes for particular analyses with R
   \end{itemize}
 
 \end{frame}
 
-\begin{frame}%% <beamer:0| handout:0> %% TEMP
-  \frametitle{What you should know}
-
-  \begin{itemize}
-  \item Very basic math and statistics\\ (vectors, logarithms,
-    correlation, $t$-tests, \ldots)
-  \item Some familiarity with programming/scripting\\
-    and/or with a command-line environment
-  \item Interest in (computational) linguistics
-  \end{itemize}
-
-\end{frame}
-
-
-\begin{frame}%% <beamer:0| handout:0> %% TEMP
-  \frametitle{Course syllabus}
+{
+\newcommand{\halfday}{\primary{\textsc{(h)}}}
+\newcommand{\fullday}{\primary{\textsc{(f)}}}
+\begin{frame}
+  \frametitle{Course units}
   
-  \begin{itemize}
-  \item Introduction to R: set-up, data manipulation and exploration,
-    plotting, basic statistics, input/output
-  \item Hypothesis tests for corpus frequency data
-  \item Using an R extension package:\\ 
-    modelling word frequency distributions with zipfR
-  \item Unsupervised multivariate data exploration:\\
-    principal component analysis and clustering
-  \item Co-occurrence statistics and frequency comparisons:
-    contingency tables, association measures, evaluation
-  \item Efficient data processing using vector operations
-  \item The limitations of random sampling models for corpus data
-  \end{itemize}
+  \begin{enumerate}
+  \item R Basics: installation, data manipulation, input/output \halfday
+  \item Corpus frequency data \& statistical inference \halfday
+  \item Descriptive and inferential statistics for continuous data \fullday
+  \item Co-occurrence, contingency tables and collocations \fullday\\
+    + vectorised data processing, high-quality graphs
+  \item Word frequency distributions with the \texttt{zipfR} package \halfday
+  \item Regression and linear models \fullday
+  \item Exploratory data analysis: clustering, visualisation, ML \halfday
+  \item The non-randomness of corpus data: a GLM  approach \halfday
+  \item Inter-annotator agreement \halfday
+  \end{enumerate}
+
+  \gap
+  \halfday\ = half-day session / \fullday\ = full-day session (optimistic)
 \end{frame}
-
-%%% Saarbruecken 2009
-% \begin{frame}
-%   \frametitle{Course schedule}
-
-%   \h{Wednesday}
-%   \begin{itemize}
-%   \item Introduction: installing R, data manipulation, input/output
-%   \item Practice: your first steps in R
-%   \item Hypothesis tests for frequency data (\so inferential)
-%   \item Practice: frequency comparisons on CroCo
-%   \item[]
-%   \end{itemize}
-
-%   \h{Thursday}
-%   \begin{itemize}
-%   \item Clustering \& multivariate data analysis (\so exploratory)
-%   \item Practice: clustering texts from CroCo
-%   \item Collocations -- theory \& implementation (\so descriptive)
-%   \item Practice: large-scale collocation analysis in R
-%   \end{itemize}
-% \end{frame}
+}
 
 \begin{frame}<beamer:1| handout:0>
   \frametitle{Introductions}
 
   \begin{center}
-    \includegraphics[height=6cm]{img/uncle-sam-wants-you}
+    \includegraphics[height=5cm]{img/uncle-sam-wants-you}
 
     \vspace{5mm}
-    \begin{huge}
-      \hh{Who are you?}
-    \end{huge}
+    \begin{Large}
+      \h{Who are you?}
+    \end{Large}
   \end{center}
 \end{frame}
 
 \begin{frame}
-  \frametitle{R textbooks for (computational) linguists}
-  \framesubtitle{Much more comprehensive theoretical background and cookbook examples}
+  \frametitle{Recommended textbooks: introductory level}
 
   \begin{itemize}
-  \item Stefan Th.\ Gries (to appear). \h{\emph{Statistics for Lingustics with R:
-        A practical introduction}}. Mouton de Gruyter.
+  \item Baroni, Marco \& Evert, Stefan (2008).  \primary{Statistical methods
+      for corpus exploitation}.  In A.~L{\"u}deling \& M.~Kyt{\"o}
+    (eds.), {\em Corpus Linguistics. An International Handbook}. Mouton de Gruyter.
     \begin{itemize}
-    \item German original is already available
     \item[]
     \end{itemize}
-  \item Shravan Vasishth (2006--2009). \h{\emph{The foundations of statistics: A
-        simulation-based approach}}.
+  \item Gries, Stefan~Th. (2009). \primary{\em Statistics for Linguistics with
+      R: A Practical Introduction}, Mouton de Gruyter. %
+    \secondary{[\texteuro 98/\texteuro 35]}
     \begin{itemize}
-    \item http://www.ling.uni-potsdam.de/\textasciitilde{}vasishth/SFLS.html
+    \item German original from Vandenhoek \& Ruprecht \secondary{[\texteuro 25]}
     \item[]
     \end{itemize}
-  \item R.~Harald Baayen (2008). \h{\emph{Analyzing Linguistic Data: A practical
-        introduction to statistics}}. CUP.
+  \item Johnson, Keith (2008). \primary{\em Quantitative Methods in Linguistics}.
+    Blackwell. \secondary{[\texteuro 31]}
     \begin{itemize}
-    \item http://www.ualberta.ca/\textasciitilde{}baayen/publications.html
-    \item if you download the PDF, you should also buy the book
+    \item[]
+    \end{itemize}
+  \item Peter Dalgaard (2008). \primary{\em Introductory Statistics with R},
+     2nd ed. Springer.
+    \begin{itemize}
+    \item[]
     \end{itemize}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Other recommended textbooks on statistics and R}
+  \frametitle{Recommended textbooks: advanced level}
 
   \begin{itemize}
-  \item Peter Dalgaard (2008). \h{\emph{Introductory Statistics with R}}, 2nd ed. New York:
-    Springer.
+  \item R.~Harald Baayen (2008). \primary{\emph{Analyzing Linguistic Data: A practical
+        introduction to statistics}}. CUP. \secondary{[\texteuro 20]}
+    \begin{itemize}
+    \item \secondary{\footnotesize 
+        http://www.ualberta.ca/\textasciitilde{}baayen/publications.html}
+    \item[]
+    \end{itemize}
+  \item Morris H.\ DeGroot and Mark J.\ Schervish (2002). \primary{\emph{Probability and
+      Statistics}}, 3rd ed. Addison Wesley. \secondary{[\texteuro 57]}
     \begin{itemize}
     \item[]
     \end{itemize}
-  \item Morris H.\ DeGroot and Mark J.\ Schervish (2002). \h{\emph{Probability and
-      Statistics}}, 3rd ed. Addison Wesley.
-    \begin{itemize}
-    \item Stefan's favourite statistics textbook
-    \item[]
-    \end{itemize}
-  \item John M.\ Chambers (2008). \h{\emph{Software for Data Analysis:
-        Programming with R}}. New York: Springer.
+  \item John M.\ Chambers (2008). \primary{\emph{Software for Data Analysis:
+        Programming with R}}. Springer.
     \begin{itemize}
     \item[]
     \end{itemize}
-  \item Christopher Butler (1985), \h{\emph{Statistics in Linguistics}}. Oxford:
-    Blackwell.
+  \item Christopher Butler (1985), \primary{\emph{Statistics in Linguistics}}. Blackwell.
     \begin{itemize}
-    \item out of print and available online for free download
-    \item \url{http://www.uwe.ac.uk/hlss/llas/statistics-in-linguistics/bkindex.shtml}
+    \item out of print and available online for free download from
+      \secondary{\scriptsize 
+        http://www.uwe.ac.uk/hlss/llas/statistics-in-linguistics/bkindex.shtml}
+    \item[]
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -297,75 +300,198 @@
   \begin{itemize}
   \item Handouts, example scripts and data sets are available on our homepage
     for this course:\\[4mm]
-    \begin{center}\color{blue}
-      \textbf{\url{http://purl.org/stefan.evert/SIGIL/}}
+    \begin{center}
+      \hh{\large\url{http://SIGIL.R-Forge.R-Project.org/}}
     \end{center}
-  \item[]
-  \item You will also find additional material, software and\\
-    links to background reading there
+    \gap[.5]
+    (includes additional material, software, links, etc.)
+  \end{itemize}
+
+  \gap[3]
+  Another interesting online course:
+  \begin{itemize}
+  \item Shravan Vasishth (2006--2009). \primary{\emph{The foundations of statistics: A
+        simulation-based approach}}.
+    \begin{itemize}
+    \item \secondary{\footnotesize 
+        http://www.ling.uni-potsdam.de/\textasciitilde{}vasishth/SFLS.html}
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Getting Started With R}
 
-\AtBeginSection[]
-{
-  \begin{frame}
-    \frametitle{Outline}
-    \tableofcontents[current,currentsection]
-  \end{frame}
-}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Installation tips}
+
+\begin{frame}
+  \frametitle{Installation guide for Linux \& Mac OS X}
+
+  \hh{Mac OS X}
+  \begin{itemize}
+  \item Download binary installer from \url{http://www.R-project.org/}
+  \item Start GUI application \primary{\texttt{R}} (32-bit) or
+    \primary{\texttt{R64}} (64-bit)
+  \item Alternative: run from \primary{TextMate} or various other text editors
+  \item Shell commmand \texttt{R} available for command-line use
+  \end{itemize}
+
+  \gap
+  \hh{Linux} (Ubuntu and other popular distributions)
+  \begin{itemize}
+  \item Install R with standard package manager (e.g.\ \emph{Synaptic})
+  \item Add CRAN repository to obtain up-to-date version of R
+    \begin{itemize}
+    \item e.g.\ \secondary{http://cran.at.r-project.org/bin/linux/ubuntu karmic/}
+    \item pkgs: \counterpoint{r-base-core r-base-html r-base-dev r-doc-html r-doc-pdf}
+    \end{itemize}
+  \item Various GUIs available, e.g.\ \primary{Rkward} and \primary{R Commander}
+  \item Power users: Emacs + ESS or shell command \texttt{R} in terminal
+  \end{itemize}
+\end{frame}
 
 
-\AtBeginSubsection[]
-{
-  \begin{frame}
-    \frametitle{Outline}
-    \tableofcontents[current,currentsubsection]
-  \end{frame}
-}
+\begin{frame}
+  \frametitle{Installing add-on packages}
 
-\section{R Basics}
+  \hh{Mac OS X}
+  \begin{itemize}
+  \item Select \primary{Packages \& Data | Package Installer} from GUI menu
+  \item Click \primary{Get List}, then choose packages to be installed
+    \begin{itemize}
+    \item you may need to check \primary{install dependencies}, too
+    \item installing for all users is only possible on the command line
+    \end{itemize}
+  \end{itemize}
 
-% \begin{frame}
-%   \frametitle{R}
+  \hh{Linux} (Ubuntu and other popular distributions)
+  \begin{itemize}
+  \item Use standard package manager with CRAN repository
+    \begin{itemize}
+    \item offers choice of ``difficult'' binary packages named \counterpoint{r-cran-*}
+    \item make sure that you install the up-to-date CRAN versions!
+    \end{itemize}
+  \item Other packages need to be installed from the command line
+  \end{itemize}
+  
+  \hh{All Unix platforms}
+  \begin{itemize}
+  \item Install packages from within R (system-wide with \texttt{sudo R})
+    \begin{itemize}
+    \item e.g.\ \texttt{install.packages(c("\counterpoint{languageR}", "\counterpoint{corpora}"))}
+    \item select CRAN mirror from pop-up list (recommended: Austria)
+    \end{itemize}
+  \end{itemize}
+\end{frame}
 
-%   \begin{itemize}
-%   \item \url{http://www.r-project.org/}
-%   \item Free, open-source implementation of the S language developed by
-%     Venables and Ripley
-%   \item Available for Linux/Unix, Mac and Windows
-%   \item Command-line interface and GUI (for Mac and Windows)
-%     \begin{itemize}
-%     \item for Windows, we recommend \url{www.sciviews.org} GUI
-%     \end{itemize}
-%   \item Non-interactive use possible via scripting
-%   \item Less user-friendly than other statistical software,\\
-%     but immensely more powerful
-%   \item Offers a wealth of extension packages implementing an impressive range
-%     of classic and cutting edge statistical\\ and data analysis techniques
-%   \end{itemize}
-% \end{frame}
+\begin{frame}
+  \frametitle{Recommended add-on packages for this course}
 
+  \begin{description}
+  \item[\texttt{languageR}] data sets and functions from Baayen (2008)
+  \item[\texttt{corpora}] data sets and utilities for this course
+  \item[\texttt{exact2x2}] exact inference for $2\times 2$ contingency
+    tables\\ (relevant for corpus frequency comparisons)
+  \item[\texttt{zipfR}] word frequency distributions \& Zipf's law
+  \item[\texttt{e1071}] machine learning (SVM) and many other utilities
+  \item[\texttt{MASS}] lots of statistical functions (companion package\\
+    to \primary{\emph{Modern Applied Statistics with S and S-Plus}})
+  \end{description}
+
+  \gap[.5]
+  Some other useful packages:
+  \begin{description}
+  \item[\texttt{rgl}] animated 3D graphics with OpenGL (also: \secondary{\texttt{misc3d}})
+  \item[\texttt{vcd}] visualisation of categorical data (contingency tables)
+  \item[\texttt{plyr}, \texttt{doBy},] convenience functions for data manipulation
+  \item[\texttt{gsubfn}]
+  \end{description}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Installation on Windows (XP/Vista/7)}
+  
+  \begin{itemize}
+  \item[Step 1:] Download R for Windows installer from \url{www.R-project.org}
+    \begin{itemize}
+    \item CRAN | choose mirror (Austria) | R for Windows | base
+    \item \primary{Download R \ldots\ for Windows}, then run the installer
+    \item if Windows complains, allow installer to run \& make changes
+    \item select ``full installation'' and keep defaults for everything else
+    \item start R, adjust GUI preferences and save to default location\\
+      (make sure to select \primary{SDI mode} required for Tinn-R)
+    \item[]
+    \end{itemize}
+    \pause
+  \item[Step 2:] Install some important add-on packages
+    \begin{itemize}
+    \item Vista/Win 7: run R as administrator to install packages for all
+      users (right-click program icon in Start menu)
+    \item select \primary{Packages | Install package} from GUI menu
+    \item choose mirror (Austria), then pick the package(s) to install
+    \item check successful installation with these R commands:
+      \begin{scriptsize}
+        \begin{alltt}
+library(corpora)
+help("VSS") \REM[\scriptsize]{should pop up Web browser with help page}
+data(VSS); head(VSS, 20)
+        \end{alltt}
+      \end{scriptsize}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Installation on Windows (XP/Vista/7)}
+  
+  \begin{itemize}
+  \item[Step 3:] Install \primary{Tinn-R} GUI (optional, but recommended)
+    \begin{itemize}
+    \item download installer from \url{http://www.sciviews.org/Tinn-R/}
+    \item run installer, allow to make changes, accept default settings
+    \item launch Tinn-R (run as administrator on Vista/Win 7)
+    \item menu: \primary{R | configure | permanent} (to set up R for Tinn-R)
+    \item allow Tinn-R to start R and auto-install necessary packages
+    \item Vista/Win 7: quit Tinn-R, then restart in normal mode
+    \item must start R session explicitly: \primary{R | start/close | Rgui}
+    \item[]
+    \end{itemize}
+    \pause
+  \item[Step 4:] Working with Tinn-R
+    \begin{itemize}
+    \item basic workflow as recommended for R in general:\\
+      write R script file, then execute selected commands
+    \item \texttt{Ctrl}+\texttt{RET} to execute command and insert line break\\
+      (set ``return focus to editor'' option with recycle icon)
+    \item get familiar with the icons in the R toolbar!
+    \item explore data browser, file browser, reference cards in sidebar
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Basic functionalities}
 
 \begin{frame}[fragile]
   \frametitle{R as an oversized calculator}
   
 \begin{alltt}
-> 1+1
+> 1+1  \begin{Rout}
 [1] 2
-
+\end{Rout}
 > a <- 2     \REM{assignment does \emph{not} print anything by default}
 
-> a * 2
+> a * 2  \begin{Rout}
 [1] 4
-
-> log(a)     \REM{natural, i.e.\ base-\(e\) logarithm}
+\end{Rout}
+> log(a)     \REM{natural, i.e.\ base-\(e\) logarithm}\begin{Rout}
 [1] 0.6931472
-
-> log(a,2)   \REM{base-2 logarithm}
+\end{Rout}
+> log(a,2)   \REM{base-2 logarithm}\begin{Rout}
 [1] 1
+\end{Rout}
 \end{alltt}
 
 \end{frame}
@@ -375,9 +501,10 @@
 \begin{frame}[fragile]
   \frametitle{Basic session management}
   \framesubtitle{Some of it is not necessary if you only use the GUI}
-  
+
+\ungap[1]
 \begin{alltt}
-\REM{to start R on command line, simply type \texttt{\textbf{R}}}
+\REM{to start R on command line, simply type ``\texttt{\textbf{R}}''}
 
 setwd("path/to/data")  \REM{or use GUI menus}
 
@@ -389,7 +516,7 @@ quit()                 \REM{or use GUI menus}
 quit(save="yes")
 quit(save="no")
 
-\REM{NB: at least some interfaces support history recall, tab completion}
+\REM{NB: at least some interfaces support history recall, TAB completion, etc.}
 \end{alltt}
 
 \end{frame}
@@ -398,23 +525,26 @@ quit(save="no")
 \begin{frame}[fragile]
   \frametitle{Vectorial math}
 
+\ungap[1]
 \begin{alltt}
 > a <- c(1,2,3) \REM{\texttt{\textbf{c}} (for \emph{combine}) creates vectors}
 
-> a * 2   \REM{operators are applied to each element of a vector}
+> a * 2   \REM{operators are applied to each element of a vector}\begin{Rout}
 [1] 2 4 6
+\end{Rout}
 
-> log(a)  \REM{also works for most standard functions}
+> log(a)  \REM{also works for most standard functions}\begin{Rout}
 [1] 0.0000000 0.6931472 1.0986123
-
-> sum(a)  \REM{basic vector operations: sum, length, product, \ldots}
+\end{Rout}
+> sum(a)  \REM{basic vector operations: sum, length, product, \ldots}\begin{Rout}
 [1] 6
-
-> length(a)
+\end{Rout}
+> length(a)\begin{Rout}
 [1] 3
-
-> sum(a)/length(a)
+\end{Rout}
+> sum(a)/length(a)\begin{Rout}
 [1] 2
+\end{Rout}
 \end{alltt}
 
 \end{frame}
@@ -439,6 +569,7 @@ quit(save="no")
 
 \begin{frame}[fragile]
   \frametitle{Summary statistics}
+  \framesubtitle{More about these summary statistics in Unit 3}
 
 \begin{alltt}
 > length(a)
@@ -526,39 +657,6 @@ quit(save="no")
 \end{frame}
 
 
-\begin{frame}
-  \frametitle{Installing add-on packages}
-
-  \begin{itemize}
-  \item Much of R's power comes from its add-on packages
-  \item Can be downloaded from CRAN with GUI installer
-    \begin{itemize}
-    \item automatically installs other required packages
-    \item Mac OS X: check ``install dependencies''
-    \item Windows: only most essential dependencies installed
-    \item[]\pause
-    \end{itemize}
-  \item The ``sumo'' package for linguists: \h{\texttt{languageR}}
-    \begin{itemize}
-    \item data sets \& utilities for Baayen (2008)
-    \item also installs most other packages that you'll need
-    \end{itemize}
-  \item Magic command:
-    \texttt{install.packages("languageR",\\ .libPaths()[1],
-      dependencies=TRUE)}
-    \begin{itemize}
-    \item[]\pause
-    \end{itemize}
-  \item Other highly recommended packages:
-    \begin{itemize}
-    \item \texttt{corpora} for a few data sets used in this course
-    \item \texttt{rgl} and \texttt{misc3d} for interactive 3D graphics
-    \item \texttt{plyr} and \texttt{gsubfn} for convenience
-    \item advanced: \texttt{rggobi} for high-dimensional visualisation
-    \end{itemize}
-  \end{itemize}
-\end{frame}
-
 
 \begin{frame}[fragile]
   \frametitle{Your first R script}
@@ -581,6 +679,7 @@ quit(save="no")
   \end{itemize}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{External files and data-frames}
 
 \begin{frame}[fragile]
@@ -758,7 +857,7 @@ bark  10        verb
 
 \end{frame}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{A simple case study: comparing Brown and LOB documents}
 
 \begin{frame}
@@ -840,5 +939,16 @@ bark  10        verb
 \end{alltt}
 
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% References (if any)
+
+%% \frame[allowframebreaks]{
+%%   \frametitle{References}
+%%   \bibliographystyle{natbib-stefan}
+%%   \begin{scriptsize}
+%%     \bibliography{sigil}
+%%   \end{scriptsize}
+%% }
 
 \end{document}
