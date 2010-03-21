@@ -1,31 +1,50 @@
 \documentclass{beamer}
 %% \documentclass[handout]{beamer}
 
-\usetheme{default}
+\usetheme{SIGIL}
+\usepackage{beamer-tools-sigil}
 
-\usepackage[english]{babel}
-\usepackage[latin1]{inputenc}
+\input{lib/math}  % basic mathematical notation
+\input{lib/stat}  % notation for probability theory and statistics
+\input{lib/vector}% convenience macros for vectors and matrices
 
-\usepackage{times}
-\usepackage[T1]{fontenc}
-
-\input{macros.tex}
+\input{local/config} % local adjustments to configuration and macros
 
 \begin{document}
 
-\section{Nix}
+\AtBeginSubsection[]{} % don't show TOC reminders in workspace
+
+\section{Section}
+\subsection{\& Subsection}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \begin{frame}[fragile]
   \frametitle{}
+  %% \framesubtitle{}
 
+  % \ungap[1]
   \begin{alltt}
   \end{alltt}
 \end{frame}
 
+
 \begin{frame}
   \frametitle{}
+  %% \framesubtitle{}
 
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\frame[allowframebreaks]{
+  \frametitle{References}
+  \bibliographystyle{natbib-stefan}
+  \begin{scriptsize}
+    \bibliography{sigil}
+  \end{scriptsize}
+}
+
 
 \end{document}
