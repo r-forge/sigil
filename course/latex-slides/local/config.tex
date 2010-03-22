@@ -35,7 +35,7 @@
 \newcommand{\REM}[2][\small]{\textsf{#1\color{primary}\# #2}}
 
 %% nice colour for R output: \begin{Rout} .. \end{Rout}
-\newenvironment{Rout}{%
-  \begin{footnotesize}\color{secondary}\bfseries}{%
+%% -- ugly hack: I'm sure theres a better way to do this
+\newenvironment{Rout}[1][\footnotesize]{%
+  \begin{footnotesize}#1\color{osnablue}\bfseries}{%
   \color{black}\mdseries\end{footnotesize}}
-

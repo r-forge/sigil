@@ -24,7 +24,7 @@
 }
 
 \usage{
-data(BNCcomparison)
+data(BNCmeta)
 }
 
 \format{

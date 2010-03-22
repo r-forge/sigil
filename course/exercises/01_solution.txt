@@ -1,0 +1,101 @@
+## 
+## Our solution to Exercise #1 (analysing the BNC metadata)
+## 
+
+# TIMTOWTDI ;-)
+
+## load the "corpora" package and attach the BNC metadata table
+
+library(corpora)
+nrow(BNCmeta)   # check that we can access the data
+attach(BNCmeta)
+
+
+## question 1
+
+dim(BNCmeta)
+
+# how many metadata? it depends on how you define metadata, but if you
+# consider each column, id's included, to be metadata, then the number of
+# metadata is the same as the number of columns, i.e., 31
+
+?BNCmeta # to display the help page, with brief explanations of variables
+
+## question 2
+
+# how many genres
+length(levels(genre))
+# you could also use length(summary(genre)) or length(table(genre))
+
+# the smallest ones
+head(sort(table(genre)))
+
+
+## question 3
+
+# on a German Windows PC, you have to use write.csv2(), because
+# Excel expects a different CSV format there; otherwise use write.csv()
+write.csv2(BNCmeta,"bncmeta.csv",row.names=FALSE)
+
+
+## question 4
+
+# summarise the distribution of text lengths
+
+summary(n_w)
+summary(n_s)
+
+# outliers in written-to-be-spoken
+
+boxplot(n_words[text_type=="written-to-be-spoken"])
+boxplot(n_words[text_type=="written-to-be-spoken"])$out
+
+# can you list the titles of the outlier texts?
+# (threshold of 20000 obtained visually from box plot)
+title[ text_type == "written-to-be-spoken" & n_words <= 20000 ]
+
+
+## question 5
+
+# do text lengths differ between text types?
+
+boxplot(n_words ~ text_type, ylim=c(0,100000))
+
+# do they differ between male and female authors?
+
+boxplot(n_words ~ author_sex, ylim=c(0,1e+05))
+
+# or
+
+boxplot(n_words[author_sex=="male"], n_words[author_sex=="female"], names=c("male","female"))
+
+
+## question 6
+
+# produce a subset of the metadata table containing only texts
+# for which author sex is known...
+
+temp <- subset(BNCmeta, author_sex=="male" | author_sex=="female")
+
+# ... omitting the title and irrelevant metadata columns (esp. 
+# those which have only a single value in the subset)...
+
+# let's check which columns have this property:
+summary(temp)
+
+# they appear to be:
+# context interaction_type mode region respondent_age respondent_class respondent_sex
+
+# subsetting:
+male.female <- subset(temp, select=-c(title, context, interaction_type, mode, region, respondent_age, respondent_class, respondent_sex))
+
+## question 7
+
+plot(n_words, n_s, xlim=c(0,100000), ylim=c(0,10000))
+cor.test(n_words, n_s)
+# corr coeff: 0.8687635
+# conf intervals: 0.8610003; 0.8761220 
+
+# relation does not appear to be linear: plot strongly
+# suggests that different sets of documents follow
+# different patterns, some linerar, some not
