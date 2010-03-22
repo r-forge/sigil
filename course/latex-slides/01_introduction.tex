@@ -1,6 +1,6 @@
 %% \documentclass[handout,t]{beamer} % HANDOUT
-%% \documentclass[handout,notes=show,t]{beamer} % NOTES
-\documentclass[t]{beamer} % SLIDES
+\documentclass[handout,notes=show,t]{beamer} % NOTES
+%% \documentclass[t]{beamer} % SLIDES
 
 \usetheme{SIGIL}
 \usepackage{beamer-tools-sigil}
@@ -894,87 +894,73 @@ bark\tri 10\tri        verb
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \subsection{A simple case study: comparing Brown and LOB documents}
+\subsection{A simple case study: comparing Brown and LOB documents}
 
-% \begin{frame}
-%   \frametitle{Type, token and word length counts 
-%     \\in the Brown and LOB documents}
+\begin{frame}
+  \frametitle{Procedure}
+  \framesubtitle{The methods used here will be explained in Units 3 and 6}
 
-%   Variables:
-%   \begin{description}
-%   \item[to] Token count
-%   \item[ty] Type count (\emph{distinct} words)
-%   \item[se] Sentence count
-%   \item[towl] Average word length\\ (averaged across tokens in document)
-%   \item[tywl] Average word length\\ (averaged across distinct types in
-%     document)
-%   \end{description}
-% \end{frame}
+    \begin{itemize}
+    \item Collect basic summary statistics for the two corpora
+    \item Check if there is a significant difference in the token counts
+      (since document length was controlled by corpus builders)
+    \item If difference is significant (we will see that it is), then
+      type counts are not directly comparable, and sentence
+      counts should be normalized (divide by token count)
+    \item Is word length correlated to document length?\\
+      (corpus comparison would also not be appropriate in this case)%
+      \pause
+    \item Please read the LOB data set into a data frame named \texttt{lob}
+      now, and take a look at its basic statistics
+    \item Also, plot the data frame for a first impression of correlations
+      between the variables
+    \end{itemize}
 
-% \begin{frame}
-%   \frametitle{Procedure}
+\end{frame}
 
-%     \begin{itemize}
-%     \item Collect basic summary statistics for the two corpora
-%     \item Check if there is a significant difference in the token counts
-%       (since document length was controlled by corpus builders)
-%     \item If difference is significant (we will see that it is), then
-%       type counts are not directly comparable, and sentence
-%       counts should be normalized (divide by token count)
-%     \item Is word length correlated to document length? (in which
-%       case, corpus comparison would also not be appropriate)
-%       \pause
-%     \item Please read the LOB data set into a data frame named \texttt{lob}
-%       now, and take a look at its basic statistics
-%     \item Also, plot the data frame for a first impression of correlations
-%       between the variables
-%     \end{itemize}
+\begin{frame}[fragile]
+  \frametitle{Comparing token counts}
 
-% \end{frame}
+\ungap[1]
+\begin{alltt}
+> boxplot(brown$to,lob$to)
+> boxplot(brown$to,lob$to,names=c("brown","lob"))
+> boxplot(brown$to,lob$to,names=c("brown","lob"),
+  ylim=c(1500,3000))
+> ?boxplot
 
-% \begin{frame}[fragile]
-%   \frametitle{Comparing token counts}
+> t.test(brown$to, lob$to)
+> wilcox.test(brown$to, lob$to)
 
-% \begin{alltt}
-% > boxplot(brown$to,lob$to)
-% > boxplot(brown$to,lob$to,names=c("brown","lob"))
-% > boxplot(brown$to,lob$to,names=c("brown","lob"),
-%   ylim=c(1500,3000))
-% > ?boxplot
+> brown.to.center <-
+  brown$to[brown$to > 2200 & brown$to < 2400]
+> lob.to.center <- 
+  lob$to[lob$to > 2200 & lob$to < 2400]
 
-% > t.test(brown$to, lob$to)
-% > wilcox.test(brown$to, lob$to)
+> t.test(brown.to.center, lob.to.center)
 
-% > brown.to.center <- brown$to[brown$to > 2200 
-%   & brown$to < 2400]
-% > lob.to.center <- lob$to[lob$to > 2200 
-%   & lob$to < 2400]
+\REM{how about sentence length?}
+\end{alltt}
 
-% > t.test(brown.to.center, lob.to.center)
+\end{frame}
 
-% \REM{how about sentence length?}
-% \end{alltt}
+\begin{frame}[fragile]
+  \frametitle{Is word length correlated with token count?}
 
-% \end{frame}
+\begin{alltt}
+\REM{average word length by tokens and types is almost the same:}
 
-% \begin{frame}[fragile]
-%   \frametitle{Is word length correlated with token count?}
+> plot(brown$towl, brown$tywl)
+> cor.test(brown$towl, brown$tywl)
+> cor.test(brown$towl, brown$tywl, method="spearman")
 
-% \begin{alltt}
-% \REM{average word length by tokens and types almost identical:}
+\REM{correlation with token count}
 
-% > plot(brown$towl, brown$tywl)
-% > cor.test(brown$towl, brown$tywl)
-% > cor.test(brown$towl, brown$tywl,
-%   method="spearman")
+> plot(brown$to, brown$towl)
+> cor.test(brown$to, brown$towl)
+\end{alltt}
 
-% \REM{correlation with token count}
-
-% > plot(brown$to, brown$towl)
-% > cor.test(brown$to, brown$towl)
-% \end{alltt}
-
-% \end{frame}
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% References (if any)

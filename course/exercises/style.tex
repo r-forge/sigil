@@ -1,0 +1,34 @@
+\usepackage{vmargin}
+\setpapersize[portrait]{A4}
+%% \setmarginsrb{25mm}{10mm}{20mm}{20mm}% left, top, right, bottom
+%% {12pt}{15mm}% head heigth / separation
+%% {0pt}{15mm}% bottom height / separation
+\setmargnohfrb{20mm}{20mm}{20mm}{20mm}
+
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{\medskipamount}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage[sc]{mathpazo}  % Adobe Palatino + Courier
+\usepackage{courier}
+\usepackage{textcomp} 
+
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx,rotating}
+\usepackage{color}
+\usepackage{array,hhline,booktabs}
+\usepackage{xspace}
+\usepackage{url}
+\usepackage{alltt}
+
+%% same markup for R example code as in slides
+\definecolor{osnared}{rgb}{.65,.05,.10}
+\definecolor{osnablue}{rgb}{.03, .09, .56} 
+\newcommand{\REM}[2][\small]{\textsf{#1\color{osnared}\# #2}}
+\newenvironment{Rout}[1][\small]{%
+  \begin{normalsize}#1\color{osnablue}\bfseries}{%
+  \color{black}\mdseries\end{normalsize}}
