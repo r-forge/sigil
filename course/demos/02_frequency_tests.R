@@ -88,13 +88,13 @@ do.test <- function (k1, n1, k2, n2, cat="") {
 	fmt # return value of function = last expression
 }
 
-do.test(Brown$passive[15], Brown$n_s[15], LOB$passive[15], LOB$n_s[15], cat=Brown$cat[15])
+do.test(Brown$passive[15], Brown$n_s[15], LOB$passive[15], LOB$n_s[15], cat=Brown$name[15])
 
 all(Brown$cat == LOB$cat) # our code relies on same ordering of genres in Brown and LOB
 
 # we can carry out tests for all genres with a 'for' loop
 for (i in 1:15) {
-	print(do.test(Brown$passive[i], Brown$n_s[i], LOB$passive[i], LOB$n_s[i], cat=Brown$cat[i]))
+	print(do.test(Brown$passive[i], Brown$n_s[i], LOB$passive[i], LOB$n_s[i], cat=Brown$name[i]))
 }
 
 # it would be nice to collect all these rows into a single table;
@@ -107,9 +107,8 @@ result <- do.call(rbind, result.list) # think of this as an idiom you have to re
 result
 round(result, 5) # non-engineering notation is easier to read
 
-# which differences are significant? are the effect sizes linguistically relevant?
+# Which differences are significant? Are the effect sizes linguistically relevant?
 
-# Homework: Extend the do.test() function so that the two sample proportions are
-# also shown in the table. Do you need to modify any of the other code as well?
-
+# Use cont.table() from corpora package to create list of contingency tables,
+# then lapply() or sapply() Fisher's test and chi-squared directly to each table.
 
