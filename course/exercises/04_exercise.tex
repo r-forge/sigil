@@ -1,0 +1,64 @@
+\documentclass[a4paper,12pt]{article}
+
+\input{style.tex}
+
+\begin{document}
+
+\emph{Marco Baroni \& Stefan Evert} \hfill %
+{\small \url{http://SIGIL.R-Forge.R-Project.org/}}
+
+\begin{center}
+  \textbf{\large Statistical Analysis of Corpus Data with R}
+
+  \textbf{\large --- Exercise Sheet for Unit \#4 ---}
+\end{center}
+
+In the first part of this exercise, you will practise collocational analysis
+as explained in the lecture slides by applying the procedure to a new data set
+based on \emph{surface cooccurrence}.  The second part focuses on the
+application of association measures to \emph{keyword extraction}, searching
+for words that are particularly characteristic of spoken or written English.
+The two data sets used for this exercise are part of the \texttt{corpora}
+package.
+
+\begin{itemize}
+\item If you haven't done so already in Unit 1, download and install the
+  \texttt{corpora} package from CRAN (see installation notes in handout from
+  Unit 1).
+\item We will use the \texttt{BNCInChargeOf} and \texttt{BNCcomparison} data
+  sets included in this package. After loading the package with
+  \texttt{library(corpora)}, familiarise yourself with the data sets by
+  reading the respective help pages (\texttt{?BNCInChargeOf} and
+  \texttt{?BNCcomparison}).
+\item The \texttt{BNCInChargeOf} data set contains positional collocates for
+  the phrase \emph{in charge of}, extracted from the British National Corpus.
+  You can load this data set into your R session with the command
+  \texttt{data(BNCInChargeOf)}.  Re-read the description of contingency tables
+  for surface cooccurrences in the lecture slides, then calculate the
+  contingency table of observed frequencies from the provided frequency
+  information (\texttt{f.in}, \texttt{N.in}, \texttt{f.out}, \texttt{N.out}).
+  Use \texttt{transform()} to add the new variables \texttt{O11},
+  \texttt{O12}, \texttt{O21} and \texttt{O22} to the data set.
+\item Compute the expected frequencies, row/column marginals, sample size, and
+  association scores for a selection of measures, following the instructions
+  in the lecture slides.  Rank the data set according to each association
+  measure.  Which measure gives the intuitively most plausible ranking?
+\item Association measures can also be used to identify characteristic
+  \emph{keywords}, which are much more frequent in spoken than in written
+  English, or vice versa.  The data set \texttt{BNCcomparison} lists the
+  frequencies of a selection of English words in the written and spoken part
+  of the British National Corpus.
+\item Construct appropriate contingency tables for the frequency comparison
+  setting, as explained in Unit 2.  First, determine the written and spoken
+  sample sizes by summing over all rows of the data set.  Then calculate the
+  observed frequencies \texttt{O11}, \texttt{O12}, \texttt{O21} and
+  \texttt{O22} for each word (= row), and add them to the data set.
+\item Which association measures might be sensible for keyword extraction?
+  Compute the respective association scores using the same procedure as above,
+  and rank the data set by \emph{keyness} for written or spoken English.  Do
+  high/low association scores correspond to written or to spoken keyness?
+  Compare the keywords identified by different measures.  Do you notice any
+  specific problems of individual measures?
+\end{itemize}
+
+\end{document}

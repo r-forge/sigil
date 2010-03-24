@@ -1,44 +1,47 @@
-\documentclass{beamer}
-%% \documentclass[handout]{beamer}
+%% \documentclass[handout,t]{beamer} % HANDOUT
+\documentclass[handout,notes=show,t]{beamer} % NOTES
+%% \documentclass[t]{beamer} % SLIDES
 
-\usetheme{default}
+\usetheme{SIGIL}
+\usepackage{beamer-tools-sigil}
 
-\usepackage[english]{babel}
-\usepackage[latin1]{inputenc}
+\input{lib/math}  % basic mathematical notation
+\input{lib/stat}  % notation for probability theory and statistics
+\input{lib/vector}% convenience macros for vectors and matrices
 
-\usepackage{times}
-\usepackage[T1]{fontenc}
+\input{local/config} % local adjustments to configuration and macros
 
-\input{macros.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Titlepage
 
-\title[SIGIL: Collocations 1]{Statistical Analysis of Corpus Data with R}
-\subtitle{\emph{You shall know a word by the company it keeps!}\\
-  Collocation extraction with statistical association measures\\
-  --- Part 1 ---}
-
-\author[Baroni \& Evert]{Designed by Marco Baroni\inst{1} and Stefan Evert\inst{2}}
-\institute[]{
+\title[4a.\ Collocations (part 1)]{Unit 4: Collocations \& Contingency
+  Tables (Pt.~1)}
+\subtitle{Statistics for Linguists with R -- A SIGIL Course}
+\author[SIGIL]{Designed by Marco Baroni\inst{1} and Stefan Evert\inst{2}}
+\institute[Baroni \& Evert]{
   \inst{1}Center for Mind/Brain Sciences (CIMeC)\\
-  University of Trento
+  University of Trento, Italy
   \and
   \inst{2}Institute of Cognitive Science (IKW)\\
-  University of Onsabrück
+  University of Osnabrück, Germany
 }
-\date{}
-
+\date[sigil.r-forge.r-project.org]{%
+  \light{\tiny Copyright \textcopyright\ 2007--2010 Baroni \& Evert}}
 
 \begin{document}
 
 \frame{\titlepage}
 
- \begin{frame}
-   \frametitle{Outline}
-   \tableofcontents
- \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Outline}
+\frame{ 
+  \frametitle{Outline}
+  \tableofcontents
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Collocations \& Multiword Expressions (MWE)}
+\section{Collocations \& multiword expressions (MWE)}
 
 \newcommand{\tc}[1]{\textcite{\large #1}}
 \begin{frame}
@@ -54,7 +57,7 @@
       \>\>\>\> \tc{brush} and \tc{teeth}
     \end{tabbing}
   \item[] \pause
-  \item[] \hand such pairs are called \h{collocations} (Firth 1957)
+  \item[] \hand\ such pairs are called \h{collocations} (Firth 1957)
     \begin{itemize}
     \item the meaning of a word is in part determined by its characteristic
       collocations
@@ -67,8 +70,8 @@
   \frametitle{What is a collocation?}
 
   \begin{itemize}
-  \item Native speakers have strong \& widely shared intuitions about such
-    collocations
+  \item Native speakers have strong \& widely shared intuitions\\
+    about such habitual word combinations
   \item[]
   \item Collocational knowledge is essential for non-native speakers in order
     to sound natural \so ``idiomatic English'' 
@@ -80,42 +83,29 @@
   \framesubtitle{\ldots\ which has been the cause of many misunderstandings.}
 
   \begin{itemize}
-  \item \h{collocations} are an empirical linguistic phenomenon
+  \item \h{Collocations} are an empirical linguistic phenomenon
     \begin{itemize}
     \item can be observed in corpora \& quantified
     \item provide a window to lexical meaning and word usage
     \item applications in language description (Firth 1957) and computational
-      lexicography (Sinclair 1966, 1991)
-    \end{itemize}
-  \item[]\pause
-  \item \h{multiword expressions} = lexicalised word combinations
+      lexicography (Sinclair 1966, 1991) 
+    \item[]\pause
+   \end{itemize}
+  \item In contrast to lexicalised \h{multiword expressions}
     \begin{itemize}
     \item MWE need to be lexicalised (i.e., stored as units) because of
       certain idiosyncratic properties
-    \item non-compositionallity, non-substitutability, non-modifiability
+    \item non-compositionality, non-substitutability, non-modifiability
       (Manning \& Schütze 1999)
-    \item not observable, defined by linguistic tests\\ (e.g.\ substitution
-      test) and native speaker intuitions
+    \item MWE are not directly observable, defined by linguistic tests (e.g.\
+      substitution test) and native speaker intuitions
+    \item[]\pause
     \end{itemize}
-  \item[]\pause
-  \item[\hand] the term ``collocations'' has been used for both concepts
+  \item[\hand] but the term ``collocations'' has been used for both concepts
   \end{itemize}
 \end{frame}
 
-\AtBeginSection[]{
-  \begin{frame}<beamer:1| handout:0>
-    \frametitle{Outline}
-    \tableofcontents[current,currentsection]
-  \end{frame}}
-
-\AtBeginSubsection[]{
-  \begin{frame}<beamer:1| handout:0>
-    \frametitle{Outline}
-    \tableofcontents[current,currentsubsection]
-  \end{frame}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{What are collocations?}
 
 \begin{frame}
@@ -140,6 +130,7 @@
 \begin{frame}
   \frametitle{Collocates of \emph{bucket} (n.)}
   
+  \ungap
   \begin{center}
     \begin{scriptsize}
       \begin{tabular}{>{\itshape}lr}
@@ -262,19 +253,20 @@
   \item Empirical concept needs to be formalised and quantified
     \begin{itemize}
     \item intuition: collocates are ``attracted'' to each other, i.e.\
-      they tend to occur near each other in text
-    \item definition of ``nearness'' \so \h{cooccurrence}
+      they tend to occur near each other in text%
+      \pause
+    \item definition of ``nearness'' \so \h{cooccurrence}%
+      \pause
     \item quantify the strength of attraction between collocates based on
       their recurrence \so cooccurrence \h{frequency}
     \end{itemize}
-  \item[]
+  \item[]\pause
   \item[\hand] We will consider word pairs $(w_1,w_2)$ such as (\emph{brush},
     \emph{teeth})
   \end{itemize}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Types of cooccurrence}
 
 \begin{frame}
@@ -364,8 +356,8 @@
   \begin{itemize}
   \item \h{Syntactic cooccurrences} of adjectives and nouns
     \begin{itemize}
-    \item every instance of the syntactic relation of interest is extracted as
-      a \h{pair token}
+    \item every instance of the syntactic relation of interest is\\ extracted
+      as a \h{pair token}
     \end{itemize}
   \end{itemize}
 
@@ -383,7 +375,6 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \section{Quantifying the attraction between words}
 
 \begin{frame}
@@ -401,14 +392,13 @@
       words in the text were arranged in completely random order
     \end{itemize}
     \pause%
-    \hand take \h{expected frequency} into account as ``baseline''
+    \hand\ take \h{expected frequency} into account as ``baseline''
   \item Statistical model required to bring in notion of ``chance
     cooccurrence'' and to adjust for sampling variation
   \item[]\pause 
     \begin{itemize}
-    \item[\hand] NB: bigrams can be understood either as syntactic
-      cooccurrences (adjacency relation) or as surface cooccurrences (L1, R0
-      or L0, R1)
+    \item[\hand] NB: bigrams can be understood either as syntactic (adjacency
+      relation) or as surface cooccurrences (L1, R0 or L0, R1)
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -419,9 +409,9 @@
   \begin{itemize}
   \item Tendency of events to cooccur = \h{statistical association}
     \begin{itemize}
-    \item statistical measures of association are available for \h{contingency
-        tables}, resulting from a \h{cross-classification} of a set of ``items''
-      according to two (binary) factors
+    \item statistical measures of association computed on\\ \h{contingency
+        tables}, resulting from a \h{cross-classification}\\ of a set of
+      ``items'' according to two (binary) factors
     \item cross-classifying factors represent the two events
     \end{itemize}
   \item[]\pause
@@ -437,8 +427,7 @@
   \end{itemize}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Contingency tables}
 
 \begin{frame}
@@ -484,10 +473,10 @@
   \vspace{5mm}
   \begin{footnotesize}
     \parbox{11cm}{%
-      \h{More details:} Section 5.1 of Evert, S.\ (2008, in
-      press). {\color{quietblue}Corpora and collocations.}  In A.~L{\"u}deling
-      and M.~Kyt{\"o} (eds.), {\em Corpus Linguistics.  An International
-        Handbook}, article~57. Mouton de Gruyter, Berlin.%
+      \h{More details:} Section 5.1 of Evert, Stefan
+      (2008). \secondary{Corpora and collocations.}  In A.~L{\"u}deling and
+      M.~Kyt{\"o} (eds.), {\em Corpus Linguistics.  An International
+        Handbook}, article~58. Mouton de Gruyter, Berlin.%
     }
   \end{footnotesize}
 
@@ -505,8 +494,8 @@
     \item \h{association score} = test statistic or p-value
     \item one-sided vs.\ two-sided tests
     \end{itemize}
-    \hand amount of evidence for association between $w_1$ and $w_2$
-  \item[]
+    \hand\ amount of evidence for association between $w_1$ and $w_2$
+  \item[]\pause
   \item[B)] Measures of \h{effect-size}
     \begin{itemize}
     \item compare observed frequencies $O_{ij}$ to \h{expected frequencies}
@@ -515,12 +504,11 @@
       etc.
     \item maximum-likelihood estimates or confidence intervals
     \end{itemize}
-    \hand strength of the attraction between $w_1$ and $w_2$
+    \hand\ strength of the attraction between $w_1$ and $w_2$
   \end{itemize}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Contingency tables and hypothesis tests in R}
 
 \begin{frame}[fragile]
@@ -538,8 +526,7 @@
   \pause
 
   \begin{alltt}
-> A <- matrix(c(10,47,82,956),
-  nrow=2, ncol=2, byrow=TRUE)
+> A <- matrix(c(10,47,82,956), nrow=2, ncol=2, byrow=TRUE)
 > A
 
 \REM{construct matrix from row (or column) vectors}
@@ -569,8 +556,8 @@
   \begin{itemize}
   \item Establishing significance
     \begin{itemize}
-    \item p-value = probability of observed (or more ``extreme'') contingency
-      table if $H_0$ is true
+    \item p-value = total probability of observed contingency table and all
+      more ``extreme'' tables if $H_0$ is true
     \item theory: $H_0$ can be rejected if p-value is below accepted
       \h{significance level} (commonly $.05$, $.01$ or $.001$)
     \item practice: nearly all word pairs are highly significant
@@ -660,8 +647,7 @@
   \end{alltt}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Practice session}
 
 \begin{frame}
@@ -700,20 +686,23 @@
 \REM{and calculate the different association scores you know.}
 \REM{Can you find a bigram with strong negative association?}
 
-\REM{NB: You can use the same tests for corpus frequency comparisons.}
-\REM{Assume that a certain expression occurs 50 times in the 100,000}
-\REM{tokens of corpus A, and twice in the 1,000 tokens of corpus B.}
+\REM{NB: These are the same tests that we have used for corpus frequency}
+\REM{comparisons. Assume that a certain expression occurs 50 times in the}
+\REM{100,000 tokens of corpus A, and twice in the 1,000 tokens of corpus B.}
 \REM{What is an appropriate contingency table for these data, and what}
 \REM{results do you obtain from the chi-squared and Fisher test?}
   \end{alltt}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% References (if any)
 
-% \begin{frame}
-%   \frametitle{}
-
-% \end{frame}
-
+%% \frame[allowframebreaks]{
+%%   \frametitle{References}
+%%   \bibliographystyle{natbib-stefan}
+%%   \begin{scriptsize}
+%%     \bibliography{sigil}
+%%   \end{scriptsize}
+%% }
 
 \end{document}
