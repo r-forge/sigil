@@ -1,43 +1,46 @@
-\documentclass{beamer}
-%% \documentclass[handout]{beamer}
+%% \documentclass[handout,t]{beamer} % HANDOUT
+\documentclass[handout,notes=show,t]{beamer} % NOTES
+%% \documentclass[t]{beamer} % SLIDES
 
-\usetheme{default}
+\usetheme{SIGIL}
+\usepackage{beamer-tools-sigil}
 
-\usepackage[english]{babel}
-\usepackage[latin1]{inputenc}
+\input{lib/math}  % basic mathematical notation
+\input{lib/stat}  % notation for probability theory and statistics
+\input{lib/vector}% convenience macros for vectors and matrices
 
-\usepackage{times}
-\usepackage[T1]{fontenc}
+\input{local/config} % local adjustments to configuration and macros
 
-\input{macros.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Titlepage
 
-\title[SIGIL: Collocations 2]{Statistical Analysis of Corpus Data with R}
-\subtitle{\emph{You shall know a word by the company it keeps!}\\
-  Collocation extraction with statistical association measures\\
-  --- Part 2 ---}
-
-\author[Baroni \& Evert]{Designed by Marco Baroni\inst{1} and Stefan Evert\inst{2}}
-\institute{
+\title[4b.\ Collocations (part 2)]{Unit 4: Collocation Extraction with
+  Statistical Association Measures (Pt.~2)}
+\subtitle{Statistics for Linguists with R -- A SIGIL Course}
+\author[SIGIL]{Designed by Marco Baroni\inst{1} and Stefan Evert\inst{2}}
+\institute[Baroni \& Evert]{
   \inst{1}Center for Mind/Brain Sciences (CIMeC)\\
-  University of Trento
+  University of Trento, Italy
   \and
   \inst{2}Institute of Cognitive Science (IKW)\\
-  University of Onsabrück
+  University of Osnabrück, Germany
 }
-\date{}
-
+\date[sigil.r-forge.r-project.org]{%
+  \light{\tiny Copyright \textcopyright\ 2007--2010 Baroni \& Evert}}
 
 \begin{document}
 
 \frame{\titlepage}
 
- \begin{frame}
-   \frametitle{Outline}
-   \tableofcontents
- \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Outline}
+\frame{ 
+  \frametitle{Outline}
+  \tableofcontents
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \section{Scaling up: working with large data sets}
 
 \begin{frame}[fragile]
@@ -47,23 +50,23 @@
   \item We know how to compute association scores ($X^2$, Fisher, and $\log
     \theta$) for individual contingency tables now \ldots\pause
   \item[] \ldots\ but we want to do it automatically for 24,000 bigrams in the
-    Brown data set, or an even larger number word pairs%
+    Brown data set, or an even larger number of word pairs%
     \pause
   \item Of course, you can write a loop (if you know C/Java):
   \end{itemize}
   
 \begin{verbatim}
-> attach(Brown)
-> result <- numeric(nrow(Brown))
-> for (i in 1:nrow(Brown)) {
-    if ((i %% 100) == 0) cat(i, " bigrams done\n")
-    A <- rbind(c(O11[i],O12[i]), c(O21[i],O22[i]))
-    result[i] <- chisq.test(A)$statistic
-  }
+    > attach(Brown)
+    > result <- numeric(nrow(Brown))
+    > for (i in 1:nrow(Brown)) {
+        if ((i %% 100) == 0) cat(i, " bigrams done\n")
+        A <- rbind(c(O11[i],O12[i]), c(O21[i],O22[i]))
+        result[i] <- chisq.test(A)$statistic
+      }
 \end{verbatim}
 
   \begin{itemize}
-  \item[] \hand \verb|fisher.test()| is even slower \ldots
+  \item[] \hand\ \verb|fisher.test()| is even slower \ldots
   \end{itemize}
 \end{frame}
 
@@ -110,20 +113,7 @@
   \end{itemize}
 \end{frame}
 
-\AtBeginSection[]{
-  \begin{frame}<beamer:1| handout:0>
-    \frametitle{Outline}
-    \tableofcontents[current,currentsection]
-  \end{frame}}
-
-\AtBeginSubsection[]{
-  \begin{frame}<beamer:1| handout:0>
-    \frametitle{Outline}
-    \tableofcontents[current,currentsubsection]
-  \end{frame}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Statistical association measures}
 
 \begin{frame}
@@ -144,6 +134,7 @@
 \begin{frame}[fragile]
   \frametitle{Adding marginals and expected frequencies in R}
 
+  \ungap[1.5]
   \begin{alltt}
 \REM{first, keep R from performing integer arithmetic}
 > Brown <- transform(Brown,
@@ -151,8 +142,7 @@
   O21=as.numeric(O21), O22=as.numeric(O22))
 
 > Brown <- transform(Brown,
-  R1=O11+O12, R2=O21+O22,
-  C1=O11+O21, C2=O12+O22,
+  R1=O11+O12, R2=O21+O22, C1=O11+O21, C2=O12+O22,
   N=O11+O12+O21+O22)
 
 \REM{we could also have calculated them laboriously one by one:}
@@ -202,7 +192,7 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
     computationally expensive)
   \item Can use likelihood ratio test statistic $G^2$, which is less sensitive
     to small and skewed samples than $X^2$\\
-    (Dunning 1993, 1998; Evert 2004)
+    \citep{Dunning:93,Dunning:98,Evert:04phd}
     \begin{itemize}
     \item $G^2$ uses same scale (asymptotic $\chi^2_1$ distribution) as $X^2$,\\
       but you will notice that scores are entirely different
@@ -300,22 +290,21 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
   \begin{itemize}
   \item There are many other association measures
     \begin{itemize}
-    \item Pecina (2005) lists 57 different measures
+    \item \citet{Pecina:05} lists 57 different measures
     \item[]
     \end{itemize}
-  \item Evert, S.\ (2008, in press). Corpora and collocations.\\
-    {\small\color{quietblue} In A.~L{\"u}deling and M.~Kyt{\"o} (eds.), {\em
-        Corpus Linguistics.  An International Handbook}, article~57. Mouton de
-      Gruyter, Berlin.}
+  \item Evert, Stefan (2008). Corpora and collocations.\\
+    \secondary{\small In A.~L{\"u}deling and M.~Kyt{\"o} (eds.), {\em
+        Corpus Linguistics.  An International Handbook}, article~58. Mouton de
+      Gruyter, Berlin.}\nocite{Evert:08}
     \begin{itemize}
     \item explains characteristic properties of the measures
-    \item contingency tables for textual and surface cooccurrences
     \end{itemize}
   \item Evert, Stefan (2004). \emph{The Statistics of Word Cooccurrences: Word
       Pairs and Collocations}.\\
-    {\small\color{quietblue} Dissertation, Institut f{\"u}r maschinelle
-      Sprachverarbeitung, University of Stuttgart.  Published in 2005, URN
-      urn:nbn:de:bsz:93-opus-23714.}
+    \secondary{\small Dissertation, Institut f{\"u}r maschinelle
+      Sprachverarbeitung, University of Stuttgart.  Published 2005, URN
+      urn:nbn:de:bsz:93-opus-23714.}\nocite{Evert:04phd}
     \begin{itemize}
     \item full sampling models and detailed mathematical analysis
     \end{itemize}
@@ -346,8 +335,7 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
   \end{alltt}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Sorting and ranking data frames}
 
 \begin{frame}
@@ -459,7 +447,6 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \section{The evaluation of association measures}
 
 \begin{frame}
@@ -518,8 +505,7 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
   \end{itemize}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Precision/recall tables and graphs}
 
 \begin{frame}
@@ -581,8 +567,7 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
   \end{center}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{MWE evaluation in R}
 
 \begin{frame}[fragile]
@@ -674,6 +659,22 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
     show.prec(PPV, "Dice", n.list),
     show.prec(PPV, "freq", n.list)
   )
+  \end{alltt}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Precision tables: an elegant solution}
+
+  \begin{alltt}
+\REM{remember the \texttt{lapply} / \texttt{do.call} trick from Unit 2?}
+> prec.list <- lapply(
+    c("log.like", "Fisher", "chisq", "chisq.corr", 
+      "z.score", "t.score", "MI", "Dice", "freq"), 
+    function (AM) show.prec(PPV, AM, n.list)
+  )
+
+> prec.table <- do.call(cbind, prec.list)
+
 
 > round(prec.table, 1) \REM{rounded values are more readable}
   \end{alltt}
@@ -700,18 +701,14 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
 \REM{second, calculate precision for all n-best lists}
 > n.vals <- 1:nrow(PPV)
 
-> prec.ll <- cumsum(is.colloc[idx.ll]) *
-  100 /  n.vals
+> prec.ll <- cumsum(is.colloc[idx.ll]) * 100 /  n.vals
 > prec.chisq <- cumsum(is.colloc[idx.chisq]) *
   100 / n.vals
-> prec.t <- cumsum(is.colloc[idx.t]) *
-  100 / n.vals
-> prec.MI <- cumsum(is.colloc[idx.MI]) *
-  100 / n.vals
+> prec.t <- cumsum(is.colloc[idx.t]) * 100 / n.vals
+> prec.MI <- cumsum(is.colloc[idx.MI]) * 100 / n.vals
 > prec.Dice <- cumsum(is.colloc[idx.Dice]) *
   100 / n.vals
-> prec.f <- cumsum(is.colloc[idx.f]) *
-  100 / n.vals
+> prec.f <- cumsum(is.colloc[idx.f]) * 100 / n.vals
   \end{alltt}
 \end{frame}
 
@@ -731,10 +728,8 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
 > lines(n.vals, prec.t, lwd=2, col="red")
 > lines(n.vals, prec.MI, lwd=2, col="black",
   lty="dashed") \REM{line type: solid, dashed, dotted, \ldots}
-> lines(n.vals, prec.Dice, lwd=2, 
-  col="blue", lty="dashed")
-> lines(n.vals, prec.f, lwd=2, 
-  col="red", lty="dashed")
+> lines(n.vals, prec.Dice, lwd=2, col="blue", lty="dashed")
+> lines(n.vals, prec.f, lwd=2, col="red", lty="dashed")
   \end{alltt}
 \end{frame}
 
@@ -778,4 +773,16 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
   \end{itemize}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% References (if any)
+
+\frame[allowframebreaks]{
+  \frametitle{References}
+  \bibliographystyle{natbib-stefan}
+  \begin{scriptsize}
+    \bibliography{sigil}
+  \end{scriptsize}
+}
+
 \end{document}
+
