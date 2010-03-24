@@ -79,33 +79,49 @@ do.test(146, 975, 134, 947) # humour genre (category R)
 # we can also extract these values directly from the data frames
 do.test(Brown$passive[15], Brown$n_s[15], LOB$passive[15], LOB$n_s[15])
 
-# nicer version of do.test() function labels result with genre code
-do.test <- function (k1, n1, k2, n2, cat="") {
-	res <- prop.test(c(k1, k2), c(n1, n2)) # result of proportions test
-	# data frames are a nice way to display summary tables
-	fmt <- data.frame(p=res$p.value, lower=res$conf.int[1], upper=res$conf.int[2])
-	rownames(fmt) <- cat
-	fmt # return value of function = last expression
+# nicer version of user function with genre category labels do.test <- function (k1, n1, k2, n2, cat="") {
+	res <- prop.test(c(k1, k2), c(n1, n2))
+	data.frame(
+		p=res$p.value,
+		lower=100*res$conf.int[1], # scaled to % points
+		upper=100*res$conf.int[2],
+		row.names=cat   # add genre as row label
+	) # return data frame directly without local variable fmt
 }
 
-do.test(Brown$passive[15], Brown$n_s[15], LOB$passive[15], LOB$n_s[15], cat=Brown$name[15])
+do.test(	Brown$passive[15], Brown$n_s[15],
+			LOB$passive[15], LOB$n_s[15], cat=Brown$name[15])
 
-all(Brown$cat == LOB$cat) # our code relies on same ordering of genres in Brown and LOB
+# ad-hoc convenience function to reduce typing/editing
+# (works only if global Brown/LOB variables are set correctly!)
+quick.test <- function (i) {
+		do.test(	k1=Brown$passive[i], n1=Brown$n_s[i],
+					k2=LOB$passive[i], n2=LOB$n_s[i],
+					cat=Brown$name[i] )
+}
 
-# we can carry out tests for all genres with a 'for' loop
+quick.test(15)
+quick.test(9)
+
+# loop over all 15 rows (or use 1:nrow(Brown) to count rows automatically)
 for (i in 1:15) {
-	print(do.test(Brown$passive[i], Brown$n_s[i], LOB$passive[i], LOB$n_s[i], cat=Brown$name[i]))
+	print( quick.test(i) )
 }
 
-# it would be nice to collect all these rows into a single table;
-# you can either iteratively build this table, or use advanced R skills
-result.list <- lapply(1:15, function (i) {
-	do.test(Brown$passive[i], Brown$n_s[i], LOB$passive[i], LOB$n_s[i], cat=Brown$name[i])
-})
-result <- do.call(rbind, result.list) # think of this as an idiom you have to remember ...
+# our code relies on same ordering of genres in Brown and LOB
+all(Brown$cat == LOB$cat) 
 
-result
-round(result, 5) # non-engineering notation is easier to read
+# we need some R wizardry to collect the 15 genre results into a single table
+#  - lapply() applies a function to each element of a list or vector
+#  - returns list with result values (here: table rows)
+#  - use rbind() to combine rows into single table
+#  - rows have to be passed as individual arguments using do.call()
+res.list <- lapply(1:15, quick.test)
+
+res <- do.call(rbind, res.list) # as if each list element were an argument
+
+res
+round(res, 3) # easier to read after rounding
 
 # Which differences are significant? Are the effect sizes linguistically relevant?
 
