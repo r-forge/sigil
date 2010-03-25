@@ -1,7 +1,6 @@
-##    Author: Stefan Evert
-##   Purpose: R code examples from introduction session
-##   Created: Mon Jul 21 09:48:26 2008
-##  Modified: Sun Mar 21 20:28:28 2010 (severt)   
+## SIGIL: Statistical Inference - a Gentle Introduction for Linguists
+## Unit 1: First steps in R
+## -- code examples --
 
 1+1
 a <- 2     # assignment does \emph{not} print anything by default

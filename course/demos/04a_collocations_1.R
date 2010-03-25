@@ -1,7 +1,6 @@
-##    Author: Stefan Evert
-##   Purpose: R code examples from collocations session (part 1)
-##   Created: Tue Jul 22 21:59:36 2008
-##  Modified: Tue Jul 22 22:30:12 2008 (severt)   
+## SIGIL: Statistical Inference - a Gentle Introduction for Linguists
+## Unit 4: Collocations & contingency tables (Part 1)
+## -- code examples --
 
 A <- matrix(c(10,47,82,956), nrow=2, ncol=2, byrow=TRUE)
 print(A)
