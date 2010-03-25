@@ -1,0 +1,313 @@
+id	passive	n_w	n_s	cat	genre	lang
+A01	13	2249	106	A	press reportage	BrE
+A02	37	2289	92	A	press reportage	BrE
+A03	19	2225	65	A	press reportage	BrE
+A04	20	2230	77	A	press reportage	BrE
+A05	27	2274	103	A	press reportage	BrE
+A06	25	2311	119	A	press reportage	BrE
+A07	10	2335	100	A	press reportage	BrE
+A08	20	2237	97	A	press reportage	BrE
+A09	22	2344	117	A	press reportage	BrE
+A10	16	2352	119	A	press reportage	BrE
+A11	41	2238	70	A	press reportage	BrE
+A12	29	2355	110	A	press reportage	BrE
+A13	32	2481	107	A	press reportage	BrE
+A14	29	2260	92	A	press reportage	BrE
+A15	31	2182	74	A	press reportage	BrE
+A16	22	2273	122	A	press reportage	BrE
+A17	15	2283	71	A	press reportage	BrE
+A18	14	2330	88	A	press reportage	BrE
+A19	11	2348	99	A	press reportage	BrE
+A20	40	2197	97	A	press reportage	BrE
+A21	25	2254	91	A	press reportage	BrE
+A22	13	2327	108	A	press reportage	BrE
+A23	20	2272	105	A	press reportage	BrE
+A24	29	2361	114	A	press reportage	BrE
+A25	23	2233	87	A	press reportage	BrE
+A26	16	2367	112	A	press reportage	BrE
+A27	29	2268	84	A	press reportage	BrE
+A28	21	2289	114	A	press reportage	BrE
+A29	25	2250	75	A	press reportage	BrE
+A30	21	2297	120	A	press reportage	BrE
+A31	21	2214	89	A	press reportage	BrE
+A32	30	2283	77	A	press reportage	BrE
+A33	26	2293	102	A	press reportage	BrE
+A34	33	2279	89	A	press reportage	BrE
+A35	19	2362	129	A	press reportage	BrE
+A36	26	2255	85	A	press reportage	BrE
+A37	19	2321	90	A	press reportage	BrE
+A38	28	2313	111	A	press reportage	BrE
+A39	11	2415	105	A	press reportage	BrE
+A40	19	2312	107	A	press reportage	BrE
+A41	10	2329	152	A	press reportage	BrE
+A42	25	2295	81	A	press reportage	BrE
+A43	33	2310	96	A	press reportage	BrE
+A44	28	2219	80	A	press reportage	BrE
+B01	24	2219	116	B	press editorial	BrE
+B02	25	2207	80	B	press editorial	BrE
+B03	18	2182	104	B	press editorial	BrE
+B04	26	2279	178	B	press editorial	BrE
+B05	22	2281	99	B	press editorial	BrE
+B06	22	2223	85	B	press editorial	BrE
+B07	33	2232	88	B	press editorial	BrE
+B08	16	2250	109	B	press editorial	BrE
+B09	22	2243	75	B	press editorial	BrE
+B10	24	2278	93	B	press editorial	BrE
+B11	18	2237	77	B	press editorial	BrE
+B12	24	2218	86	B	press editorial	BrE
+B13	19	2221	138	B	press editorial	BrE
+B14	23	2276	132	B	press editorial	BrE
+B15	23	2281	92	B	press editorial	BrE
+B16	20	2286	99	B	press editorial	BrE
+B17	32	2235	73	B	press editorial	BrE
+B18	22	2205	77	B	press editorial	BrE
+B19	25	2210	81	B	press editorial	BrE
+B20	14	2216	96	B	press editorial	BrE
+B21	26	2263	80	B	press editorial	BrE
+B22	22	2273	76	B	press editorial	BrE
+B23	22	2173	76	B	press editorial	BrE
+B24	19	2274	101	B	press editorial	BrE
+B25	28	2176	99	B	press editorial	BrE
+B26	25	2218	107	B	press editorial	BrE
+B27	23	2274	85	B	press editorial	BrE
+E01	26	2262	100	E	skills / hobbies	BrE
+E02	51	2250	101	E	skills / hobbies	BrE
+E03	26	2268	90	E	skills / hobbies	BrE
+E04	38	2201	108	E	skills / hobbies	BrE
+E05	19	2242	85	E	skills / hobbies	BrE
+E06	25	2176	91	E	skills / hobbies	BrE
+E07	25	2235	85	E	skills / hobbies	BrE
+E08	30	2225	74	E	skills / hobbies	BrE
+E09	23	2242	93	E	skills / hobbies	BrE
+E10	24	2190	64	E	skills / hobbies	BrE
+E11	17	2396	81	E	skills / hobbies	BrE
+E12	25	2241	99	E	skills / hobbies	BrE
+E13	22	2300	72	E	skills / hobbies	BrE
+E14	20	2248	79	E	skills / hobbies	BrE
+E15	9	2265	87	E	skills / hobbies	BrE
+E16	21	2280	50	E	skills / hobbies	BrE
+E17	16	2294	117	E	skills / hobbies	BrE
+E18	29	2192	75	E	skills / hobbies	BrE
+E19	13	2277	112	E	skills / hobbies	BrE
+E20	14	2245	97	E	skills / hobbies	BrE
+E21	14	2363	86	E	skills / hobbies	BrE
+E22	27	2181	77	E	skills / hobbies	BrE
+E23	45	2224	91	E	skills / hobbies	BrE
+E24	33	2250	97	E	skills / hobbies	BrE
+E25	46	2269	107	E	skills / hobbies	BrE
+E26	25	2256	69	E	skills / hobbies	BrE
+E27	53	2165	69	E	skills / hobbies	BrE
+E28	32	2211	69	E	skills / hobbies	BrE
+E29	35	2381	85	E	skills / hobbies	BrE
+E30	14	2257	81	E	skills / hobbies	BrE
+E31	29	2219	84	E	skills / hobbies	BrE
+E32	24	2166	50	E	skills / hobbies	BrE
+E33	48	2179	67	E	skills / hobbies	BrE
+E34	23	2195	120	E	skills / hobbies	BrE
+E35	32	2251	86	E	skills / hobbies	BrE
+E36	45	2207	80	E	skills / hobbies	BrE
+E37	43	2198	90	E	skills / hobbies	BrE
+E38	29	2260	94	E	skills / hobbies	BrE
+H01	43	2232	71	H	miscellaneous	BrE
+H02	34	2232	72	H	miscellaneous	BrE
+H03	32	2196	70	H	miscellaneous	BrE
+H04	19	2284	78	H	miscellaneous	BrE
+H05	32	2196	58	H	miscellaneous	BrE
+H06	30	2214	69	H	miscellaneous	BrE
+H07	23	2161	59	H	miscellaneous	BrE
+H08	35	2234	73	H	miscellaneous	BrE
+H09	32	2192	87	H	miscellaneous	BrE
+H10	15	2202	68	H	miscellaneous	BrE
+H11	26	2225	95	H	miscellaneous	BrE
+H12	37	2210	74	H	miscellaneous	BrE
+H13	16	2189	28	H	miscellaneous	BrE
+H14	14	2315	39	H	miscellaneous	BrE
+H15	26	2200	88	H	miscellaneous	BrE
+H16	16	2194	80	H	miscellaneous	BrE
+H17	22	2271	62	H	miscellaneous	BrE
+H18	23	2291	67	H	miscellaneous	BrE
+H19	36	2254	66	H	miscellaneous	BrE
+H20	36	2206	79	H	miscellaneous	BrE
+H21	20	2202	97	H	miscellaneous	BrE
+H22	25	2187	53	H	miscellaneous	BrE
+H23	25	2235	87	H	miscellaneous	BrE
+H24	23	2209	50	H	miscellaneous	BrE
+H25	31	2169	55	H	miscellaneous	BrE
+H26	36	2233	70	H	miscellaneous	BrE
+H27	26	2220	90	H	miscellaneous	BrE
+H28	23	2207	74	H	miscellaneous	BrE
+H29	52	2215	92	H	miscellaneous	BrE
+H30	26	2256	94	H	miscellaneous	BrE
+J01	35	2132	76	J	learned	BrE
+J02	28	2251	80	J	learned	BrE
+J03	33	2274	84	J	learned	BrE
+J04	57	2214	97	J	learned	BrE
+J05	34	2213	49	J	learned	BrE
+J06	36	2209	90	J	learned	BrE
+J07	44	2254	81	J	learned	BrE
+J08	53	2189	81	J	learned	BrE
+J09	31	2267	62	J	learned	BrE
+J10	49	2199	91	J	learned	BrE
+J11	25	2299	73	J	learned	BrE
+J12	44	2191	71	J	learned	BrE
+J13	55	2220	89	J	learned	BrE
+J14	43	2231	85	J	learned	BrE
+J15	38	2295	59	J	learned	BrE
+J16	33	2173	68	J	learned	BrE
+J17	53	2279	116	J	learned	BrE
+J18	26	2223	49	J	learned	BrE
+J19	29	2274	82	J	learned	BrE
+J20	21	2128	57	J	learned	BrE
+J21	23	2309	40	J	learned	BrE
+J22	20	2263	88	J	learned	BrE
+J23	29	2236	71	J	learned	BrE
+J24	40	2290	83	J	learned	BrE
+J25	32	2214	52	J	learned	BrE
+J26	24	2268	105	J	learned	BrE
+J27	25	2236	75	J	learned	BrE
+J28	29	2228	81	J	learned	BrE
+J29	27	2316	60	J	learned	BrE
+J30	19	2172	66	J	learned	BrE
+J31	29	2217	57	J	learned	BrE
+J32	24	2192	56	J	learned	BrE
+J33	31	2248	73	J	learned	BrE
+J34	31	2427	58	J	learned	BrE
+J35	30	2331	59	J	learned	BrE
+J36	30	2222	71	J	learned	BrE
+J37	22	2350	76	J	learned	BrE
+J38	51	2192	71	J	learned	BrE
+J39	16	2234	60	J	learned	BrE
+J40	34	2206	89	J	learned	BrE
+J41	30	2222	81	J	learned	BrE
+J42	25	2241	70	J	learned	BrE
+J43	22	2195	54	J	learned	BrE
+J44	28	2267	78	J	learned	BrE
+J45	30	2265	71	J	learned	BrE
+J46	20	2206	62	J	learned	BrE
+J47	26	2242	75	J	learned	BrE
+J48	25	2254	47	J	learned	BrE
+J49	22	2192	57	J	learned	BrE
+J50	25	2263	67	J	learned	BrE
+J51	21	2232	52	J	learned	BrE
+J52	26	2253	77	J	learned	BrE
+J53	21	2319	55	J	learned	BrE
+J54	21	2276	67	J	learned	BrE
+J55	22	2218	80	J	learned	BrE
+J56	17	2282	51	J	learned	BrE
+J57	25	2240	79	J	learned	BrE
+J58	24	2275	60	J	learned	BrE
+J59	24	2309	81	J	learned	BrE
+J60	21	2322	69	J	learned	BrE
+J61	23	2284	68	J	learned	BrE
+J62	25	2326	46	J	learned	BrE
+J63	24	2240	51	J	learned	BrE
+J64	29	2252	69	J	learned	BrE
+J65	25	2283	70	J	learned	BrE
+J66	22	2270	65	J	learned	BrE
+J67	41	2290	105	J	learned	BrE
+J68	13	2246	56	J	learned	BrE
+J69	24	2309	84	J	learned	BrE
+J70	51	2227	85	J	learned	BrE
+J71	49	2267	89	J	learned	BrE
+J72	40	2275	71	J	learned	BrE
+J73	59	2251	79	J	learned	BrE
+J74	34	2281	57	J	learned	BrE
+J75	39	2200	76	J	learned	BrE
+J76	26	2234	67	J	learned	BrE
+J77	35	2228	58	J	learned	BrE
+J78	47	2183	75	J	learned	BrE
+J79	35	2209	72	J	learned	BrE
+J80	19	2230	68	J	learned	BrE
+K01	9	2306	64	K	general fiction	BrE
+K02	19	2420	119	K	general fiction	BrE
+K03	13	2441	121	K	general fiction	BrE
+K04	16	2442	128	K	general fiction	BrE
+K05	15	2389	176	K	general fiction	BrE
+K06	8	2264	116	K	general fiction	BrE
+K07	6	2345	155	K	general fiction	BrE
+K08	8	2442	130	K	general fiction	BrE
+K09	10	2451	167	K	general fiction	BrE
+K10	12	2461	142	K	general fiction	BrE
+K11	6	2481	177	K	general fiction	BrE
+K12	16	2302	91	K	general fiction	BrE
+K13	27	2396	125	K	general fiction	BrE
+K14	19	2251	91	K	general fiction	BrE
+K15	5	2237	125	K	general fiction	BrE
+K16	13	2328	130	K	general fiction	BrE
+K17	13	2507	206	K	general fiction	BrE
+K18	9	2560	233	K	general fiction	BrE
+K19	9	2394	107	K	general fiction	BrE
+K20	21	2304	91	K	general fiction	BrE
+K21	16	2282	75	K	general fiction	BrE
+K22	17	2331	99	K	general fiction	BrE
+K23	10	2273	81	K	general fiction	BrE
+K24	20	2462	199	K	general fiction	BrE
+K25	9	2490	168	K	general fiction	BrE
+K26	13	2364	90	K	general fiction	BrE
+K27	12	2341	153	K	general fiction	BrE
+K28	12	2610	185	K	general fiction	BrE
+K29	8	2224	86	K	general fiction	BrE
+M01	6	2293	138	M	science fiction	BrE
+M02	18	2331	85	M	science fiction	BrE
+M03	10	2323	86	M	science fiction	BrE
+M04	11	2586	227	M	science fiction	BrE
+M05	11	2510	178	M	science fiction	BrE
+M06	15	2380	167	M	science fiction	BrE
+N01	13	2229	111	N	adventure	BrE
+N02	8	2469	139	N	adventure	BrE
+N03	15	2309	103	N	adventure	BrE
+N04	11	2561	206	N	adventure	BrE
+N05	17	2576	208	N	adventure	BrE
+N06	8	2527	179	N	adventure	BrE
+N07	8	2598	223	N	adventure	BrE
+N08	12	2430	176	N	adventure	BrE
+N09	16	2337	174	N	adventure	BrE
+N10	17	2404	136	N	adventure	BrE
+N11	14	2412	121	N	adventure	BrE
+N12	6	2437	136	N	adventure	BrE
+N13	7	2399	120	N	adventure	BrE
+N14	7	2512	165	N	adventure	BrE
+N15	11	2431	137	N	adventure	BrE
+N16	5	2509	169	N	adventure	BrE
+N17	10	2383	158	N	adventure	BrE
+N18	18	2482	196	N	adventure	BrE
+N19	12	2545	202	N	adventure	BrE
+N20	5	2376	156	N	adventure	BrE
+N21	7	2429	195	N	adventure	BrE
+N22	7	2426	190	N	adventure	BrE
+N23	18	2504	164	N	adventure	BrE
+N24	6	2687	216	N	adventure	BrE
+N25	7	2423	142	N	adventure	BrE
+N26	9	2401	133	N	adventure	BrE
+N27	9	2301	98	N	adventure	BrE
+N28	8	2465	143	N	adventure	BrE
+N29	13	2385	167	N	adventure	BrE
+P01	13	2370	182	P	romance	BrE
+P02	9	2389	131	P	romance	BrE
+P03	9	2553	170	P	romance	BrE
+P04	12	2369	168	P	romance	BrE
+P05	14	2482	146	P	romance	BrE
+P06	13	2461	163	P	romance	BrE
+P07	14	2317	132	P	romance	BrE
+P08	14	2423	170	P	romance	BrE
+P09	10	2452	167	P	romance	BrE
+P10	14	2493	194	P	romance	BrE
+P11	13	2258	87	P	romance	BrE
+P12	15	2401	137	P	romance	BrE
+P13	7	2528	206	P	romance	BrE
+P14	8	2430	145	P	romance	BrE
+P15	5	2384	140	P	romance	BrE
+P16	11	2426	155	P	romance	BrE
+P17	13	2539	154	P	romance	BrE
+P18	15	2333	100	P	romance	BrE
+P19	19	2352	116	P	romance	BrE
+P20	9	2451	174	P	romance	BrE
+P21	12	2469	146	P	romance	BrE
+P22	7	2389	105	P	romance	BrE
+P23	12	2417	127	P	romance	BrE
+P24	11	2533	188	P	romance	BrE
+P25	10	2599	184	P	romance	BrE
+P26	9	2564	249	P	romance	BrE
+P27	15	2436	146	P	romance	BrE
+P28	6	2420	144	P	romance	BrE
+P29	14	2407	175	P	romance	BrE

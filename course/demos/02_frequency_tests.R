@@ -1,6 +1,6 @@
-##
-## Hypothesis tests for frequency comparison and simple script automation.
-##
+## SIGIL: Statistical Inference - a Gentle Introduction for Linguists
+## Unit 2: Corpus frequency data & statistical inference
+## -- code examples --
 
 # relevant information from output of binom.test() is the p-value
 binom.test(19, 100, p=.15) # two-sided

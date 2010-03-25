@@ -1,7 +1,6 @@
-##    Author: Stefan Evert
-##   Purpose: R code examples from collocations session (part 2)
-##   Created: Tue Jul 22 21:59:36 2008
-##  Modified: Wed Mar 24 13:54:44 2010 (severt)   
+## SIGIL: Statistical Inference - a Gentle Introduction for Linguists
+## Unit 4: Collocations & contingency tables (Part 2)
+## -- code examples --
 
 Brown <- read.delim("brown_bigrams.tbl")
 
