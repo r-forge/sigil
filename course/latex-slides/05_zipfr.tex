@@ -1,46 +1,51 @@
-% \documentclass{beamer}
- \documentclass[handout]{beamer}
+%% \documentclass[handout,t]{beamer} % HANDOUT
+\documentclass[handout,notes=show,t]{beamer} % NOTES
+%% \documentclass[t]{beamer} % SLIDES
 
-\usetheme{default}
+\usetheme{SIGIL}
+\usepackage{beamer-tools-sigil}
 
-\usepackage[english]{babel}
-\usepackage[latin1]{inputenc}
+\input{lib/math}  % basic mathematical notation
+\input{lib/stat}  % notation for probability theory and statistics
+\input{lib/vector}% convenience macros for vectors and matrices
 
-\usepackage{times}
-\usepackage[T1]{fontenc}
+\input{local/config} % local adjustments to configuration and macros
 
-\input{macros.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Titlepage
 
-\title[SIGIL: WFD \& zipfR]{Statistical Analysis of Corpus Data with R}
-\subtitle{Word Frequency Distributions: The \emph{zipfR} Package}
-
-\author[Baroni \& Evert]{Designed by Marco Baroni\inst{1} and Stefan Evert\inst{2}}
-\institute{
+\title[5.\ WFD \& zipfR]{Unit 5: Word Frequency Distributions\\ 
+  with the \emph{zipfR} package}
+\subtitle{Statistics for Linguists with R -- A SIGIL Course}
+\author[SIGIL]{Designed by Marco Baroni\inst{1} and Stefan Evert\inst{2}}
+\institute[Baroni \& Evert]{
   \inst{1}Center for Mind/Brain Sciences (CIMeC)\\
-  University of Trento
+  University of Trento, Italy
   \and
   \inst{2}Institute of Cognitive Science (IKW)\\
-  University of Onsabrück
+  University of Osnabrück, Germany
 }
-\date{}
-
+\date[sigil.r-forge.r-project.org]{%
+  \light{\tiny Copyright \textcopyright\ 2007--2010 Baroni \& Evert}}
 
 \begin{document}
 
 \frame{\titlepage}
 
- \begin{frame}
-   \frametitle{Outline}
-   \tableofcontents
- \end{frame}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section*{Outline}
+\frame{ 
+  \frametitle{Outline}
+  \tableofcontents
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Lexical statistics \& word frequency distributions}
 
 \begin{frame}
   \frametitle{Lexical statistics}
-  \framesubtitle{Zipf 1949/1961, Baayen 2001, Evert 2004}
+  \framesubtitle{\citet{Zipf:49,Zipf:65,Baayen:01,Baroni:08}}
 
   \begin{itemize}
   \item Statistical study of the frequency distribution of \h{types} (words or
@@ -57,6 +62,7 @@
   \end{itemize}
 \end{frame} 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Basic notions of lexical statistics}
 
 \begin{frame}
@@ -119,6 +125,7 @@
 \begin{frame}
   \frametitle{Top and bottom ranks in the Brown corpus}
 
+  \gap
   \begin{scriptsize}
     \begin{tabular}{|r|r|l||r|r|l|}
       \hline
@@ -162,12 +169,13 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Frequency spectrum of Brown corpus}
+  \frametitle{Frequency spectrum of Brown corpus}
    
-   \begin{center}
-     \includegraphics[height=7.5cm]{img/brown-spc}
-   \end{center}
- \end{frame}
+  \ungap
+  \begin{center}
+    \includegraphics[height=7.5cm]{img/brown-spc}
+  \end{center}
+\end{frame}
 
 \begin{frame}
  \frametitle{Vocabulary growth curve}
@@ -182,37 +190,25 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Vocabulary growth curve of Brown corpus}
-\framesubtitle{With $V_1$ growth in red (curve smoothed with binomial interpolation)}
+  \frametitle{Vocabulary growth curve of Brown corpus}
+  \framesubtitle{With $V_1$ growth in red (curve smoothed with binomial interpolation)}
 
+  \ungap
   \begin{center}
     \includegraphics[height=7.5cm]{img/brown-vgc}
   \end{center}
- \end{frame}
+\end{frame}
 
-\AtBeginSection[]{
-  \begin{frame}<beamer:1| handout:0>
-    \frametitle{Outline}
-    \tableofcontents[current,currentsection]
-  \end{frame}}
-
-
-\AtBeginSubsection[]{
-  \begin{frame}<beamer:1| handout:0>
-    \frametitle{Outline}
-    \tableofcontents[current,currentsubsection]
-  \end{frame}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Typical frequency distribution patterns}
 
 \begin{frame}
   \frametitle{Typical frequency patterns} 
   \framesubtitle{Across text types \& languages}
 
+  \ungap[1.5]
   \begin{center}
-    \includegraphics[height=8cm]{img/othercorporarf}
+    \includegraphics[height=7.5cm]{img/othercorporarf}
   \end{center}
 \end{frame}
 
@@ -245,17 +241,16 @@
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Zipf's law}
 
 \begin{frame}
   \frametitle{Zipf's law}
 
 \begin{itemize}
-\item Straight line in double-logarithmic space corresponds to
-  \h{power law} for original variables
-\item This leads to Zipf's (1949, 1965) famous law:
+\item Straight line in double-logarithmic space corresponds\\
+  to \h{power law} for original variables
+\item This leads to Zipf's (\citeyear{Zipf:49,Zipf:65}) famous law:
     \[
     f(w)=\frac{C}{r(w)^a}
     \]
@@ -310,7 +305,7 @@
 
 \begin{frame}
   \frametitle{Zipf-Mandelbrot law}
-  \framesubtitle{Mandelbrot 1953}
+  \framesubtitle{\citet{Mandelbrot:53,Mandelbrot:62}}
 
   \begin{itemize}
     \item Mandelbrot's extra parameter:
@@ -324,8 +319,8 @@
       60,000; Mandelbrot's variation predicts frequency of 30,000
     \item For word with rank 1,000,  Zipf's law predicts frequency of
       60; Mandelbrot's variation predicts frequency of 59.94
+    \item[]
     \end{itemize}
-  \item[]
   \item Zipf-Mandelbrot law forms basis of statistical LNRE models% 
     \begin{itemize}
     \item ZM law derived mathematically as limiting distribution of
@@ -343,8 +338,7 @@
   \end{center}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Some applications}
 
 \begin{frame}
@@ -403,14 +397,13 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \section{Statistical LNRE Models}
 
 \begin{frame}
   \frametitle{LNRE models for word frequency distributions}
 
   \begin{itemize}
-  \item LNRE = large number of rare events (cf.\ Baayen 2001)
+  \item LNRE = large number of rare events \citep[cf.][]{Baayen:01}
   \item Statistics: corpus = random sample from \h{population}
     \begin{itemize}
     \item population characterised by vocabulary of \h{types} $w_k$ with
@@ -431,7 +424,8 @@
 
 \begin{frame}
   \frametitle{Examples of population models}
-
+  
+  \ungap[1.5]
   \begin{center}
     \begin{tabular}{cc}
       \includegraphics[width=40mm]{img/02-models-normal} &
@@ -459,13 +453,13 @@
   \end{itemize}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{ZM \& fZM}
 
 \begin{frame}
   \frametitle{The parameters of the Zipf-Mandelbrot model}
 
+  \ungap[1.5]
   \begin{center}
     \begin{tabular}{cc}
       \includegraphics[width=40mm]{img/02-models-zm-param-4} &
@@ -479,6 +473,7 @@
 \begin{frame}
   \frametitle{The parameters of the Zipf-Mandelbrot model}
 
+  \ungap[1.5]
   \begin{center}
     \begin{tabular}{cc}
       \includegraphics[width=40mm]{img/02-models-zm-log-4} &
@@ -510,6 +505,7 @@
 
 \begin{frame}
   \frametitle{The finite Zipf-Mandelbrot model}
+  \framesubtitle{\citet{Evert:04}}
 
   \begin{itemize}
   \item The \h{finite Zipf-Mandelbrot} model simply stops after the first $S$
@@ -525,8 +521,7 @@
   \end{itemize}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Sampling from a LNRE model}
 
 \begin{frame}
@@ -583,6 +578,7 @@
 \begin{frame}
   \frametitle{Samples: type frequency list \& spectrum}
 
+  \ungap[1]
   \begin{center}
     \begin{tabular}[t]{r | rr}
       rank $r$ & $f_r$ & type $k$ \\
@@ -625,6 +621,7 @@
 \begin{frame}
   \frametitle{Samples: type frequency list \& spectrum}
 
+  \ungap[1]
   \begin{center}
     \begin{tabular}[t]{r | rr}
       rank $r$ & $f_r$ & type $k$ \\
@@ -667,6 +664,7 @@
 \begin{frame}
   \frametitle{Random variation in type-frequency lists}
 
+  \ungap[1]
   \begin{tabular}{ccc}
     \includegraphics[width=40mm]{img/02-samples-tfl-r-1} &
     \includegraphics[width=40mm]{img/02-samples-tfl-r-2} &
@@ -681,6 +679,7 @@
 \begin{frame}
   \frametitle{Random variation: frequency spectrum}
 
+  \ungap[1]
   \begin{center}
     \begin{tabular}{cc}
       \includegraphics[width=40mm]{img/02-samples-spc-1} &
@@ -694,6 +693,7 @@
 \begin{frame}
   \frametitle{Random variation: vocabulary growth curve}
 
+  \ungap[1]
   \begin{center}
     \begin{tabular}{cc}
       \includegraphics[width=40mm]{img/02-samples-vgc-1} &
@@ -704,8 +704,7 @@
   \end{center}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Great expectations}
 
 \begin{frame}
@@ -733,6 +732,7 @@
 \begin{frame}
   \frametitle{The expected frequency spectrum}
 
+  \ungap[1]
   \begin{center}
     \begin{tabular}{cc}
       \includegraphics[width=40mm]{img/02-samples-spc-exp-vs-sample-1} &
@@ -746,6 +746,7 @@
 \begin{frame}
   \frametitle{The expected vocabulary growth curve}
 
+  \ungap[1]
   \begin{center}
     \begin{tabular}{c @{} c}
       \includegraphics[width=50mm]{img/02-samples-vgc-exp-vs-samples} &
@@ -757,6 +758,7 @@
 \begin{frame}
   \frametitle{Confidence intervals for the expected VGC}
 
+  \ungap[1]
   \begin{center}
     \begin{tabular}{c @{} c}
       \includegraphics[width=50mm]{img/02-samples-vgc-exp-vs-samples-conf} &
@@ -765,8 +767,7 @@
   \end{center}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Parameter estimation for LNRE models }
 
 \begin{frame}<beamer:1-7| handout:1-3,7>
@@ -795,7 +796,7 @@
 
 \begin{frame}
   \frametitle{Automatic parameter estimation}
-  \framesubtitle{Minimisation of suitable cost function for frequency spectrum}
+  % \framesubtitle{Minimisation of suitable cost function for frequency spectrum}
 
   \begin{center}
     \begin{tabular}{c @{} c}
@@ -804,6 +805,7 @@
     \end{tabular}
   \end{center}
 
+  \ungap[1]
   \begin{itemize}
     \item By trial \& error we found $a=2.0$ and $b=550$
     \item Automatic estimation procedure: $a=2.39$ and $b=1968$
@@ -823,8 +825,8 @@
   \item estimate parameters of \h{LNRE model} by matching observed and
     expected frequency spectrum%
     \pause
-  \item evaluate \h{goodness-of-fit} on spectrum (Baayen 2001) or by
-    testing extrapolation accuracy (Baroni \& Evert 2007)
+  \item evaluate \h{goodness-of-fit} on spectrum \citep{Baayen:01} or by
+    testing extrapolation accuracy \citep{Baroni:Evert:07a}
     \begin{itemize}
       \item in principle, you should only go on if model gives a plausible
         explanation of the observed data!
@@ -840,20 +842,20 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \section{zipfR}
 
 \begin{frame}
   \frametitle{zipfR}
+  \framesubtitle{\citet{Evert:Baroni:07}}
 
   \begin{itemize}
-  \item \url{http://purl.org/stefan.evert/zipfR}
+  \item \url{http://zipfR.R-Forge.R-Project.org/}
   \item Conveniently available from CRAN repository
-  \item Explore your GUI for general package installation and management
-    options
+    \begin{itemize}
+    \item see Unit 1 for general package installation guides
+    \end{itemize}
   \end{itemize}
 
-  \vspace{-6mm}
   \begin{flushright}
     \includegraphics[width=6cm]{img/zipfR_logo}
     \rule{1cm}{0mm}
@@ -1086,5 +1088,16 @@
   xlim=c(0,1e+5))
 \end{alltt}
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% References (if any)
+
+\frame[allowframebreaks]{
+  \frametitle{References}
+  \bibliographystyle{natbib-stefan}
+  \begin{scriptsize}
+    \bibliography{sigil}
+  \end{scriptsize}
+}
 
 \end{document}
