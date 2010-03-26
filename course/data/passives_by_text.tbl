@@ -1,4 +1,314 @@
 id	passive	n_w	n_s	cat	genre	lang
+A01	33	2254	82	A	press reportage	AmE
+A02	20	2303	81	A	press reportage	AmE
+A03	23	2269	74	A	press reportage	AmE
+A04	22	2217	66	A	press reportage	AmE
+A05	29	2244	83	A	press reportage	AmE
+A06	18	2273	82	A	press reportage	AmE
+A07	25	2282	89	A	press reportage	AmE
+A08	20	2186	82	A	press reportage	AmE
+A09	29	2263	81	A	press reportage	AmE
+A10	21	2282	80	A	press reportage	AmE
+A11	14	2280	63	A	press reportage	AmE
+A12	8	2379	92	A	press reportage	AmE
+A13	10	2304	85	A	press reportage	AmE
+A14	21	2349	114	A	press reportage	AmE
+A15	15	2358	90	A	press reportage	AmE
+A16	7	2432	83	A	press reportage	AmE
+A17	20	2346	81	A	press reportage	AmE
+A18	15	2320	81	A	press reportage	AmE
+A19	32	2269	81	A	press reportage	AmE
+A20	33	2318	74	A	press reportage	AmE
+A21	33	2238	74	A	press reportage	AmE
+A22	31	2305	80	A	press reportage	AmE
+A23	23	2320	84	A	press reportage	AmE
+A24	38	2275	93	A	press reportage	AmE
+A25	17	2344	84	A	press reportage	AmE
+A26	20	2282	97	A	press reportage	AmE
+A27	16	2280	79	A	press reportage	AmE
+A28	20	2284	77	A	press reportage	AmE
+A29	20	2382	97	A	press reportage	AmE
+A30	17	2291	96	A	press reportage	AmE
+A31	20	2362	65	A	press reportage	AmE
+A32	23	2331	101	A	press reportage	AmE
+A33	16	2307	91	A	press reportage	AmE
+A34	19	2233	76	A	press reportage	AmE
+A35	21	2217	69	A	press reportage	AmE
+A36	28	2232	75	A	press reportage	AmE
+A37	16	2308	72	A	press reportage	AmE
+A38	9	2217	82	A	press reportage	AmE
+A39	8	2465	103	A	press reportage	AmE
+A40	14	2383	86	A	press reportage	AmE
+A41	13	2290	88	A	press reportage	AmE
+A42	13	2340	81	A	press reportage	AmE
+A43	22	2302	110	A	press reportage	AmE
+A44	20	2280	80	A	press reportage	AmE
+B01	28	2216	85	B	press editorial	AmE
+B02	23	2234	85	B	press editorial	AmE
+B03	24	2242	82	B	press editorial	AmE
+B04	24	2232	100	B	press editorial	AmE
+B05	21	2273	86	B	press editorial	AmE
+B06	17	2243	87	B	press editorial	AmE
+B07	24	2248	77	B	press editorial	AmE
+B08	11	2395	119	B	press editorial	AmE
+B09	20	2307	115	B	press editorial	AmE
+B10	17	2312	115	B	press editorial	AmE
+B11	11	2305	79	B	press editorial	AmE
+B12	14	2291	68	B	press editorial	AmE
+B13	23	2277	121	B	press editorial	AmE
+B14	16	2272	99	B	press editorial	AmE
+B15	18	2296	81	B	press editorial	AmE
+B16	16	2251	79	B	press editorial	AmE
+B17	27	2245	83	B	press editorial	AmE
+B18	26	2187	76	B	press editorial	AmE
+B19	19	2261	86	B	press editorial	AmE
+B20	27	2282	93	B	press editorial	AmE
+B21	26	2277	70	B	press editorial	AmE
+B22	15	2294	85	B	press editorial	AmE
+B23	25	2331	119	B	press editorial	AmE
+B24	15	2330	79	B	press editorial	AmE
+B25	17	2357	66	B	press editorial	AmE
+B26	17	2303	79	B	press editorial	AmE
+B27	22	2274	85	B	press editorial	AmE
+E01	16	2311	73	E	skills / hobbies	AmE
+E02	19	2284	111	E	skills / hobbies	AmE
+E03	29	2258	92	E	skills / hobbies	AmE
+E04	20	2314	90	E	skills / hobbies	AmE
+E05	21	2240	86	E	skills / hobbies	AmE
+E06	36	2233	91	E	skills / hobbies	AmE
+E07	37	2402	118	E	skills / hobbies	AmE
+E08	52	2216	96	E	skills / hobbies	AmE
+E09	10	2429	90	E	skills / hobbies	AmE
+E10	15	2475	93	E	skills / hobbies	AmE
+E11	17	2332	90	E	skills / hobbies	AmE
+E12	15	2274	87	E	skills / hobbies	AmE
+E13	17	2258	71	E	skills / hobbies	AmE
+E14	6	2328	120	E	skills / hobbies	AmE
+E15	22	2289	133	E	skills / hobbies	AmE
+E16	55	2244	125	E	skills / hobbies	AmE
+E17	33	2231	85	E	skills / hobbies	AmE
+E18	33	2287	67	E	skills / hobbies	AmE
+E19	22	2239	98	E	skills / hobbies	AmE
+E20	23	2266	108	E	skills / hobbies	AmE
+E21	25	2226	92	E	skills / hobbies	AmE
+E22	16	2352	81	E	skills / hobbies	AmE
+E23	16	2283	71	E	skills / hobbies	AmE
+E24	24	2253	107	E	skills / hobbies	AmE
+E25	37	2218	76	E	skills / hobbies	AmE
+E26	29	2253	81	E	skills / hobbies	AmE
+E27	27	2195	61	E	skills / hobbies	AmE
+E28	21	2235	100	E	skills / hobbies	AmE
+E29	22	2232	87	E	skills / hobbies	AmE
+E30	21	2233	127	E	skills / hobbies	AmE
+E31	12	2262	95	E	skills / hobbies	AmE
+E32	21	2318	70	E	skills / hobbies	AmE
+E33	26	2255	103	E	skills / hobbies	AmE
+E34	35	2281	81	E	skills / hobbies	AmE
+E35	13	2244	56	E	skills / hobbies	AmE
+E36	10	2260	74	E	skills / hobbies	AmE
+H01	24	2362	56	H	miscellaneous	AmE
+H02	23	2325	68	H	miscellaneous	AmE
+H03	9	2191	64	H	miscellaneous	AmE
+H04	40	2296	89	H	miscellaneous	AmE
+H05	34	2223	71	H	miscellaneous	AmE
+H06	28	2394	65	H	miscellaneous	AmE
+H07	26	2374	80	H	miscellaneous	AmE
+H08	22	2302	58	H	miscellaneous	AmE
+H09	12	2331	14	H	miscellaneous	AmE
+H10	44	2285	69	H	miscellaneous	AmE
+H11	48	2227	73	H	miscellaneous	AmE
+H12	15	2336	20	H	miscellaneous	AmE
+H13	19	2376	88	H	miscellaneous	AmE
+H14	30	2396	51	H	miscellaneous	AmE
+H15	54	2315	128	H	miscellaneous	AmE
+H16	25	2374	60	H	miscellaneous	AmE
+H17	42	2557	96	H	miscellaneous	AmE
+H18	24	2228	80	H	miscellaneous	AmE
+H19	30	2172	81	H	miscellaneous	AmE
+H20	29	2359	60	H	miscellaneous	AmE
+H21	43	2297	77	H	miscellaneous	AmE
+H22	17	2498	25	H	miscellaneous	AmE
+H23	31	2234	45	H	miscellaneous	AmE
+H24	34	2476	69	H	miscellaneous	AmE
+H25	19	2283	56	H	miscellaneous	AmE
+H26	16	2221	69	H	miscellaneous	AmE
+H27	33	2255	76	H	miscellaneous	AmE
+H28	34	2297	81	H	miscellaneous	AmE
+H29	14	2249	56	H	miscellaneous	AmE
+H30	18	2213	87	H	miscellaneous	AmE
+J01	34	2201	62	J	learned	AmE
+J02	53	2171	89	J	learned	AmE
+J03	40	2229	80	J	learned	AmE
+J04	41	2321	96	J	learned	AmE
+J05	43	2255	79	J	learned	AmE
+J06	47	2140	64	J	learned	AmE
+J07	37	2371	89	J	learned	AmE
+J08	50	2202	108	J	learned	AmE
+J09	57	2271	75	J	learned	AmE
+J10	21	2258	91	J	learned	AmE
+J11	25	2263	77	J	learned	AmE
+J12	39	2356	88	J	learned	AmE
+J13	31	2283	65	J	learned	AmE
+J14	47	2280	86	J	learned	AmE
+J15	39	2311	106	J	learned	AmE
+J16	48	2224	72	J	learned	AmE
+J17	33	2292	77	J	learned	AmE
+J18	10	2359	93	J	learned	AmE
+J19	22	2321	90	J	learned	AmE
+J20	23	2378	87	J	learned	AmE
+J21	18	2304	72	J	learned	AmE
+J22	26	2169	69	J	learned	AmE
+J23	14	2317	88	J	learned	AmE
+J24	13	2231	63	J	learned	AmE
+J25	26	2245	75	J	learned	AmE
+J26	59	2282	86	J	learned	AmE
+J27	26	2245	91	J	learned	AmE
+J28	31	2253	74	J	learned	AmE
+J29	39	2235	77	J	learned	AmE
+J30	39	2248	87	J	learned	AmE
+J31	8	2311	46	J	learned	AmE
+J32	57	2158	88	J	learned	AmE
+J33	20	2250	88	J	learned	AmE
+J34	28	2205	102	J	learned	AmE
+J35	20	2356	64	J	learned	AmE
+J36	18	2263	72	J	learned	AmE
+J37	35	2190	79	J	learned	AmE
+J38	36	2181	87	J	learned	AmE
+J39	24	2333	87	J	learned	AmE
+J40	10	2161	57	J	learned	AmE
+J41	23	2252	68	J	learned	AmE
+J42	28	2279	75	J	learned	AmE
+J43	20	2239	84	J	learned	AmE
+J44	27	2248	64	J	learned	AmE
+J45	55	2199	80	J	learned	AmE
+J46	18	2265	80	J	learned	AmE
+J47	20	2210	54	J	learned	AmE
+J48	20	2246	85	J	learned	AmE
+J49	16	2183	72	J	learned	AmE
+J50	29	2318	56	J	learned	AmE
+J51	25	2227	81	J	learned	AmE
+J52	26	2238	87	J	learned	AmE
+J53	20	2309	59	J	learned	AmE
+J54	18	2225	69	J	learned	AmE
+J55	23	2231	80	J	learned	AmE
+J56	27	2276	85	J	learned	AmE
+J57	16	2231	71	J	learned	AmE
+J58	25	2305	74	J	learned	AmE
+J59	20	2240	55	J	learned	AmE
+J60	22	2274	71	J	learned	AmE
+J61	38	2338	84	J	learned	AmE
+J62	16	2207	77	J	learned	AmE
+J63	21	2303	82	J	learned	AmE
+J64	9	2290	90	J	learned	AmE
+J65	8	2357	59	J	learned	AmE
+J66	13	2285	110	J	learned	AmE
+J67	31	2193	63	J	learned	AmE
+J68	11	2408	55	J	learned	AmE
+J69	52	2255	69	J	learned	AmE
+J70	33	2160	98	J	learned	AmE
+J71	38	2297	113	J	learned	AmE
+J72	56	2353	85	J	learned	AmE
+J73	44	2409	94	J	learned	AmE
+J74	25	2282	81	J	learned	AmE
+J75	34	2231	65	J	learned	AmE
+J76	31	2306	71	J	learned	AmE
+J77	49	2457	79	J	learned	AmE
+J78	52	2336	87	J	learned	AmE
+J79	42	2285	77	J	learned	AmE
+J80	55	2256	96	J	learned	AmE
+K01	10	2448	158	K	general fiction	AmE
+K02	6	2326	132	K	general fiction	AmE
+K03	9	2318	132	K	general fiction	AmE
+K04	28	2308	125	K	general fiction	AmE
+K05	12	2353	170	K	general fiction	AmE
+K06	12	2495	188	K	general fiction	AmE
+K07	6	2465	201	K	general fiction	AmE
+K08	16	2363	140	K	general fiction	AmE
+K09	9	2277	75	K	general fiction	AmE
+K10	18	2381	152	K	general fiction	AmE
+K11	8	2382	148	K	general fiction	AmE
+K12	9	2419	124	K	general fiction	AmE
+K13	13	2356	131	K	general fiction	AmE
+K14	16	2338	121	K	general fiction	AmE
+K15	9	2347	125	K	general fiction	AmE
+K16	16	2314	115	K	general fiction	AmE
+K17	9	2385	184	K	general fiction	AmE
+K18	10	2277	150	K	general fiction	AmE
+K19	10	2343	112	K	general fiction	AmE
+K20	22	2380	129	K	general fiction	AmE
+K21	15	2352	205	K	general fiction	AmE
+K22	10	2413	128	K	general fiction	AmE
+K23	8	2329	106	K	general fiction	AmE
+K24	9	2503	213	K	general fiction	AmE
+K25	13	2226	59	K	general fiction	AmE
+K26	9	2411	126	K	general fiction	AmE
+K27	18	2337	85	K	general fiction	AmE
+K28	7	2503	168	K	general fiction	AmE
+K29	15	2250	81	K	general fiction	AmE
+M01	18	2460	152	M	science fiction	AmE
+M02	24	2403	139	M	science fiction	AmE
+M03	22	2358	127	M	science fiction	AmE
+M04	10	2473	189	M	science fiction	AmE
+M05	24	2374	119	M	science fiction	AmE
+M06	6	2365	147	M	science fiction	AmE
+N01	12	2508	169	N	adventure	AmE
+N02	7	2408	160	N	adventure	AmE
+N03	17	2394	212	N	adventure	AmE
+N04	10	2376	166	N	adventure	AmE
+N05	6	2474	188	N	adventure	AmE
+N06	12	2270	120	N	adventure	AmE
+N07	13	2452	198	N	adventure	AmE
+N08	16	2269	105	N	adventure	AmE
+N09	12	2495	167	N	adventure	AmE
+N10	8	2495	192	N	adventure	AmE
+N11	25	2352	121	N	adventure	AmE
+N12	9	2492	179	N	adventure	AmE
+N13	3	2445	119	N	adventure	AmE
+N14	10	2392	164	N	adventure	AmE
+N15	12	2349	176	N	adventure	AmE
+N16	4	2406	120	N	adventure	AmE
+N17	16	2560	179	N	adventure	AmE
+N18	10	2260	113	N	adventure	AmE
+N19	11	2452	134	N	adventure	AmE
+N20	9	2366	153	N	adventure	AmE
+N21	13	2334	128	N	adventure	AmE
+N22	5	2326	140	N	adventure	AmE
+N23	4	2363	127	N	adventure	AmE
+N24	8	2526	170	N	adventure	AmE
+N25	6	2416	182	N	adventure	AmE
+N26	17	2389	128	N	adventure	AmE
+N27	3	2475	121	N	adventure	AmE
+N28	7	2293	119	N	adventure	AmE
+N29	5	2572	188	N	adventure	AmE
+P01	9	2330	125	P	romance	AmE
+P02	19	2355	85	P	romance	AmE
+P03	7	2450	135	P	romance	AmE
+P04	7	2576	127	P	romance	AmE
+P05	20	2326	119	P	romance	AmE
+P06	8	2569	171	P	romance	AmE
+P07	28	2384	141	P	romance	AmE
+P08	9	2306	171	P	romance	AmE
+P09	3	2201	68	P	romance	AmE
+P10	6	2400	112	P	romance	AmE
+P11	7	2356	114	P	romance	AmE
+P12	4	2472	168	P	romance	AmE
+P13	2	2327	105	P	romance	AmE
+P14	11	2536	214	P	romance	AmE
+P15	8	2517	151	P	romance	AmE
+P16	8	2546	193	P	romance	AmE
+P17	9	2319	108	P	romance	AmE
+P18	13	2466	169	P	romance	AmE
+P19	10	2491	164	P	romance	AmE
+P20	5	2435	175	P	romance	AmE
+P21	12	2523	115	P	romance	AmE
+P22	8	2481	173	P	romance	AmE
+P23	8	2564	164	P	romance	AmE
+P24	9	2564	225	P	romance	AmE
+P25	15	2328	96	P	romance	AmE
+P26	9	2361	104	P	romance	AmE
+P27	2	2476	203	P	romance	AmE
+P28	17	2343	149	P	romance	AmE
+P29	17	2474	143	P	romance	AmE
 A01	13	2249	106	A	press reportage	BrE
 A02	37	2289	92	A	press reportage	BrE
 A03	19	2225	65	A	press reportage	BrE
