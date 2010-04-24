@@ -9,7 +9,7 @@
   average word length for simulated articles from the English Wikipedia.
   Simulation paramters are based on data from the Wackypedia corpus.
 
-  The generated data set is usually named \code{FakeCensus} and is used
+  The generated data set is usually named \code{WackypediaStats} and is used
   for various examples and illustrations in the SIGIL course.
 
 }
