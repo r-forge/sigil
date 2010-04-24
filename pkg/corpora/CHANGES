@@ -1,5 +1,10 @@
-RECENT CHANGES to the 'zipfR' package:
+Version 0.4-1:
 
-  - the corpora package is being prepared for a re-launch on R-Forge
-  - first version 0.4-0 will be released on R-Forge with minor changes
+  - large simulated census data set for examples and illustrations in the SIGIL course
+
+
+Version 0.4-0:
+
+  - re-launch of the corpora package on R-Forge
+  - first version 0.4-0 has only minor changes over previous release 0.3-2
 
