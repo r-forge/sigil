@@ -1,6 +1,8 @@
 Version 0.4-1:
 
   - large simulated census data set for examples and illustrations in the SIGIL course
+  - simulated type-token statistics from English Wikipedia (based on Wackypedia corpus)
+  - convenience function for random samples of rows from a data frame (sample.df)
 
 
 Version 0.4-0:
