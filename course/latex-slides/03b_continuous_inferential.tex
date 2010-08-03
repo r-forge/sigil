@@ -1,6 +1,6 @@
 %% \documentclass[handout,t]{beamer} % HANDOUT
 %% \documentclass[handout,notes=show,t]{beamer} % NOTES
-\documentclass[t]{beamer} % SLIDES
+\documentclass[t,notes=show]{beamer} % SLIDES
 
 \usetheme{SIGIL}
 \usepackage{beamer-tools-sigil}
@@ -57,9 +57,9 @@
     \item correct interpretation of results often difficult
     \item[]
     \end{itemize}
-  \item In this session, we assume a Gaussian population distribution
+  \item In this session, we assume a \h{Gaussian population} distribution%
     \begin{itemize}
-    \item sometimes a scale transformation is required (e.g.\ lognormal)
+    \item sometimes a scale transformation is necessary (e.g.\ lognormal)
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -171,7 +171,7 @@
     \[
     \bar{X} = \frac{1}{n} \bigl( X_1 + \dots + X_n \bigr)
     \]
-  \item $\bar{X}$ is a sensible test statistic for $\mu$:
+  \item $\bar{X}$ is a sensible test statistic for $\mu$ because it is \h{unbiased}:
     \[
     \Exp{\bar{X}} = \Expscale{ \frac{1}{n} \sum_{i=1}^n X_i }
     = \frac{1}{n} \sum_{i=1}^n \Exp{X_i} 
@@ -185,7 +185,22 @@
       r\cdot X &\sim N(r\mu_1, r^2 \sigma^2_1) \quad \text{ for } r\in \setR
     \end{align*}
   \end{itemize}
-
+  \addnote{The first question is whether it makes sense to base our test for
+    the mean on the sample average, i.e.\ whether $\bar{X}$ is a sensible test
+    statistic for $\mu$.}%
+  \addnote{To answer this question, we need to work out (properties of) the
+    sampling distribution of $\bar{X}$ across different random samples of the
+    same size $n$.}%
+  \addnote{A minimal requirement is \emph{unbiasedness}: the test statistic
+    should not systematically indicate a wrong value for $\mu$ (possibly after
+    suitable rescaling: $\bar{X} - \mu$ would be just as sensible as a test
+    statistic).}%
+  \addnote{Unbiasedness is not sufficient to ensure that a test based on
+    $\bar{X}$ is reliable.  We also need to know the variability of $\bar{X}$,
+    or preferably its complete sampling distribution.}%
+  \addnote{An important advantage of Gaussian random variables is that
+    $\bar{X}$ also follows a Gaussian distribution.  There are only very few
+    other distributions with this property (e.g.\ Cauchy).}%
 \end{frame}
 
 \begin{frame}
@@ -201,9 +216,10 @@
       \sim N(\mu, \frac{\sigma^2}{n})
     \end{gather*}
   \item $\bar{X}$ has Gaussian distribution with same $\mu$ but smaller s.d.\
-    than the population: $\sigma_{\bar{X}} = \sigma / \sqrt{n}$
+    than the original r.v.\ $X$: $\sigma_{\bar{X}} = \sigma / \sqrt{n}$
     \begin{itemize}
     \item[\hand] explains why normality assumptions are so convenient
+    \item[\hand] larger samples allow more reliable hypothesis tests about $\mu$
     \item[]
     \end{itemize}
     \pause
@@ -237,15 +253,26 @@
     \pause\ungap
   \item Two problems of this approach:
     \begin{enumerate}
-    \item still need hypothesis about $\sigma$ in order to test $\mu=\mu_0$
-    \item $H_0$ could be rejected because of $\sigma \gg \sigma_0$ even if
+    \item need to make hypothesis about $\sigma$ in order to test $\mu=\mu_0$
+    \item $H_0$ might be rejected because of $\sigma \gg \sigma_0$ even if
       $\mu=\mu_0$ is true
     \end{enumerate}
   \end{itemize}
-  \addnote{If we overestimate $\sigma\ll \sigma_0$, the $z$ test might fail to
-    reject $\mu=\mu_0$ even though it clearly isn't true.}% 
+  \addnote{Recall that sampling distribution of $\bar{X}$ describes how the
+    sample average varies across different random samples of the same size $n$
+    from the same population satisfying $H_0$ (think of many sociologists
+    taking surveys of 100 random people each).}%
+  \addnote{We reject $H_0$ if the observed value of $\bar{X}$ is sufficiently
+    improbable according to the sampling distribution, i.e.\ unlikely to
+    happen by chance if $H_0$ were true.}%
+  \addnote{Note that for the binomial test in Unit~2, the sampling
+    distribution of the passive count $X$ was discrete.  Now the test
+    statistic $\bar{X}$ has a continuous distribution described by a density
+    function.}%
   \addnote{R function \texttt{qnorm} and other functions for working with
     probability distributions will be explained in a moment.}%
+  \addnote{If we overestimate $\sigma\ll \sigma_0$, the $z$ test might fail to
+    reject $\mu=\mu_0$ even though it clearly isn't true.}%
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -260,8 +287,8 @@
     \[
     V = (X_1 - \mu)^2 + \dots + (X_n - \mu)^2
     \]
-  \item Squared error $(X - \mu)^2$ is $\sigma^2$ on average \so expect
-    $V\approx n \sigma^2$
+  \item Squared error $(X - \mu)^2$ is $\sigma^2$ on average \so
+    $\Exp{V} = n \sigma^2$
     \begin{itemize}
     \item reject $\sigma = \sigma_0$ if $V\gg n \sigma^2_0$ (variance larger than expected)
     \item reject $\sigma = \sigma_0$ if $V\ll n \sigma^2_0$ (variance smaller than expected)

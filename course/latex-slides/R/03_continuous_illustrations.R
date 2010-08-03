@@ -167,8 +167,34 @@ text(c(mu+sigma/2, mu-sigma/2), y1, pos=3, labels=expression(2*sigma), cex=1.4, 
 dev.save("gaussian_parameters")
 dev.off()
 
+##
+## Assessing normality
+##
 
-normality.plot(FakeCensus$weight, density=TRUE, ylim=c(0,.03), xlim=c(0,150))
+set.seed(10)
+x <- sample(FakeCensus$weight, 200) # 200 items from "complicated" distribution
+y <- sample(FakeCensus$height, 200) # 200 items from bulgy distribution (but reasonably close to normality)
+
+normality.plot(y, ylim=c(0,.03), xlim=c(100,220), breaks=seq(100,220,10), show.mu=TRUE, show.normal=FALSE)
+dev.save("normality_bulgy_1")
+normality.plot(y, ylim=c(0,.03), xlim=c(100,220), breaks=seq(100,220,10), show.mu=TRUE, show.normal=TRUE)
+dev.save("normality_bulgy_2")
+normality.plot(x, ylim=c(0,.03), xlim=c(0,150), breaks=seq(0,150,10), show.mu=TRUE, show.normal=TRUE)
+dev.save("normality_complicated")
+
+qqnorm(y, pch=20, main="")
+qqline(y, col="red", lwd=3)
+dev.save("qqnorm_bulgy")
+qqnorm(x, pch=20, main="")
+qqline(x, col="red", lwd=3)
+dev.save("qqnorm_complicated")
+
+
+
+##
+## -- draft material --
+##
+
 
 mean.sd.plot(FakeCensus$height, median=TRUE) # similar to Gaussian, but more bulgy: well-described
 mean.sd.plot(FakeCensus$weight, median=TRUE) # skewed

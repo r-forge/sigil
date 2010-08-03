@@ -49,8 +49,21 @@ lines(density(log10(x)), lwd=4, col="red")
 
 hist(log10(x), col="lightblue", breaks=200, freq=FALSE) # type counts are really discrete
 
-# one-sample hypothesis tests
+# Now take a small random sample (i.e. a survey)
 Survey <- sample.df(Census, 100, sort=TRUE)
+
+# Assessing normality: histogram & density function
+x <- Survey$weight
+
+hist(x, freq=FALSE) # code from slides
+lines(density(x))
+xG <- seq(min(x),max(x),len=100)
+yG <- dnorm(xG,mean(x),sd(x))
+lines(xG,yG,col="red")
+
+qqnorm(x)
+qqline(x,col="red")
+
 
 hist(Survey$height, breaks=20, freq=FALSE) # is normality assumption plausible?
 lines(density(Survey$height), lwd=2, col="red")
