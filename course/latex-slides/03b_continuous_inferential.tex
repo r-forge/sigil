@@ -1,0 +1,586 @@
+%% \documentclass[handout,t]{beamer} % HANDOUT
+%% \documentclass[handout,notes=show,t]{beamer} % NOTES
+\documentclass[t]{beamer} % SLIDES
+
+\usetheme{SIGIL}
+\usepackage{beamer-tools-sigil}
+
+\input{lib/math}  % basic mathematical notation
+\input{lib/stat}  % notation for probability theory and statistics
+\input{lib/vector}% convenience macros for vectors and matrices
+
+\input{local/config} % local adjustments to configuration and macros
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Titlepage
+
+\title[3b.\ Continuous Data: Inference]{Unit 3: Inferential Statistics for Continuous Data}
+\subtitle{Statistics for Linguists with R -- A SIGIL Course}
+\sigilauthors
+\date[sigil.r-forge.r-project.org]{%
+  \light{\tiny \sigilcopyright}}
+
+\begin{document}
+
+\frame{\titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Outline}
+\frame{ 
+  \frametitle{Outline}
+  \tableofcontents
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Inferential statistics}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Preliminaries}
+
+\begin{frame}
+  \frametitle{Inferential statistics}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item Goal: infer (characteristics of) population distribution from small
+    random sample, or test hypotheses about population
+    \begin{itemize}
+    \item in particular, we will estimate/test characteristics $\mu$ and $\sigma$\\
+      \hand\ only makes sense if we have a \h{parametric} model
+    \end{itemize}
+  \item Nonparametric tests need fewer assumptions, but \ldots
+    \begin{itemize}
+    \item cannot test hypotheses about $\mu$ and $\sigma$\\
+      (instead: median, IQR = inter-quartile range, etc.)
+    \item more complicated and computationally expensive procedures
+    \item correct interpretation of results often difficult
+    \item[]
+    \end{itemize}
+  \item In this session, we assume a Gaussian population distribution
+    \begin{itemize}
+    \item sometimes a scale transformation is required (e.g.\ lognormal)
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{A note on extremeness}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item Rationale similar to binomial test for frequency data:\\
+    measure observed \h{statistic} in sample, which is compared against
+    \h{expected} value \so if difference is large, reject $H_0$
+  \item Crucial question: what is ``large enough''?
+    \begin{itemize}
+    \item[\hand] reject if difference is unlikely to arise by chance
+    \end{itemize}
+    \pause
+  \item Measuring the extremeness of a single item sampled from $\Omega$
+    \begin{itemize}
+    \item If someone is 195~cm tall, would we consider him unusual?%
+      \pause
+    \item no absolute scale \so ``ordinary'' defined by central range,\\
+      i.e.\ how tall the majority of people we meet are (say, 95\%)
+    \item for Gaussian distribution: range from $\mu - 1.96\sigma$ to $\mu + 1.96\sigma$
+    \end{itemize}
+    \pause
+  \item This suggests the \h{z-score} measure of extremeness:
+    \[
+    Z(\omega) \coloneq \frac{X(\omega) - \mu}{\sigma}
+    \]
+    with central range characterised by $\abs{Z} \leq 1.96$
+  \end{itemize}
+  \addnote{NB: we can only calculate such a z-score if we know the true mean
+    $\mu$ and s.d.\ $\sigma$ of the Gaussian distribution!}%
+\end{frame}
+
+\begin{frame}
+  \frametitle{Notation for random samples}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item Random sample of $n \ll m$ items
+    \begin{itemize}
+    \item e.g.\ participants of survey, Wikipedia sample, \ldots
+    \item recall importance of completely random selection
+    \end{itemize}
+  \item Sample described by observed values of r.v.\ $X, Y, Z, \ldots$:
+    \[
+    x_1, \ldots, x_n; \quad y_1, \ldots, y_n; \quad z_1, \ldots, z_n
+    \]
+    (don't know which $\omega\in\Omega$ were selected \so $x_i$ instead of
+    $X(\omega)$)%
+    \pause
+  \item Mathematically, $x_i, y_i, z_i$ are realisations of random variables
+    \[
+    X_1, \ldots, X_n; \quad Y_1, \ldots, Y_n; \quad Z_1, \ldots, Z_n
+    \]
+  \item $X_1,\ldots, X_n$ are independent from each other and each one has the
+    same distribution $X_i \sim X$ \so \h{i.i.d.} random variables
+    \begin{itemize}
+    \item[\hand] this is the formal definition of a random sample
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{One-sample tests}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Testing the mean}
+
+\begin{frame}
+  \frametitle{A simple test for the mean}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item Consider simplest possible $H_0$: a \h{point hypothesis}
+    \[
+    H_0:\;\; \mu = \mu_0,\; \sigma = \sigma_0
+    \]
+    \ungap[1]
+    \begin{itemize}
+    \item[\hand] together with normality assumption, population distribution
+      is completely determined
+    \end{itemize}
+  \item How would you test whether $\mu = \mu_0$ is correct?%
+    \pause
+  \item An intuitive test statistic is the \h{sample mean}
+    \[
+    \bar{x} = \frac{1}{n} \sum_{i=1}^n x_i
+    \qquad \text{with} \qquad
+    \bar{x}\approx \mu_0 \text{ under } H_0
+    \]
+  \item Reject $H_0$ if difference $\bar{x} - \mu_0$ is sufficiently large
+    \begin{itemize}
+    \item[\hand] need to work out sampling distribution of $\bar{X}$
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{The sampling distribution of $\bar{X}$}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item The sample mean is also a random variable:
+    \[
+    \bar{X} = \frac{1}{n} \bigl( X_1 + \dots + X_n \bigr)
+    \]
+  \item $\bar{X}$ is a sensible test statistic for $\mu$:
+    \[
+    \Exp{\bar{X}} = \Expscale{ \frac{1}{n} \sum_{i=1}^n X_i }
+    = \frac{1}{n} \sum_{i=1}^n \Exp{X_i} 
+    = \frac{1}{n} \sum_{i=1}^n \mu = \mu
+    \]
+    \pause
+  \item An important property of the Gaussian distribution: if $X \sim N(\mu,
+    \sigma^2_1)$ and $Y \sim N(\mu, \sigma^2_2)$ are independent, then
+    \begin{align*}
+      X + Y &\sim N(\mu_1 + \mu_2, \sigma^2_1 + \sigma^2_2)\\
+      r\cdot X &\sim N(r\mu_1, r^2 \sigma^2_1) \quad \text{ for } r\in \setR
+    \end{align*}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{The sampling distribution of $\bar{X}$}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item Since $X_1, \ldots, X_n$ are i.i.d.\ with $X_i\sim N(\mu, \sigma^2)$,
+    we have
+    \begin{gather*}
+      X_1 + \dots + X_n \sim N(n \mu, n \sigma^2) \\
+      \bar{X} = \frac{1}{n} \bigl( X_1 + \dots + X_n \bigr) 
+      \sim N(\mu, \frac{\sigma^2}{n})
+    \end{gather*}
+  \item $\bar{X}$ has Gaussian distribution with same $\mu$ but smaller s.d.\
+    than the population: $\sigma_{\bar{X}} = \sigma / \sqrt{n}$
+    \begin{itemize}
+    \item[\hand] explains why normality assumptions are so convenient
+    \item[]
+    \end{itemize}
+    \pause
+  \item If the sample size $n$ is large enough, $\sigma_{\bar{X}} = \sigma /
+    \sqrt{n} \to 0$\\ and the sample mean $\bar{x}$ becomes an accurate estimate
+    of the true population value $\mu$ (\h{law of large numbers})
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The $z$ test}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item Now we can quantify the extremeness of the observed value $\bar{x}$,
+    given the null hypothesis $H_0: \mu=\mu_0, \sigma=\sigma_0$
+    \[
+    z = \frac{\bar{x} - \mu_0}{\sigma_{\bar{X}}}
+     = \frac{\bar{x} - \mu_0}{\sigma_0 / \sqrt{n}}
+    \]
+  \item Corresponding r.v.\ $Z$ has a standard normal distribution if $H_0$ is
+    correct: $Z \sim N(0,1)$%
+    \pause
+  \item We can reject $H_0$ at significance level $\alpha$ if
+    \[
+    \begin{array}{c ccc @{\hspace{1cm}} c}
+      \alpha = & .05 & .01 & .001 & \\
+      \abs{z} > & 1.960 & 2.576 & 3.291 & \text{\secondary{\texttt{-qnorm($\alpha$/2)}}}
+    \end{array}
+    \]
+    \pause\ungap
+  \item Two problems of this approach:
+    \begin{enumerate}
+    \item still need hypothesis about $\sigma$ in order to test $\mu=\mu_0$
+    \item $H_0$ could be rejected because of $\sigma \gg \sigma_0$ even if
+      $\mu=\mu_0$ is true
+    \end{enumerate}
+  \end{itemize}
+  \addnote{If we overestimate $\sigma\ll \sigma_0$, the $z$ test might fail to
+    reject $\mu=\mu_0$ even though it clearly isn't true.}% 
+  \addnote{R function \texttt{qnorm} and other functions for working with
+    probability distributions will be explained in a moment.}%
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Testing the variance}
+
+\begin{frame}
+  \frametitle{A test for the variance}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item An intuitive test statistic for $\sigma^2$ is the sum of squares
+    \[
+    V = (X_1 - \mu)^2 + \dots + (X_n - \mu)^2
+    \]
+  \item Squared error $(X - \mu)^2$ is $\sigma^2$ on average \so expect
+    $V\approx n \sigma^2$
+    \begin{itemize}
+    \item reject $\sigma = \sigma_0$ if $V\gg n \sigma^2_0$ (variance larger than expected)
+    \item reject $\sigma = \sigma_0$ if $V\ll n \sigma^2_0$ (variance smaller than expected)
+    \item[\hand] sampling distribution of $V$ shows if difference is large
+      enough
+    \end{itemize}
+    \pause
+  \item Rewrite $V$ in the following way:
+    \begin{align*}
+      V &= \sigma^2 \left[
+        \left( \frac{X_1 - \mu}{\sigma} \right)^2 + \dots 
+        + \left( \frac{X_n - \mu}{\sigma} \right)^2
+      \right] \\
+      &= \sigma^2 (Z_1^2 + \dots + Z_n^2)
+    \end{align*}
+    with $Z_i\sim N(0,1)$ i.i.d.\ standard normal variables
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{A test for the variance}
+  % \framesubtitle{}
+  
+  \begin{itemize}
+  \item Statisticians have worked out the distribution of $\sum_{i=1}^n Z_i^2$
+    for i.i.d.\ $Z_i\sim N(0,1)$, known as the \h{chi-squared distribution}
+    \[
+    \sum_{i=1}^n Z_i^2 \sim \chi^2_n
+    \]
+    with $n$ \hh{degrees of freedom} ($\text{df} = n$)
+  \item The $\chi^2_n$ distribution has expectation $\bigExp{\sum_i Z_i^2} =
+    n$ and variance $\bigVar{\sum_i Z_i^2} = 2n$ \so confirms $\Exp{V} = n \sigma^2$%
+    \pause
+  \item Appropriate rejection thresholds for $V$ can be obtained with R
+    \begin{itemize}
+    \item $\chi^2_n$ distribution is not symmetric, so one-sided tail
+      probabilities are used (with $\alpha' = \alpha/2$ for two-sided test)
+    \end{itemize}
+    \pause
+  \item Again, there are two problems:
+    \begin{enumerate}
+    \item need hypothesis about $\mu$ in order to test $\sigma = \sigma_0$
+    \item $H_0$ easily rejected for $\mu \neq \mu_0$, even though
+      $\sigma=\sigma_0$ may be true
+    \end{enumerate}
+  \end{itemize}
+  \addnote{This is a good moment for a hands-on session on working with
+    distributions in R, illustrated on Gaussian and $\chi^2$.}%
+  \addnote{Topics: density, plot density function, tail probabilities,
+    quantiles, random numbers.}%
+  \addnote{TODO -- add slide with R commands}%
+  \addnote{This variance test is even more sensitive to a violation of the
+    assumption $\mu = \mu_0$ than the $z$~test is against $\sigma =
+    \sigma_0$.}%
+  \addnote{We need to estimate true $\mu$ from the sample data!}%
+\end{frame}
+
+\begin{frame}
+  \frametitle{The sample variance}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item Idea: replace true $\mu$ by sample value $\bar{X}$ (which is a r.v.!)
+    \[
+    V' = (X_1 - \bar{X})^2 + \dots + (X_n - \bar{X})^2 
+    \]
+    \ungap[1.5]
+    \begin{itemize}
+    \item[\hand] terms are no longer i.i.d.\ because $\bar{X}$ depends on all
+      $X_i$
+    \end{itemize}
+    \pause
+  \item We can work out the distribution of $V'$ for $n=2$:
+    \begin{align*}
+      V' &= (X_1 - \bar{X})^2 + (X_2 - \bar{X})^2 \\
+      &= (X_1 - \tfrac{X_1 + X_2}{2})^2 + (X_2 - \tfrac{X_1 + X_2}{2})^2 \\
+      &= (\tfrac{X_1 - X_2}{2})^2 + (\tfrac{X_2 - X_1}{2})^2
+      = \frac{1}{2} (X_1 - X_2)^2
+    \end{align*}
+    where $X_1 - X_2 \sim N(0, 2\sigma^2)$ for i.i.d.\ $X_1, X_2\sim N(\mu,
+    \sigma^2)$
+    \begin{itemize}
+    \item[\hand] one can also show that $X_1 - X_2$ and $\bar{X}$ are independent
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The sample variance}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item We now have
+    \[
+    V' = \sigma^2 \left( \frac{X_1 - X_2}{\sigma \sqrt{2}} \right)^2
+    = \sigma^2 Z^2
+    \]
+    with $Z^2 \sim \chi^2_1$ because of $X_1 - X_2 \sim N(0, 2\sigma^2)$
+  \item For $n > 2$ it can be shown that
+    \[
+    V' = \sum_{i=1}^n (X_i - \bar{X})^2 = \sigma^2 \sum_{j=1}^{n-1} Z_j^2
+    \]
+    with $\sum_j Z_j^2 \sim \chi^2_{n-1}$ independent from $\bar{X}$
+    \begin{itemize}
+    \item proof based on multivariate Gaussian and vector algebra
+    \item notice that we ``lose'' one degree of freedom because one
+      parameter ($\mu \approx \bar{x}$) has been estimated from the sample
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Sample variance and the chi-squared test}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item This motivates the following definition of \h{sample variance} $S^2$
+    \[
+    S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2
+    \]
+    with sampling distribution $(n-1) S^2 / \sigma^2 \sim \chi^2_{n-1}$
+  \item $S^2$ is an unbiased estimator of variance: $\Exp{S^2} = \sigma^2$
+  \item We can use $S^2$ to test $H_0: \sigma = \sigma_0$ without making any
+    assumptions about the true mean $\mu$ \so \h{chi-squared test}
+    \begin{itemize}
+    \item[]
+    \end{itemize}
+  \item Remarks
+    \begin{itemize}
+    \item compare sample variance ($\frac{1}{n-1}$) with population variance ($\frac{1}{m}$)
+    \item $\chi^2$ distribution doesn't have parameters $\sigma^2$ etc., so we
+      need to specify the distribution of $S^2$ in a roundabout way
+    \item independence of $S^2$ and $\bar{X}$ will play an important role later
+    \end{itemize}
+  \end{itemize}
+  \addnote{TODO -- carry out variance test in R; by hand and with var.test()}%
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Student's $t$ test}
+
+\begin{frame}
+  \frametitle{Student's $t$ test for the mean}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item Now we have the ingredients for a test of $H_0: \mu = \mu_0$ that does
+    not require knowledge of the true variance $\sigma^2$
+  \item In the z-score for $\bar{X}$
+    \[
+    Z = \frac{\bar{X} - \mu_0}{\sigma / \sqrt{n}}
+    \]
+    replace the unknown true s.d.\ $\sigma$ by the sample estimate
+    $\hat{\sigma} = \sqrt{S^2}$, resulting in a so-called \h{t-score}:
+    \[    
+    T = \frac{\bar{X} - \mu_0}{\sqrt{S^2 / n}}
+    \]
+  \item William S.\ Gosset worked out the precise sampling distriution of
+    $T$ and published it under the pseudonym ``Student''
+  \end{itemize}
+\end{frame}  
+
+\begin{frame}
+  \frametitle{Student's $t$ test for the mean}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item Because $\bar{X}$ and $S^2$ are independent, we find that
+    \[
+    T \sim t_{n-1} \quad\text{under}\quad H_0: \mu = \mu_0
+    \]
+    Student's \h{$t$ distribution} with $\text{df} = n-1$ degrees of freedom
+  \item In order to carry out a one-sample $t$~test, calculate the statistic
+    \[
+    t = \frac{\bar{x} - \mu_0}{\sqrt{x^2 / n}}    
+    \]
+    and reject $H_0: \mu=\mu_0$ if $\abs{t} > C$
+  \item Rejection threshold $C$ depends on $\text{df} = n-1$ and desired
+    significance level $\alpha$ (in R: \secondary{\texttt{-qt($\alpha$/2, $n-1$)}})
+    \begin{itemize}
+    \item[\hand] close to z-score thresholds for $n > 30$
+    \end{itemize}
+  \end{itemize}
+  \addnote{TODO -- mathematical explanation of the ``miracle'' that cancels out $\sigma^2$}%
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Confidence intervals}
+
+\begin{frame}
+  \frametitle{Confidence intervals}
+  % \framesubtitle{}
+  
+  \begin{itemize}
+  \item If we do not have a specific $H_0$ to start from, estimate
+    \h{confidence interval} for $\mu$ or $\sigma^2$ by inverting hypothesis
+    tests
+    \begin{itemize}
+    \item in principle same procedure as for binomial confidence intervals
+    \item implemented in R for $t$~test and chi-squared test
+    \end{itemize}
+  \item For $t$ test, confidence interval has a particularly simple form, so
+    we can carry out the procedure by hand
+    \begin{itemize}
+    \item we'll write $\hat{\mu} = \bar{x}$ here to emphasise its use as
+      estimator
+    \end{itemize}
+    \pause
+  \item Given $H_0: \mu = a$ for some $a\in\setR$, we reject $H_0$ if
+    \[
+    \abs{t} = \absscale{\frac{\hat{\mu} - a}{\sqrt{s^2 / n}}} > C
+    \]
+    with $C\approx 2$ for $\alpha = .05$ and $n > 30$%
+    \pause
+  \item This leads to $\hat{\mu} - C\cdot s / \sqrt{n} \leq \mu \leq
+    \hat{\mu} + C\cdot s / \sqrt{n}$
+    \begin{itemize}
+    \item[\hand] origin of the ``$\pm 2$ standard deviations'' rule
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+% \begin{frame}
+%   \frametitle{}
+%   % \framesubtitle{}
+
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{}
+%   %% \framesubtitle{}
+
+%   % \ungap[1]
+%   \begin{alltt}
+%   \end{alltt}
+% \end{frame}
+
+\begin{frame}[c]
+  %\frametitle{}
+  % \framesubtitle{}
+
+  \begin{center}
+    \h{\Large Switch to hands-on mode \ldots}
+  \end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Multiple samples}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Comparing the means of two samples}
+
+\begin{frame}
+  \frametitle{}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item 
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{}
+  %% \framesubtitle{}
+
+  % \ungap[1]
+  \begin{alltt}
+  \end{alltt}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{}
+
+\begin{frame}
+  \frametitle{}
+  % \framesubtitle{}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{}
+  %% \framesubtitle{}
+
+  % \ungap[1]
+  \begin{alltt}
+  \end{alltt}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{}
+
+\begin{frame}
+  \frametitle{}
+  % \framesubtitle{}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{}
+  %% \framesubtitle{}
+
+  % \ungap[1]
+  \begin{alltt}
+  \end{alltt}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% References (if any)
+
+%% \frame[allowframebreaks]{
+%%   \frametitle{References}
+%%   \bibliographystyle{natbib-stefan}
+%%   \begin{scriptsize}
+%%     \bibliography{sigil}
+%%   \end{scriptsize}
+%% }
+
+\end{document}
