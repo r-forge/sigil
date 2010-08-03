@@ -690,8 +690,6 @@
   \addnote{For each distribution type, ask participants how well the
     population is described by $\mu$ and $\sigma$.}%
   \addnote{Explain concepts of median and mode on these examples.}%
-  \addnote{Optional task: look at example data and compute histograms.  Which
-    distribution types do you find?}%
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -758,6 +756,109 @@
     if distribution is Gaussian or near-Gaussian
     \begin{itemize}
     \item completely determined by these parameters
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Assessing normality}
+  
+  \begin{itemize}
+  \item Many hypothesis tests and other statistical techniques assume that
+    random variables follow a Gaussian distribution 
+    \begin{itemize}
+    \item If this \h{normality assumption} is not justified, a significant
+      test result may well be entirely spurious.
+    \item[]
+    \end{itemize}
+  \item It is therefore important to verify that sample data come from such a
+    Gaussian or near-Gaussian distribution
+    \begin{itemize}
+    \item[]
+    \end{itemize}
+    \pause
+  \item Method 1: Comparison of histograms and density functions
+    \begin{itemize}
+    \item[]
+    \end{itemize}
+    \pause
+  \item Method 2: Quantile-quantile plots
+  \end{itemize}
+\end{frame}
+
+\begin{frame}<beamer:1-3| handout:1-2>
+  \frametitle{Assessing normality: Histogram \& density function}
+  
+  \begin{columns}[c]
+    \begin{column}{4cm}
+      Plot histogram and estimated density:\\[0.5em]
+      \begin{footnotesize}
+        \secondary{\texttt{> hist(x,freq=FALSE)}}\\
+        \secondary{\texttt{> lines(density(x))}}\\[1.5em]
+      \end{footnotesize}
+      \visible<2->{
+        Compare best-matching Gaussian distribution:\\[0.5em]
+        \begin{footnotesize}
+          \secondary{\texttt{> xG <- seq(min(x),max(x),len=100)}}\\
+          \secondary{\texttt{> yG <- dnorm(xG,mean(x),sd(x))}}\\
+          \secondary{\texttt{> lines(xG,yG,col="red")}}\\[1.5em]
+        \end{footnotesize}
+      }
+      \visible<beamer:3-| handout:2->{
+        Substantial deviation \so\ not normal (problematic)
+      }
+   \end{column}
+    \begin{column}{6cm}
+      \only<beamer:1| handout:0>{\includegraphics[width=6cm]{img/normality_bulgy_1}}%
+      \only<beamer:2| handout:1>{\includegraphics[width=6cm]{img/normality_bulgy_2}}%
+      \only<beamer:3| handout:2>{\includegraphics[width=6cm]{img/normality_complicated}}%
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<beamer:1-2| handout:1-2>
+  \frametitle{Assessing normality: Quantile-quantile plots}
+  
+  \begin{columns}[c]
+    \begin{column}{4cm}
+      Quantile-quantile plots are better suited for small samples:\\[0.5em]
+      \begin{small}
+        \secondary{\texttt{> qqnorm(x)}}\\
+        \secondary{\texttt{> qqline(x,col="red")}}\\[1.5em]
+      \end{small}
+      If distribution is near-Gaussian, points should follow red line.\\[1.5em]
+      \visible<2->{
+        One-sided deviation\\ \so\ skewed distribution
+      }
+   \end{column}
+    \begin{column}{6cm}
+      \only<beamer:1| handout:1>{\includegraphics[width=6cm]{img/qqnorm_bulgy}}%
+      \only<beamer:2| handout:2>{\includegraphics[width=6cm]{img/qqnorm_complicated}}%
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Playtime!}
+  \begin{itemize}
+  \item Take random samples of $n$ items each from the census and wikipedia
+    data sets (e.g.\ $n=100$)
+    \begin{center}
+      \secondary{\texttt{Survey <- sample.df(FakeCensus, \emph{\primary{n}}, sort=TRUE)}}
+    \end{center}
+  \item Plot histograms and estimated density for all variables
+  \item Assess normality of the underlying distributions
+    \begin{itemize}
+    \item by comparison with Gaussian density function
+    \item by inspection of quantile-quantile plots
+    \item[\hand] Can you make them look like the figures in the slides?
+    \end{itemize}
+  \item Plot histograms for all variables in the full data sets\\
+    (and estimated density functions if you're patient enough)
+    \begin{itemize}
+    \item What kinds of distributions do you find?
+    \item Which variables can meaningfully be described by\\
+      mean $\mu$ and standard deviation $\sigma$?
     \end{itemize}
   \end{itemize}
 \end{frame}
