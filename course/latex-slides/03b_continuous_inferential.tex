@@ -1,6 +1,6 @@
 %% \documentclass[handout,t]{beamer} % HANDOUT
-%% \documentclass[handout,notes=show,t]{beamer} % NOTES
-\documentclass[t,notes=show]{beamer} % SLIDES
+\documentclass[handout,notes=show,t]{beamer} % NOTES
+%% \documentclass[t]{beamer} % SLIDES
 
 \usetheme{SIGIL}
 \usepackage{beamer-tools-sigil}
@@ -330,21 +330,72 @@
     \pause
   \item Again, there are two problems:
     \begin{enumerate}
-    \item need hypothesis about $\mu$ in order to test $\sigma = \sigma_0$
+    \item need to make hypothesis about $\mu$ in order to test $\sigma = \sigma_0$
     \item $H_0$ easily rejected for $\mu \neq \mu_0$, even though
       $\sigma=\sigma_0$ may be true
     \end{enumerate}
   \end{itemize}
-  \addnote{This is a good moment for a hands-on session on working with
-    distributions in R, illustrated on Gaussian and $\chi^2$.}%
-  \addnote{Topics: density, plot density function, tail probabilities,
-    quantiles, random numbers.}%
-  \addnote{TODO -- add slide with R commands}%
   \addnote{This variance test is even more sensitive to a violation of the
     assumption $\mu = \mu_0$ than the $z$~test is against $\sigma =
     \sigma_0$.}%
   \addnote{We need to estimate true $\mu$ from the sample data!}%
+  \addnote{But first, let us take a short intermission: This is a good moment
+    for a hands-on session on working with distributions in R.}%
 \end{frame}
+
+\begin{frame}
+  \frametitle{Intermission: Distributions in R}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item R can compute density functions and tail probabilities or generate
+    random numbers for a wide range of distributions
+  \item Systematic naming scheme for such functions:
+    \begin{center}
+      \begin{tabular}{l>{\small}l}
+      \texttt{\primary{d}norm()} & density function of Gaussian (normal) distribution\\
+      \texttt{\primary{p}norm()} & tail probability\\
+      \texttt{\primary{q}norm()} & quantile = inverse tail probability\\
+      \texttt{\primary{r}norm()} & generate random numbers
+    \end{tabular}
+    \end{center}
+  \item Available distributions include Gaussian (\texttt{\secondary{norm}}),
+    chi-squared (\texttt{\secondary{chisq}}), $t$ (\texttt{\secondary{t}}), $F$
+    (\texttt{\secondary{f}}), binomial (\texttt{\secondary{binom}}), Poisson
+    (\texttt{\secondary{pois}}), \ldots
+    \begin{itemize}
+    \item[\hand] you will encounter many of them later in the course
+    \end{itemize}
+  \item Each function accepts distribution-specific parameters
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Intermission: Distributions in R}
+  %% \framesubtitle{}
+
+  % \ungap[1]
+  \newcommand{\Zsquare}{\sum_i Z_i^2}
+  \begin{alltt}
+> x <- rnorm(50, mean=100, sd=15) \REM{random sample of 50 IQ scores}
+> hist(x, freq=FALSE, breaks=seq(45,155,10)) \REM{histogram}
+
+> xG <- seq(45, 155, 1) \REM{theoretical density in steps of 1 IQ point}
+> yG <- dnorm(xG, mean=100, sd=15)
+> lines(xG, yG, col="blue", lwd=2)
+
+\REM{Now do the same for a chi-squared distribution with 5 degrees of freedom}
+\REM{(hint: the parameter you're looking for is \texttt{df=5})}
+
+pchisq(10, df=5, lower.tail=FALSE) \REM{tail prob.\ for \(\Zsquare \geq 10\)}
+
+\REM{What is the appropriate rejection criterion for a variance test with \(\alpha = 0.05\)?}
+qchisq(0.05, df=5, lower.tail=FALSE) \REM{one-sided test}
+
+  \end{alltt}
+\end{frame}
+
 
 \begin{frame}
   \frametitle{The sample variance}
@@ -387,6 +438,7 @@
     = \sigma^2 Z^2
     \]
     with $Z^2 \sim \chi^2_1$ because of $X_1 - X_2 \sim N(0, 2\sigma^2)$
+    \pause
   \item For $n > 2$ it can be shown that
     \[
     V' = \sum_{i=1}^n (X_i - \bar{X})^2 = \sigma^2 \sum_{j=1}^{n-1} Z_j^2
@@ -424,7 +476,32 @@
     \item independence of $S^2$ and $\bar{X}$ will play an important role later
     \end{itemize}
   \end{itemize}
-  \addnote{TODO -- carry out variance test in R; by hand and with var.test()}%
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Chi-squared test of variance in R}
+  %% \framesubtitle{}
+
+  \newcommand{\Hnull}{H_0}
+  \newcommand{\chisq}{\chi^2}
+  \newcommand{\sigmaSq}{\sigma^2}
+  \newcommand{\sigmaNull}{\sigma_0}
+  \begin{alltt}
+> x <- Survey$height \REM{sample data: \(n\) items}
+> n <- length(x)
+
+\REM{Chi-squared test for a hypothesis about the s.d. (with unknown mean)}
+\REM{\(\Hnull: \sigma = 13\) (one-sided test against \(\sigma > \sigmaNull\))}
+> sigma0 <- 13
+> S2 <- sum((x - mean(x))^2) / (n-1) \REM{unbiased estimator of \(\sigmaSq\)}
+> X2 <- (n-1) * S2 / sigma0^2   \REM{has \(\chisq\) distribution under \(\Hnull\)}
+> pchisq(X2, df=n-1, lower.tail=FALSE)
+
+\REM{Here's a trick to carry out a two-sided test (try e.g.\ with \(\sigmaNull=20\))}
+alt.higher <- S2 > sigma0^2
+2 * pchisq(X2, df=n-1, lower.tail=!alt.higher)
+
+  \end{alltt} %$
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -463,7 +540,7 @@
     Student's \h{$t$ distribution} with $\text{df} = n-1$ degrees of freedom
   \item In order to carry out a one-sample $t$~test, calculate the statistic
     \[
-    t = \frac{\bar{x} - \mu_0}{\sqrt{x^2 / n}}    
+    t = \frac{\bar{x} - \mu_0}{\sqrt{s^2 / n}}    
     \]
     and reject $H_0: \mu=\mu_0$ if $\abs{t} > C$
   \item Rejection threshold $C$ depends on $\text{df} = n-1$ and desired
@@ -474,6 +551,34 @@
   \end{itemize}
   \addnote{TODO -- mathematical explanation of the ``miracle'' that cancels out $\sigma^2$}%
 \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{One-sample $t$ test in R}
+  %% \framesubtitle{}
+
+  \newcommand{\Hnull}{H_0}
+  \newcommand{\muNull}{\mu_0}
+  \newcommand{\sSq}{s^2}
+  \ungap[1]
+  \begin{alltt}
+\REM{we will use the same sample \texttt{x} of size \texttt{n} as in the previous example}
+
+\REM{Student's t-test for a hypothesis about the mean (with unknown s.d.)}
+\REM{\(\Hnull: \mu = 165\) cm}
+> mu0 <- 165
+> x.bar <- mean(x) \REM{sample mean \(\bar{x}\)}
+> s2 <- sum((x - x.bar)^2) / (n-1) \REM{sample variance \(\sSq\)}
+> s2 <- sd(x)^2 \REM{easier with built-in function (check equality!)}
+> t.score <- (x.bar - mu0) / sqrt(s^2 / n) \REM{\(t\) statistic}
+> print(t.score) \REM{positive indicates \(\mu > \muNull\), negative \(\mu < \muNull\)}
+> -qt(0.05/2, n-1) \REM{two-sided rejection threshold for \(|t|\) at \(\alpha = .05\)}
+\REM{Mini-task: plot density function of \(t\) distribution for different d.f.}
+
+> t.test(x, mu=165) \REM{agrees with our ``manual'' t-test}
+\REM{Note that \texttt{t.test()} also provides a confidence interval for the true \(\mu\)!}
+  \end{alltt}
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Confidence intervals}
@@ -531,9 +636,11 @@
   % \framesubtitle{}
 
   \begin{center}
-    \h{\Large Switch to hands-on mode \ldots}
+    \h{\Large Switch to blackboard mode \ldots}
   \end{center}
 \end{frame}
+
+\end{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Multiple samples}
