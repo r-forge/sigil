@@ -1,0 +1,120 @@
+\documentclass[a4paper]{article}
+
+\usepackage{vmargin}
+\setpapersize[portrait]{A4}
+\setmarginsrb{30mm}{10mm}{30mm}{20mm}% left, top, right, bottom
+{12pt}{15mm}% head heigth / separation
+{0pt}{15mm}% bottom height / separation
+%% \setmargnohfrb{30mm}{20mm}{20mm}{20mm}
+
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{\medskipamount}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage[T1]{fontenc}
+%% \usepackage{textcomp}  % this can break some outline symbols in CM fonts, use only if absolutely necessary
+
+%% \usepackage{lmodern}   % type1 computer modern fonts in T1 encoding
+% \usepackage{stefan-fonts}  % commercial Charter fonts with full math support
+\usepackage{chmath}
+
+%% \usepackage{mathptmx}  % use Adobe Times as standard font with simulated math support
+%% \usepackage[sc,osf]{mathpazo}  % use Adobe Palatino as standard font with simulated math support
+
+%% \usepackage{pifont}
+%% \usepackage{eucal}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx,rotating}
+\usepackage{array,hhline,booktabs}
+\usepackage{xspace}
+\usepackage{url}
+%% \usepackage{ifthen,calc,hyphenat}
+
+\usepackage{xcolor,tikz}
+\usepackage[textwidth=25mm,textsize=footnotesize,colorinlistoftodos,backgroundcolor=orange!80]{todonotes} % [disable] to hide all TODOs
+
+\usepackage{natbib}
+\bibpunct{(}{)}{;}{a}{}{,}
+
+\input{lib/math.tex}
+\input{lib/stat.tex}
+
+\title{SIGIL: Statistical Inference for Corpus Linguistics\\--- literature review \& notes ---}
+\author{Stefan Evert}
+\date{Typeset on \today}
+
+\begin{document}
+\maketitle
+
+\listoftodos
+\tableofcontents
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Inbox \& tasks}
+\label{sec:inbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Tasks for \texttt{corpora} package}
+\label{sec:tasks-corpora}
+
+\begin{itemize}
+\item Change implementation of p-values and confidence intervals to use ``central'' method \citep[$p_c$, cf.][]{Fay:10a}, which is efficient and consistent.  Explain in help pages why this is a sensible choice for corpus linguistics (see Sec.~\ref{sec:Fay2010}).
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Tasks for SIGIL slides}
+\label{sec:tasks-sigil}
+
+\begin{itemize}
+\item Mention different types of two-sided p-values and confidence intervals, which can lead to inconsistencies, with example from \citet{Fay:10a}.  Recommendation for corpus linguistics: conservative central p-values $p_c$ and matching confidence intervals, implemented in \texttt{corpora} package.  Note that most standard implementations (e.g.\ \texttt{fisher.test} and \texttt{binom.test} in R) calculate minlike p-values $p_m$ that will often differ from $p_c$.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Inbox}
+\label{sec:inbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{\citet{Fay:10,Fay:10a}: Exact confidence intervals for two-sided tests}
+\label{sec:Fay2010}
+
+\begin{itemize}
+\item Notation: test statistic $T$ for parameter $\theta$ with observed value $t$; $f_{\theta}(t) = \pC{T=t}{\theta}$ is the likelihood; $F_{\theta}(t) = \pC{T\leq t}{\theta}$ and $\bar{F}_{\theta}(t) = \pC{T\geq t}{\theta}$ are the lower/upper tail probabilities
+\item My notaton: $G_{\theta}(t) = \min\set{F_{\theta}(t), \bar{F}_{\theta}(t)}$ for the ``appropriate'' tail probability
+\item Exact two-sided p-values for discrete data can be defined in different ways. \citet{Fay:10a} lists three important and widely-used methods:
+  \begin{enumerate}
+  \item \textbf{central} p-value: $p_c = 2\cdot G_{\theta}(t)$, clamped to $[0,1]$ (aka.\ TST = twice the smaller tail); usually easy to compute and well-behaved (monotonic in $\theta$, cf.\ Fig.~1 on p.~56); exact confidence intervals are often based on $p_c$
+  \item \textbf{minlike} p-value: $p_m = \sum_{f(s)\leq f(t)} f_{\theta}(s)$; implementations of exact tests often report $p_m$ as two-sided p-value; not always well-behaved and confidence sets may have ``holes''
+  \item \textbf{blaker} p-value: $p_b$ is the appropriate tail probability $G_{\theta}(t)$ plus the largest opposite tail that does not exceed $G_{\theta}(t)$ (aka.\ CT = combined tails method); \citet{Blaker:00}\todo{get copy of \citet{Blaker:00} and update details in bibtex database} presents a comprehensive analysis of this method and derives improved confidence intervals
+  \end{enumerate}
+\item \citet{Fay:10a} gives an excellent concise overview of two-sided p-values and confidence intervals for $2\times 2$ tables using the three methods above, with examples of inconsistencies arising if different methods are mixed (typically central confidence interval with minlike p-value)
+\item All three methods and Matching confidence intervals developed by \citet{Fay:10}\todo{read \citet{Fay:10} and add notes} are implemented in the R packages \textbf{exact2x2} and \textbf{exactci}; in some cases, inconsistencies cannot be entirely avoided because ``true'' confidence sets aren't connected intervals (Fig.~3, p.~57)
+\item Conclusion: central p-value $p_c$ is easy to compute, well-behaved (Fig.~1) and consistent confidence intervals can be determined efficiently; in most cases (though not always) it is more conservative than the other methods (i.e.\ $p_c > p_m, p_b$).  Therefore it makes sense to \textbf{use central p-values} and the matching confidence intervals in \textbf{corpus linguistics}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{}
+
+
+%% \renewcommand{\bibsection}{}    % avoid (or change) section heading 
+%% \bibliographystyle{apalike}
+\bibliographystyle{natbib-stefan}
+\bibliography{stefan-literature,stefan-publications}  
+
+\end{document}
