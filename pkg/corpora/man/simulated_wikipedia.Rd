@@ -9,14 +9,12 @@
   average word length for simulated articles from the English Wikipedia.
   Simulation paramters are based on data from the Wackypedia corpus.
 
-  The generated data set is usually named \code{WackypediaStats} and is used
-  for various examples and illustrations in the SIGIL course.
+  The generated data set is usually named \code{WackypediaStats} (see code examples below)
+  and is used for various exercises and illustrations in the SIGIL course.
 
 }
 
 \usage{
-
-WackypediaStats <- simulated.wikipedia()
 
 simulated.wikipedia(N=1429649, length=c(100,1000), seed.rng=42)
 

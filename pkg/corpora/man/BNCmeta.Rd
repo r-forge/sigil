@@ -29,16 +29,17 @@ data(BNCmeta)
 
 \format{
 
-  A data set with 4048 rows and the following columns:
+  A data set with 4048 rows and the columns listed below.
+  Unless specified otherwise, columns are coded as factors.
 
   \describe{
-    \item{\code{id}:}{BNC document ID}
-    \item{\code{title}:}{Title of the document}
-    \item{\code{n_words}:}{Number of words in the document}
-    \item{\code{n_tokens}:}{Total number of tokens (including punctuation and deleted material)}
-    \item{\code{n_w}:}{Number of w-units (words)}
-    \item{\code{n_c}:}{Number of c-units (punctuation)}
-    \item{\code{n_s}:}{Number of s-units (sentences)}
+    \item{\code{id}:}{BNC document ID; character vector}
+    \item{\code{title}:}{Title of the document; character vector}
+    \item{\code{n_words}:}{Number of words in the document; integer vector}
+    \item{\code{n_tokens}:}{Total number of tokens (including punctuation and deleted material); integer vector}
+    \item{\code{n_w}:}{Number of w-units (words); integer vector}
+    \item{\code{n_c}:}{Number of c-units (punctuation); integer vector}
+    \item{\code{n_s}:}{Number of s-units (sentences); integer vector}
     \item{\code{publication_date}:}{Publication date}
     \item{\code{text_type}:}{Text type}
     \item{\code{context}:}{Spoken context}
