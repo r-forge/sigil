@@ -9,14 +9,12 @@
   measurements (height, weight, shoe size) for male and female inhabitants
   of a highly fictitious country.
 
-  The generated data set is usually named \code{FakeCensus} and is used
-  for various examples and illustrations in the SIGIL course.
+  The generated data set is usually named \code{FakeCensus} (see code examples below)
+  and is used for various exercises and illustrations in the SIGIL course.
 
 }
 
 \usage{
-
-FakeCensus <- simulated.census()
 
 simulated.census(N=502202, p.male=0.55, seed.rng=42)
 
