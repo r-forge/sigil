@@ -1,9 +1,9 @@
 Package: corpora
 Type: Package
 Title: Statistics and data sets for corpus frequency data
-Version: 0.4-2
+Version: 0.4-3
 Depends: R (>= 2.10.0)
-Date: 2012-02-24
+Date: 2012-04-04
 Author: Stefan Evert [http://purl.org/stefan.evert]
 Maintainer: Stefan Evert <evert@linglit.tu-darmstadt.de>
 Description: Utility functions and data sets for the statistical analysis of corpus frequency data, used in the SIGIL statistics course.

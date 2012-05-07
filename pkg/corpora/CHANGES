@@ -1,3 +1,9 @@
+Version 0.4-3:
+
+  - interim release to ensure compatiblity with stricter CRAN checks
+  - added data set with Biber register features for all BNC texts (from Gasthaus 2007)
+  - some minor corrections
+
 Version 0.4-1:
 
   - large simulated census data set for examples and illustrations in the SIGIL course
