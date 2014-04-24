@@ -1,6 +1,6 @@
 %% \documentclass[handout,t]{beamer} % HANDOUT
-%% \documentclass[handout,notes=show,t]{beamer} % NOTES
-\documentclass[t]{beamer} % SLIDES
+\documentclass[handout,notes=show,t]{beamer} % NOTES
+%% \documentclass[t]{beamer} % SLIDES
 
 \usetheme{SIGIL}
 \usepackage{beamer-tools-sigil}
@@ -18,8 +18,7 @@
   for Linguists and similar creatures (SIGIL)}
 \subtitle{With practical examples in GNU R}
 \sigilauthors
-\date[sigil.r-forge.r-project.org]{%
-  \light{\tiny \sigilcopyright}}
+\sigilcopyright
 
 \begin{document}
 
@@ -124,9 +123,9 @@
     \begin{column}{7cm}
       \begin{itemize}
       \item binary packages available for Linux, Mac OS X and Windows
-      \item 64-bit versions on Linux and OS X\\ (experimental version for Windows)
+      \item 64-bit support for large data sets
       \item extensive documentation \& tutorials
-      \item hundreds of add-on packages ready to install from CRAN
+      \item thousands of add-on packages ready to install from CRAN
       \end{itemize}
     \end{column}
   \end{columns}
@@ -135,8 +134,8 @@
     \hh{\large\url{http://www.R-project.org/}}
     
     \vspace{6mm}
-    Recommended Windows GUI:\\
-    \h{Tinn-R} from \url{http://www.sciviews.org/}
+    Recommended cross-platform GUI:\\
+    \h{RStudio} from \url{http://www.rstudio.com/ide/}
   \end{center}
 \end{frame}
 
@@ -156,7 +155,7 @@
   \item<2-> Disadvantages
     \begin{itemize}
     \item learning curve sometimes rather steep
-    \item not good at manipulating non-English text (yet)
+    \item not very good at manipulating non-English text
     \item no built-in data editor (spreadsheet)
     \item no point \& click interface
     \end{itemize}
@@ -182,7 +181,7 @@
   \pause\gap
   What this course is \emph{\primary{not}} about:
   \begin{itemize}
-  \item Mathematical foundations of statistics
+  \item Deeper mathematical foundations of statistics
   \item Specific (advanced) statistical methods
   \item Cookbook recipes for particular analyses with R
   \end{itemize}
@@ -232,24 +231,24 @@
   \begin{itemize}
   \item Baroni, Marco \& Evert, Stefan (2008).  \primary{Statistical methods
       for corpus exploitation}.  In A.~L{\"u}deling \& M.~Kyt{\"o}
-    (eds.), {\em Corpus Linguistics. An International Handbook}. Mouton de Gruyter.
+    (eds.), {\em Corpus Linguistics. An International Handbook}, Mouton de Gruyter.
     \begin{itemize}
     \item[]
     \end{itemize}
-  \item Gries, Stefan~Th. (2009). \primary{\em Statistics for Linguistics with
-      R: A Practical Introduction}, Mouton de Gruyter. %
-    \secondary{[\texteuro 98/\texteuro 35]}
+  \item Gries, Stefan~Th. (2013). \primary{\em Statistics for Linguistics with
+      R: A Practical Introduction}, 2nd ed. Mouton de Gruyter. %
+    \secondary{[\texteuro 29]}
     \begin{itemize}
     \item German original from Vandenhoek \& Ruprecht \secondary{[\texteuro 25]}
     \item[]
     \end{itemize}
   \item Johnson, Keith (2008). \primary{\em Quantitative Methods in Linguistics}.
-    Blackwell. \secondary{[\texteuro 31]}
+    Blackwell. \secondary{[\texteuro 38]}
     \begin{itemize}
     \item[]
     \end{itemize}
   \item Peter Dalgaard (2008). \primary{\em Introductory Statistics with R},
-     2nd ed. Springer.
+     2nd ed. Springer. \secondary{[\texteuro 52]}
     \begin{itemize}
     \item[]
     \end{itemize}
@@ -261,19 +260,18 @@
 
   \begin{itemize}
   \item R.~Harald Baayen (2008). \primary{\emph{Analyzing Linguistic Data: A practical
-        introduction to statistics}}. CUP. \secondary{[\texteuro 20]}
+        introduction to statistics}}. CUP. \secondary{[\texteuro 29]}
     \begin{itemize}
-    \item \secondary{\footnotesize 
-        http://www.ualberta.ca/\textasciitilde{}baayen/publications.html}
+    \item \secondary{\footnotesize \href{http://www.sfs.uni-tuebingen.de/~hbaayen/publications/baayenCUPstats.pdf}{http://www.sfs.uni-tuebingen.de/\textasciitilde{}hbaayen/publications/}}
     \item[]
     \end{itemize}
   \item Morris H.\ DeGroot and Mark J.\ Schervish (2002). \primary{\emph{Probability and
-      Statistics}}, 3rd ed. Addison Wesley. \secondary{[\texteuro 57]}
+      Statistics}}, 4th ed. Pearson Education Ltd. \secondary{[\texteuro 74]}
     \begin{itemize}
     \item[]
     \end{itemize}
   \item John M.\ Chambers (2008). \primary{\emph{Software for Data Analysis:
-        Programming with R}}. Springer.
+        Programming with R}}. Springer. \secondary{[\texteuro 85]}
     \begin{itemize}
     \item[]
     \end{itemize}
@@ -281,7 +279,7 @@
     \begin{itemize}
     \item out of print and available online for free download from
       \secondary{\scriptsize 
-        http://www.uwe.ac.uk/hlss/llas/statistics-in-linguistics/bkindex.shtml}
+        \href{http://www.uwe.ac.uk/hlss/llas/statistics-in-linguistics/bkindex.shtml}{http://www.uwe.ac.uk/hlss/llas/statistics-in-linguistics/bkindex.shtml}}
     \item[]
     \end{itemize}
   \end{itemize}
@@ -307,7 +305,7 @@
         simulation-based approach}}.
     \begin{itemize}
     \item \secondary{\footnotesize 
-        http://www.ling.uni-potsdam.de/\textasciitilde{}vasishth/SFLS.html}
+        \href{http://www.ling.uni-potsdam.de/~vasishth/SFLS.html}{http://www.ling.uni-potsdam.de/\textasciitilde{}vasishth/SFLS.html}}
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -324,8 +322,7 @@
   \hh{Mac OS X}
   \begin{itemize}
   \item Download binary installer from \url{http://www.R-project.org/}
-  \item Start GUI application \primary{\texttt{R}} (32-bit) or
-    \primary{\texttt{R64}} (64-bit)
+  \item Start GUI application \primary{\texttt{R}} (64-bit)
   \item Alternative: run from \primary{TextMate} or various other text editors
   \item Shell commmand \texttt{R} available for command-line use
   \end{itemize}
@@ -336,7 +333,7 @@
   \item Install R with standard package manager (e.g.\ \emph{Synaptic})
   \item Add CRAN repository to obtain up-to-date version of R
     \begin{itemize}
-    \item e.g.\ \secondary{http://cran.at.r-project.org/bin/linux/ubuntu karmic/}
+    \item e.g.\ \secondary{http://cran.at.r-project.org/bin/linux/ubuntu precise/}
     \item pkgs: \counterpoint{r-base-core r-base-html r-base-dev r-doc-html r-doc-pdf}
     \end{itemize}
   \item Various GUIs available, e.g.\ \primary{Rkward} and \primary{R Commander}
@@ -378,30 +375,6 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Recommended add-on packages for this course}
-
-  \begin{description}
-  \item[\texttt{languageR}] data sets and functions from Baayen (2008)
-  \item[\texttt{corpora}] data sets and utilities for this course
-  \item[\texttt{exact2x2}] exact inference for $2\times 2$ contingency
-    tables\\ (relevant for corpus frequency comparisons)
-  \item[\texttt{zipfR}] word frequency distributions \& Zipf's law
-  \item[\texttt{e1071}] machine learning (SVM) and many other utilities
-  \item[\texttt{MASS}] lots of statistical functions (companion package\\
-    to \primary{\emph{Modern Applied Statistics with S and S-Plus}})
-  \end{description}
-
-  \gap[.5]
-  Some other useful packages:
-  \begin{description}
-  \item[\texttt{rgl}] animated 3D graphics with OpenGL (also: \secondary{\texttt{misc3d}})
-  \item[\texttt{vcd}] visualisation of categorical data (contingency tables)
-  \item[\texttt{plyr}, \texttt{doBy},] convenience functions for data manipulation
-  \item[\texttt{gsubfn}]
-  \end{description}
-\end{frame}
-
 \begin{frame}[fragile]
   \frametitle{Installation on Windows (XP/Vista/7)}
   
@@ -413,7 +386,7 @@
     \item if Windows complains, allow installer to run \& make changes
     \item select ``full installation'' and keep defaults for everything else
     \item start R, adjust GUI preferences and save to default location\\
-      (make sure to select \primary{SDI mode} required for Tinn-R)
+      (make sure to select \primary{SDI mode} if you use Tinn-R GUI)
     \item[]
     \end{itemize}
     \pause
@@ -435,32 +408,38 @@ data(VSS); head(VSS, 20)
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Recommended add-on packages for this course}
+
+  \begin{description}
+  \item[\texttt{SIGIL}] data sets and utilities for this course
+  \item[\texttt{corpora}] some additional corpus-related functions
+  \item[\texttt{languageR}] data sets and functions from Baayen (2008)
+  \item[\texttt{exact2x2}] exact inference for $2\times 2$ contingency
+    tables\\ (relevant for corpus frequency comparisons)
+  \item[\texttt{zipfR}] word frequency distributions \& Zipf's law
+  \item[\texttt{e1071}] machine learning (SVM) and many other utilities
+  \item[\texttt{MASS}] lots of statistical functions (companion package\\
+    to \primary{\emph{Modern Applied Statistics with S and S-Plus}})
+  \end{description}
+
+  \gap[.5]
+  Some other useful packages:
+  \begin{description}
+  \item[\texttt{rgl}] animated 3D graphics with OpenGL (also: \secondary{\texttt{misc3d}})
+  \item[\texttt{vcd}] visualisation of categorical data (contingency tables)
+  \item[\texttt{plyr}, \texttt{doBy},] convenience functions for data manipulation
+  \item[\texttt{reshape2}]
+  \end{description}
+\end{frame}
+
 \begin{frame}[fragile]
-  \frametitle{Installation on Windows (XP/Vista/7)}
-  
-  \begin{itemize}
-  \item[Step 3:] Install \primary{Tinn-R} GUI (optional, but recommended)
-    \begin{itemize}
-    \item download installer from \url{http://www.sciviews.org/Tinn-R/}
-    \item run installer, allow to make changes, accept default settings
-    \item launch Tinn-R (run as administrator on Vista/Win 7)
-    \item menu: \primary{R | configure | permanent} (to set up R for Tinn-R)
-    \item allow Tinn-R to start R and auto-install necessary packages
-    \item Vista/Win 7: quit Tinn-R, then restart in normal mode
-    \item must start R session explicitly: \primary{R | start/close | Rgui}
-    \item[]
-    \end{itemize}
-    \pause
-  \item[Step 4:] Working with Tinn-R
-    \begin{itemize}
-    \item basic workflow as recommended for R in general:\\
-      write R script file, then execute selected commands
-    \item \texttt{Ctrl}+\texttt{RET} to execute command and insert line break\\
-      (set ``return focus to editor'' option with recycle icon)
-    \item get familiar with the icons in the R toolbar!
-    \item explore data browser, file browser, reference cards in sidebar
-    \end{itemize}
-  \end{itemize}
+  \frametitle{Recommended cross-platform GUI: RStudio}
+  \framesubtitle{\primary{\url{http://www.rstudio.com/ide/}}}
+
+  \centering
+  \includegraphics[width=10cm]{img/rstudio}
+
 \end{frame}
 
 
@@ -704,7 +683,7 @@ bark\tri 10\tri        verb
     \begin{itemize}
     \item spreadsheet applications prefer CSV (comma-separated values),
       which R also reads and writes quite well
-    \item Microsoft Excel is a nice table editor,\\ but beware of localised
+    \item Microsoft Excel is a nice table editor, but beware of localised
       number formats
     \end{itemize}
   \end{itemize}
@@ -727,6 +706,10 @@ bark\tri 10\tri        verb
 
 \REM{more robust if you are sure file is in tab-delimited format}
 > brown <- read.delim("brown.stats.txt")
+
+\REM{this data set is also included in the SIGIL package}
+> library(SIGIL)
+> brown <- BrownStats
 \end{alltt}
 
 \end{frame}
@@ -831,7 +814,6 @@ bark\tri 10\tri        verb
 \ungap[1]
 \begin{alltt}
 > brown$to
-
 > head(brown$to)
 
 \REM{TASK: compute summary statistics (length, mean, max, etc.)}
@@ -842,7 +824,9 @@ bark\tri 10\tri        verb
 
 > attach(brown)   \REM{attach data frame for convenient access}
 > summary(ty/to)
-> detach()  \REM{better to detach before you attach another frame}
+> detach()        \REM{detach from search path}
+
+> with(brown, summary(ty/to)) \REM{a better approach}
 \end{alltt}
 
 \end{frame}
@@ -870,10 +854,10 @@ bark\tri 10\tri        verb
 
 \begin{alltt}
 > brown[brown$to < 2200, ]  \REM{index with Boolean vector}
-> length(brown$ty[brown$to >= 2200])
+> brown$ty[brown$to >= 2200]
 > sum(brown$to >= 2200)     \REM{standard way to count matches}
 
-> subset(brown, to < 2200)  \REM{no need to attach here}
+> subset(brown, to < 2200)  \REM{syntactic sugar (similar to \texttt{with})}
 > lessdata <- subset(brown, to < 2200)
 
 > a <- brown$ty[brown$to >= 2200]
@@ -887,7 +871,7 @@ bark\tri 10\tri        verb
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{A simple case study: comparing Brown and LOB documents}
+\subsection{A simple case study: comparing Brown and LOB}
 
 \begin{frame}
   \frametitle{Procedure}
@@ -905,6 +889,9 @@ bark\tri 10\tri        verb
       \pause
     \item Please read the LOB data set into a data frame named \texttt{lob}
       now, and take a look at its basic statistics
+      \begin{itemize}
+      \item file \texttt{lob.stats.txt}, or \texttt{LOBStats} in \texttt{SIGIL} package
+      \end{itemize}
     \item Also, plot the data frame for a first impression of correlations
       between the variables
     \end{itemize}
@@ -925,10 +912,10 @@ bark\tri 10\tri        verb
 > t.test(brown$to, lob$to)
 > wilcox.test(brown$to, lob$to)
 
-> brown.to.center <-
-  brown$to[brown$to > 2200 & brown$to < 2400]
+> brown.to.center <- 
+  with(brown, to[to > 2200 & to < 2400])
 > lob.to.center <- 
-  lob$to[lob$to > 2200 & lob$to < 2400]
+  with(lob, to[to > 2200 & to < 2400])
 
 > t.test(brown.to.center, lob.to.center)
 
