@@ -3,38 +3,42 @@
 \alias{SIGIL}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+
+SIGIL: Statistical Inference -- A Gentle Introduction for (Computational and Corpus) Linguists
+
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+
+This package provides example data sets and support functions used in the course units and exercises
+of \emph{Statistical Inference: A Gentle Introduction for Computational Linguists and Similar Creatures}
+developed by Marco Baroni and Stefan Evert.
+
 }
 \details{
 \tabular{ll}{
 Package: \tab SIGIL\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
+Version: \tab 0.1-0\cr
 Date: \tab 2014-04-24\cr
-License: \tab What license is it under?\cr
+License: \tab GPL-3\cr
 }
-~~ An overview of how to use the package, including the most important functions ~~
 }
-\author{
-Who wrote it
+\author{ 
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Marco Baroni [\url{http://clic.cimec.unitn.it/marco/}] and
+Stefan Evert [\url{http://www.stefan-evert.de/}]
+
+Maintainer: Stefan Evert <\email{stefan.evert@fau.de}>
+
 }
 \references{
-~~ Literature or other references for background information ~~
+
+The official homepage of the SIGIL course and this companion package is \url{http://SIGIL.R-Forge.R-Project.org/}.
+
 }
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R documentation directory ~~
 \keyword{ package }
 \seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
-}
-\examples{
-~~ simple examples of the most important functions ~~
+
+\bf{TODO:} entry points to package documentation
+
 }
