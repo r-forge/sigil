@@ -54,5 +54,5 @@ data(BNCdomains)
 %%\examples{
 %%}
 
-\author{Marco Baroni (\email{baroni@sslmit.unibo.it})}
+\author{Marco Baroni <\email{baroni@sslmit.unibo.it}>}
 \keyword{datasets}
