@@ -4,6 +4,7 @@
 
 ## BNC metadata
 BNCmeta <- read.delim("tbl/bnc_metadata_utf8.tbl", quote="", fileEncoding="UTF-8", encoding="UTF-8")
+BNCmeta$title <- as.character(BNCmeta$title)
 save(BNCmeta, file="rda/BNCmeta.rda", compress="xz")
 
 ## text statistics for Brown and LOB corpora
@@ -22,10 +23,11 @@ save(LOBPassives, file="rda/LOBPassives.rda", compress="xz")
 
 ## adjacent bigrams in the Brown corpus
 BrownBigrams <- read.delim("tbl/brown_bigrams.tbl", quote="")
+BrownBigrams <- transform(BrownBigrams, word1=as.character(word1), word2=as.character(word2))
 save(BrownBigrams, file="rda/BrownBigrams.rda", compress="xz")
 
 ## PP-verb collocations annotated by Brigitte Krenn
-KrennPPV <- read.delim("tbl/krenn_pp_verb.tbl", quote="", fileEncoding="UTF-8", encoding="UTF-8")
+KrennPPV <- read.delim("tbl/krenn_pp_verb.tbl", quote="", fileEncoding="UTF-8", encoding="UTF-8", stringsAsFactors=FALSE)
 save(KrennPPV, file="rda/KrennPPV.rda", compress="xz")
 
 ## passive counts for each text in the Brown and Lob corpora
@@ -35,10 +37,10 @@ save(BrownLOBPassives, file="rda/BrownLOBPassives.rda", compress="xz")
 ## -- tbl/bigrams.100k.tfl has to be loaded with zipfR package, so don't include in SIGIL
 
 ## BNC sample data for frequency comparison and collocation analysis
-BNCInChargeOf <- read.delim("tbl/bnc_in_charge_of.tbl", quote="")
+BNCInChargeOf <- read.delim("tbl/bnc_in_charge_of.tbl", quote="", stringsAsFactors=FALSE)
 save(BNCInChargeOf, file="rda/BNCInChargeOf.rda", compress="xz")
 
-BNCcomparison <- read.delim("tbl/bnc_comparison.tbl", quote="")
+BNCcomparison <- read.delim("tbl/bnc_comparison.tbl", quote="", stringsAsFactors=FALSE)
 save(BNCcomparison, file="rda/BNCcomparison.rda", compress="xz")
 
 BNCdomains <- read.delim("tbl/bnc_domains.tbl", quote="")

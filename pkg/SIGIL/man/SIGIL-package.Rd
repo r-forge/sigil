@@ -10,7 +10,7 @@ SIGIL: Statistical Inference -- A Gentle Introduction for (Computational and Cor
 \description{
 
 This package provides example data sets and support functions used in the course units and exercises
-of \emph{Statistical Inference: A Gentle Introduction for Computational Linguists and Similar Creatures}
+of \emph{Statistical Inference: a Gentle Introduction for Linguists and similar creatures}
 developed by Marco Baroni and Stefan Evert.
 
 }
@@ -39,6 +39,6 @@ The official homepage of the SIGIL course and this companion package is \url{htt
 \keyword{ package }
 \seealso{
 
-\bf{TODO:} entry points to package documentation
+\bold{TODO:} entry points to package documentation
 
 }
