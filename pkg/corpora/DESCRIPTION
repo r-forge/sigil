@@ -2,7 +2,7 @@ Package: corpora
 Type: Package
 Title: Statistics and data sets for corpus frequency data
 Version: 0.4-3
-Depends: R (>= 2.10.0)
+Depends: R (>= 2.15.0)
 Date: 2012-04-04
 Author: Stefan Evert [http://purl.org/stefan.evert]
 Maintainer: Stefan Evert <stefan.evert@linguistik.uni-erlangen.de>
