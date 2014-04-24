@@ -34,8 +34,19 @@ save(BrownLOBPassives, file="rda/BrownLOBPassives.rda", compress="xz")
 
 ## -- tbl/bigrams.100k.tfl has to be loaded with zipfR package, so don't include in SIGIL
 
+## BNC sample data for frequency comparison and collocation analysis
+BNCInChargeOf <- read.delim("tbl/bnc_in_charge_of.tbl", quote="")
+save(BNCInChargeOf, file="rda/BNCInChargeOf.rda", compress="xz")
+
+BNCcomparison <- read.delim("tbl/bnc_comparison.tbl", quote="")
+save(BNCcomparison, file="rda/BNCcomparison.rda", compress="xz")
+
+BNCdomains <- read.delim("tbl/bnc_domains.tbl", quote="")
+save(BNCdomains, file="rda/BNCdomains.rda", compress="xz")
+
+
 
 ## make ZIP archive containing all data files
 zip.name <- "sigil_datasets.zip"
-if (file.exists(zip.name)) file.remove(zip.name)
+if (file.exists(zip.name)) stopifnot(file.remove(zip.name))
 system2("zip", c("-r", zip.name, "tbl/*"))
