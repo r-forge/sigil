@@ -16,18 +16,15 @@
 In this first exercise, you will familiarise yourself with basic R
 operations, reading the R documentation, and working with data frames, which
 are the fundamental statistical data structure used by R.  For this purpose,
-the \texttt{corpora} package contains a data frame with complete metadata 
+the \texttt{SIGIL} package contains a data frame with complete metadata 
 information for all 4,048 texts of the \emph{British National Corpus}.%
 \footnote{See \url{http://www.natcorp.ox.ac.uk/} for more information about
   the BNC and available metadata.} %
-
-Make sure that you have version \textbf{0.4-0} or newer of the
-\texttt{corpora} package installed.  You should be able to access
-the BNC metadata under the name \texttt{BNCmeta} after loading the
+You should be able to access the BNC metadata under the name \texttt{BNCmeta} after loading the
 package:
 
 \begin{alltt}
-    > library(corpora)
+    > library(SIGIL)
     > nrow(BNCmeta)    \REM{check that metadata table is available}\begin{Rout}
     [1] 4048 \end{Rout}
     > attach(BNCmeta)  \REM{for convenient access to table columns}
