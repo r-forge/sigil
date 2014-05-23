@@ -2,22 +2,22 @@
 ##  Illustrations and examples for Unit 3: Descriptive and Inferential Statistics for Continuous Data
 ##
 
-library(corpora)
+library(SIGIL)
 
-# generate simulated population data
+## generate simulated population data
 FakeCensus <- simulated.census()
 WackypediaStats <- simulated.wikipedia()
 
 source("functions.R")
 dev.save <- function (basename) {
-	dev.copy2pdf(file=paste("../img/",basename,".pdf",sep=""), bg="white", onefile=FALSE)
+	dev.copy2pdf(file=paste("../latex-slides/img/",basename,".pdf",sep=""), bg="white", onefile=FALSE)
 }
 
 ##
 ## Introduction: examples and characteristic measures
 ##
 
-# samples of census and wikipedia stats tables (rounded) 
+## samples of census and wikipedia stats tables (rounded) 
 tmp <- head(FakeCensus, 20)
 tmp <- transform(tmp, height=round(height, 2), weight=round(weight, 2))
 print(tmp)
@@ -26,10 +26,10 @@ tmp2 <- head(WackypediaStats, 20)
 tmp2 <- transform(tmp2, ttr=round(ttr, 3), avglen=round(avglen, 3))
 print(tmp2)
 
-# we can also calculate some derived quantities
+## we can also calculate some derived quantities
 FakeCensus <- transform(FakeCensus, bmi=weight/(height/100)^2)
 
-# mean, variance, etc. for census data
+## mean, variance, etc. for census data
 m <- nrow(FakeCensus)
 print(m)
 
@@ -38,12 +38,12 @@ mu.w <- mean(FakeCensus$weight)
 print(mu.w)
 mean(FakeCensus$shoe.size)
 
-# sample and population variance are virtually indistinguishable
+## sample and population variance are virtually indistinguishable
 var(FakeCensus$weight) # sample (denominator m-1)
 sigma2.w <- sum((FakeCensus$weight - mu.w)^2) / m # population
 print(sigma2.w)
 
-# mean, variance, s.d. for different attributes
+## mean, variance, s.d. for different attributes
 mvs <- function (x) c(mean(x), var(x), sd(x))
 mvs(FakeCensus$height)
 mvs(FakeCensus$weight)
@@ -65,18 +65,18 @@ m.WS <- nrow(WS)
 
 square.device(main=FALSE)
 
-# discrete distribution can be tabulated
+## discrete distribution can be tabulated
 plot(table(FC$shoe.size) / m.FC, lwd=3, xlab="Shoe size", ylab="Proportion of population")
 dev.save("ingary_shoesize_table")
 
-# continuous distribution must be cut into bins: histogram
+## continuous distribution must be cut into bins: histogram
 hmin <- 110; hmax <- 230
 hist(FC$height, col=fillblue, labels=TRUE, main="", xlab="body height", xlim=c(120,220), ylim=c(0,65000), breaks=seq(hmin, hmax, 5))
 dev.save("ingary_hist_freq_1")
 hist(FC$height, col=fillblue, main="", xlab="body height", xlim=c(120,220), ylim=c(0,65000), breaks=seq(hmin, hmax, 2.5))
 dev.save("ingary_hist_freq_2")
 
-# density scale: area of bar = relative frequency / proportion in population
+## density scale: area of bar = relative frequency / proportion in population
 hist(FC$height, col=fillblue, freq=FALSE, main="", xlab="body height", xlim=c(120,220), ylim=c(0,.025), breaks=seq(hmin, hmax, 5))
 dev.save("ingary_hist_1")
 hist(FC$height, col=fillblue, freq=FALSE, main="", xlab="body height", xlim=c(120,220), ylim=c(0,.025), breaks=seq(hmin, hmax, 2.5))
@@ -88,7 +88,7 @@ dev.save("ingary_hist_4")
 lines(density(FC$height, from=hmin, to=hmax), col=myred, lwd=6)
 dev.save("ingary_hist_4_curve")
 
-# area under density function = range probability
+## area under density function = range probability
 par.save <- par(mar=c(2,0,0,0)+.1, cex=2.5)
 x <- seq(0, 11, .1)
 y <- dchisq(x, 3)
@@ -102,7 +102,7 @@ lines(x, y, lwd=6, col=myred)
 dev.save("area_under_density")
 par(par.save)
 
-# different "typical" kinds of distributions
+## different "typical" kinds of distributions
 wide.device()
 mean.sd.plot(WackypediaStats$avglen, xlim=c(3.2,5.5)) # almost Gaussian
 dev.save("disttype_symmetric")
@@ -157,7 +157,7 @@ polygon(x.poly, y.poly, col=fillblue, border="black")
 
 lines(x.norm, y.norm, type="l", lwd=6, col="black") # draw density function here to cover background material
 text(mu, .25, pos=4, labels=expression(mu), cex=1.6, col=myblue) # label for mu
-# arrows for plus/minus 1 and 2 standard deviations
+## arrows for plus/minus 1 and 2 standard deviations
 arrows(mu, y0, c(mu+sigma, mu-sigma), y0, lwd=3, col=myred, angle=20, length=.2) # uses magic replication of single ("scalar") values
 text(c(mu+sigma/2, mu-sigma/2), y0, pos=3, labels=expression(sigma), cex=1.4, col=myred)
 y1 <- 100 * dnorm(mu+2*sigma, mean=mu, sd=sigma)
