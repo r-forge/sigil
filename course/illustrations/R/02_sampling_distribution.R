@@ -21,7 +21,7 @@ bars.2 <- rbind(perc.k * (k < 19), perc.k * (k >= 19))   # upper tail (k >= 19)
 bars.3 <- rbind(perc.k * (k > 10 & k < 19), perc.k * (k <= 10 | k >= 19))   # both tails (k >= 19 | k <= 10)
 
 screen.device(width=11, height=6, bg="white")
-par(cex=1.5, mar=c(4,4,1,0)+.5);
+par(cex=1.5, mar=c(4,4,1,0)+.5)
 
 mids <- barplot(bars.1, names=ifelse(k%%2==1, k, NA), ylim=c(0,12),
                 col=c("grey", "black"), density=c(NA, 10), angle=45, 
@@ -61,7 +61,7 @@ dev.off()
 
 
 ##
-## 2) Effect size and power: comparison of barplots
+## 2) Effect size and power: comparison of barplots (for one-sided test)
 two.binom <- function(n, p1, p2=0, range=c(0, 40), y.max=NA, threshold=NA, effect=FALSE) {
   e1 <- n * p1
   e2 <- n * p2
@@ -105,7 +105,7 @@ two.binom <- function(n, p1, p2=0, range=c(0, 40), y.max=NA, threshold=NA, effec
 }
 
 screen.device(width=11, height=6, bg="white")
-par(cex=1.5, mar=c(4,4,1,0)+.5);
+par(cex=1.4, mar=c(4,4,1,0)+.5)
 
 two.binom(100, .15, range=c(5, 40), y.max=16)
 dev.copy2pdf(file="../keynote-slides/img/binomial_effect_power_100_c1.pdf", onefile=FALSE)
@@ -137,13 +137,65 @@ dev.copy2pdf(file="../keynote-slides/img/binomial_effect_power_1000_c4a.pdf", on
 two.binom(1000, .15, .25, range=c(100, 300), y.max=4, threshold=170, effect=TRUE)
 dev.copy2pdf(file="../keynote-slides/img/binomial_effect_power_1000_c4b.pdf", onefile=FALSE)
 
-
 dev.off()
 
 
+##
+## 3) Power analysis of binomial test
+x.max <- 0.20
+delta <- seq(0, x.max, .001)
 
+power.curve <- function (delta, n, alpha=.05, p0=.15, ...) {
+  threshold <- qbinom(alpha, n, p0, lower.tail=FALSE) # reject if k > threshold
+  risk <- 100 * pbinom(threshold, n, p0 + delta)
+  lines(delta, risk, ...)
+}
 
+n <- rep(c(100, 1000, 1e5), each=3)
+alpha <- rep(c(.05, .01, .001), 3)
+col <- rep(c(red1, blue1, green1), each=3)
+lty <- rep(c("solid", "solid", "dashed"), 3)
+lwd <- rep(c(4, 2, 2), 3)
+legend.txt <- expression(
+  list(n == 100, alpha == .05),
+  list(n == 100, alpha == .01),
+  list(n == 100, alpha == .001),
+  list(n == 1000, alpha == .05),
+  list(n == 1000, alpha == .01),
+  list(n == 1000, alpha == .001),
+  list(n == "100k", alpha == .05),
+  list(n == "100k", alpha == .01),
+  list(n == "100k", alpha == .001)
+  )
 
+power.plot <- function (delta, k) {
+  plot(0, 0, type="n", xlim=c(0, x.max), ylim=c(0, 100), xlab=expression("effect size " * (delta)), ylab="risk of type II error (%)\nfor one-sided binomial test", main="")
+  abline(h=seq(0, 100, 10), lwd=1, col="grey")
+  for (i in 1:k) {
+    power.curve(delta, n=n[i], alpha=alpha[i], col=col[i], lty=lty[i], lwd=lwd[i])
+  }
+  legend("topright", inset=.03, legend=legend.txt[1:k], col=col[1:k], lwd=lwd[1:k]+1, lty=lty[1:k])
+}
+  
+screen.device(width=11, height=6, bg="white")
+par(cex=1.4, mar=c(4,5,1,1)+.5, xaxs="i", yaxs="i")
+
+power.plot(delta, 1)
+dev.copy2pdf(file="../keynote-slides/img/binomial_power_curve_c1.pdf", onefile=FALSE)
+
+power.plot(delta, 2)
+dev.copy2pdf(file="../keynote-slides/img/binomial_power_curve_c2.pdf", onefile=FALSE)
+
+power.plot(delta, 3)
+dev.copy2pdf(file="../keynote-slides/img/binomial_power_curve_c3.pdf", onefile=FALSE)
+
+power.plot(delta, 6)
+dev.copy2pdf(file="../keynote-slides/img/binomial_power_curve_c4.pdf", onefile=FALSE)
+
+power.plot(delta, 9)
+dev.copy2pdf(file="../keynote-slides/img/binomial_power_curve_c5.pdf", onefile=FALSE)
+
+dev.off()
 
 
 
