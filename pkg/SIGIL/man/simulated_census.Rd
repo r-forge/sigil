@@ -68,5 +68,5 @@ summary(FakeCensus)
 
 }
 
-\author{Stefan Evert (\url{http://purl.org/stefan.evert})}
+\author{Stefan Evert <\email{stefan.evert@fau.de}>}
 \keyword{datasets}
