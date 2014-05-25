@@ -9,6 +9,7 @@ red1 <- "#DD4433"
 red2 <- "#FF9980"
 green1 <- "#229966"
 
+library(corpora)
 
 ##
 ## 1) Sampling distribution for sample size n=100 and null proportion pi=15% of passive sentences
@@ -196,6 +197,111 @@ power.plot(delta, 9)
 dev.copy2pdf(file="../keynote-slides/img/binomial_power_curve_c5.pdf", onefile=FALSE)
 
 dev.off()
+
+
+##
+## 4) Illustration of procedure for computing confidence intervals (by inverted hypothesis tests)
+visual.conf.plot <- function (p, n=1000, f=190, xlim=c(150,250), ylim=NULL, alpha=.05, mark=NULL) {
+  e <- p * n                            # expected frequency
+  k <- 0:n                              # range of possible values for binomial variable
+  prob.binom <- dbinom(k, n, p)         # vector of binomial probabilities
+                                        # idx <- order((k - e)^2)               # re-order possible observations k according to their chi-squared value
+  ## above carries out an exact chi-squared test; but binom.test() uses likelihood criterion:
+  idx <- order(prob.binom, decreasing=TRUE) # order possible observations according to their likelihood
+  tail.binom <- numeric(length(k))
+  tail.binom[idx] <- rev( cumsum( prob.binom[rev(idx)] ) ) # accurate two-sided chi-squared tail probabilities
+  perc.binom <- 100 * prob.binom                           # show percentages on y-axis of plot
+  if (missing(ylim)) ylim <- c(0, max(perc.binom) * 1.1)   # calculate y-axis limits automatically unless specified
+  reject <- tail.binom[f+1] < alpha
+  text.reject <- if (reject) "rejected" else "plausible" # whether H0 can be rejected (shown in title of plot)
+  hist.col <- ifelse(tail.binom < alpha, blue1, blue2) # colours for histogram bars (two-sided alpha tail shown in black)
+  plot(0, 0, type="n",
+       xlim=xlim, ylim=ylim, yaxs="i",
+       xlab="observed frequency k", ylab="percentage of samples",
+       main=bquote(H[0]: mu == .(100 * p)*"%" %->% .(text.reject)))
+  if (!missing(mark)) {
+    mark.pval <- sapply(mark, function (mu) binom.test(f, n, mu)$p.value)
+    mark.col <- ifelse(mark.pval < alpha, red1, green1)
+    abline(v = n * mark, lwd=1, col=mark.col)
+  }
+  points(k, perc.binom, type="h", lwd=5, col=hist.col)
+  col.reject <- if (reject) red1 else green1
+  abline(v=f, lwd=4, lty="32", col=col.reject)
+  text(f, ylim[2] * .95, pos=2, cex=1.2, col=col.reject, labels=bquote(f == .(f)), srt=90)
+}
+visual.conf.plot(.216, mark=c(.16, .165, .17))
+
+screen.device(width=11, height=6, bg="white")
+par(cex=1.4, mar=c(4,4,2,0)+.5)
+# par(cex=1.3, mar=c(4,4,2,0)+.1)
+
+mu.vals <- c(.16, .165, .166, .167, .17, .18, .19, .20, .21, .215, .216, .22, .23, .24)
+for (mu in mu.vals) {
+  visual.conf.plot(mu, mark=seq(.08, mu, .0005), ylim=c(0, 5))
+  dev.copy2pdf(file=sprintf("../keynote-slides/img/confidence_interval_%03d.pdf", 1000 * mu), onefile=FALSE, bg="white")
+}
+
+dev.off()
+
+
+##
+## 5) Choosing sample size based on graph of confidence intervals
+draw <- function (K, col="black", lty="solid", lwd=3) {
+  p <- 100 * (0:K) / K
+  lines(p, 100 * prop.cint(0:K, K)$upper, lwd=lwd, col=col, lty=lty)
+  lines(p, 100 * prop.cint(0:K, K)$lower, lwd=lwd, col=col, lty=lty)
+}
+draw.ppm <- function (K, col="black", lty="solid", lwd=3) {
+  p <- seq(0, 20, .1)
+  n <- K * 1e6
+  O <- K * p
+  cint <- prop.cint(O, n)
+  lines(p, 1e6 * cint$upper, lwd=lwd, col=col, lty=lty)
+  lines(p, 1e6 * cint$lower, lwd=lwd, col=col, lty=lty)
+}
+
+screen.device(width=8, height=8)
+par(cex=1.4, mar=c(4,4,1,1)+.1, xaxs="i", yaxs="i")
+
+plot(c(0,100), c(0,100), type="l", lwd=3, xlab="sample: k / n (%)", ylab=expression("population: " * pi * " (%)"), main="")
+for (x in 0:10 * 10) { abline(h=x); abline(v=x) }
+draw(500, col="orange")
+draw(200, col="darkgreen")
+draw(100, col="red")
+draw(50, col="blue")
+draw(20, col="grey")
+legend("topleft", inset=.05, bg="white",
+       legend=c("MLE", "n = 500", "n = 200", "n = 100", "n = 50", "n = 20"),
+       lwd=4, col=c("black", "orange", "darkgreen", "red", "blue", "grey"))
+dev.copy2pdf(file="../keynote-slides/img/sample_size_1.pdf", onefile=FALSE, bg="white")
+
+plot(c(0,25), c(0,25), type="l", lwd=3, xlab="sample: k / n (%)", ylab=expression("population: " * pi * " (%)"), main="")
+for (x in 0:10 * 10) { abline(h=x); abline(v=x) }
+for (x in 0:4 * 5) { abline(h=x,lty="dashed"); abline(v=x,lty="dashed") }
+draw(500, col="orange")
+draw(200, col="darkgreen")
+draw(100, col="red")
+draw(50, col="blue")
+draw(20, col="grey")
+legend("topleft", inset=.05, bg="white",
+       legend=c("MLE", "n = 500", "n = 200", "n = 100", "n = 50", "n = 20"),
+       lwd=4, col=c("black", "orange", "darkgreen", "red", "blue", "grey"))
+dev.copy2pdf(file="../keynote-slides/img/sample_size_2.pdf", onefile=FALSE, bg="white")
+
+plot(c(0,20), c(0,20), type="l", lwd=3, xlab="sample: k / n (ppm)", ylab=expression("population: " * pi * " (ppm)"), main="")
+for (x in 0:10 * 10) { abline(h=x); abline(v=x) }
+for (x in 0:4 * 5) { abline(h=x,lty="dashed"); abline(v=x,lty="dashed") }
+draw.ppm(100, col="orange")
+draw.ppm(10, col="darkgreen")
+draw.ppm(5, col="red")
+draw.ppm(1, col="blue")
+draw.ppm(.5, col="grey")
+legend("topright", inset=.05, bg="white",
+       legend=c("MLE", "n = 100M", "n = 10M", "n = 5M", "n = 1M", "n = 500k"),
+       lwd=4, col=c("black", "orange", "darkgreen", "red", "blue", "grey"))
+dev.copy2pdf(file="../keynote-slides/img/sample_size_3.pdf", onefile=FALSE, bg="white")
+
+
 
 
 
