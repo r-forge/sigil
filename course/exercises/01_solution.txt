@@ -4,9 +4,9 @@
 
 # TIMTOWTDI ;-)
 
-## load the "corpora" package and attach the BNC metadata table
+## load the "SIGIL" package and attach the BNC metadata table
 
-library(corpora)
+library(SIGIL)
 nrow(BNCmeta)   # check that we can access the data
 attach(BNCmeta)
 

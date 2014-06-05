@@ -17,8 +17,9 @@
 \title[3a.\ Continuous Data: Description]{Unit 3: Descriptive Statistics for Continuous Data}
 \subtitle{Statistics for Linguists with R -- A SIGIL Course}
 \sigilauthors
-\date[sigil.r-forge.r-project.org]{%
-  \light{\tiny \sigilcopyright}}
+\sigilcopyright
+% \date[sigil.r-forge.r-project.org]{%
+%   \light{\tiny \sigilcopyright}}
 
 \begin{document}
 
@@ -259,7 +260,7 @@
 
   \pause
   \begin{alltt}\small
-    > library(corpora)
+    > library(SIGIL)
     > FakeCensus <- simulated.census()
     > WackypediaStats <- simulated.wikipedia()
   \end{alltt}
@@ -838,14 +839,14 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Playtime!}
   \begin{itemize}
   \item Take random samples of $n$ items each from the census and wikipedia
     data sets (e.g.\ $n=100$)
-    \begin{center}
-      \secondary{\texttt{Survey <- sample.df(FakeCensus, \emph{\primary{n}}, sort=TRUE)}}
-    \end{center}
+    \begin{alltt}\color{secondary}
+     library(corpora)
+     Survey <- sample.df(FakeCensus, \emph{\primary{n}}, sort=TRUE)\end{alltt}
   \item Plot histograms and estimated density for all variables
   \item Assess normality of the underlying distributions
     \begin{itemize}
