@@ -1,6 +1,6 @@
 %% \documentclass[handout,t]{beamer} % HANDOUT
-\documentclass[handout,notes=show,t]{beamer} % NOTES
-%% \documentclass[t]{beamer} % SLIDES
+%% \documentclass[handout,notes=show,t]{beamer} % NOTES
+\documentclass[t]{beamer} % SLIDES
 
 \usetheme{SIGIL}
 \usepackage{beamer-tools-sigil}
@@ -15,11 +15,12 @@
 %% Titlepage
 
 \title[5.\ WFD \& zipfR]{Unit 5: Word Frequency Distributions\\ 
-  with the \emph{zipfR} package}
+  with the zipfR package}
 \subtitle{Statistics for Linguists with R -- A SIGIL Course}
 \sigilauthors
-\date[sigil.r-forge.r-project.org]{%
-  \light{\tiny \sigilcopyright}}
+\sigilcopyright
+% \date[sigil.r-forge.r-project.org]{%
+%   \light{\tiny \sigilcopyright}}
 
 \begin{document}
 
@@ -109,7 +110,8 @@
 
 \begin{frame}
   \frametitle{Rank/frequency profile of Brown corpus}
-   
+  
+  \ungap[1]
   \begin{center}
     \includegraphics[height=7.5cm]{img/brown-rf}
   \end{center}
@@ -126,21 +128,20 @@
       \hline
       \textbf{\textit{r}} & \multicolumn{1}{c|}{\textbf{\textit{f}}} & \textbf{word} & \textbf{rank range} & \multicolumn{1}{c|}{\textbf{\textit{f}}} & \textbf{randomly selected examples}\\
       \hline
-      1 & 62642 & the &       7967--\phantom{0}8522 & 10 & recordings, undergone, privileges\\
-      2 & 35971 & of &        8523--\phantom{0}9236 & 9 &  Leonard, indulge, creativity\\
-      3 & 27831 & and &       9237--10042 & 8 &  unnatural, Lolotte, authenticity\\
-      4 & 25608 & to &        10043--11185 & 7 &  diffraction, Augusta, postpone\\
-      5 & 21883 & a &         11186--12510 & 6 &  uniformly, throttle, agglutinin\\
-      6 & 19474 & in &        12511--14369 & 5 &  Bud, Councilman, immoral\\
-      7 & 10292 & that &      14370--16938 & 4 &  verification, gleamed, groin\\
-      8 & 10026 & is &        16939--21076 & 3 &  Princes, nonspecifically, Arger\\
-      9 & 9887 & was &        21077--28701 & 2 &  blitz, pertinence, arson\\
-      10 & 8811 & for &       28702--53076 & 1 &  Salaries, Evensen, parentheses\\
+       1 & 69836 & the   &   7731 -- \phantom{0}8271 & 10 &    schedules, polynomials, bleak \\ 
+       2 & 36365 & of    &   8272 -- \phantom{0}8922 &  9 &          tolerance, shaved, hymn \\ 
+       3 & 28826 & and   &   8923 -- \phantom{0}9703 &  8 & decreased, abolish, irresistible \\ 
+       4 & 26126 & to    &   9704 -- 10783 &  7 &        immunity, cruising, titan \\ 
+       5 & 23157 & a     &  10784 -- 11985 &  6 &     geographic, lauro, portrayed \\ 
+       6 & 21314 & in    &  11986 -- 13690 &  5 &     grigori, slashing, developer \\ 
+       7 & 10777 & that  &  13691 -- 15991 &  4 &       sheath, gaulle, ellipsoids \\ 
+       8 & 10182 & is    &  15992 -- 19627 &  3 &         mc, initials, abstracted \\ 
+       9 &  9968 & was   &  19628 -- 26085 &  2 &         thar, slackening, deluxe \\ 
+      10 &  9801 & he    &  26086 -- 45215 &  1 &  beck, encompasses, second-place \\ 
       \hline
     \end{tabular}
   \end{scriptsize}
 \end{frame}
-
 
 \begin{frame}
 \frametitle{Frequency spectrum}
@@ -186,7 +187,7 @@
   \frametitle{Vocabulary growth curve of Brown corpus}
   \framesubtitle{With $V_1$ growth in red (curve smoothed with binomial interpolation)}
 
-  \ungap
+  \ungap[1.5]
   \begin{center}
     \includegraphics[height=7.5cm]{img/brown-vgc}
   \end{center}
@@ -209,6 +210,7 @@
   \frametitle{Typical frequency patterns} 
   \framesubtitle{The Italian prefix \textcite{ri-} in the \emph{la Repubblica} corpus}
 
+  \ungap[1.5]
   \begin{center}
     \includegraphics[height=7.5cm]{img/ita-ri-rf}
   \end{center}
@@ -228,7 +230,7 @@
     \vspace{-5mm}
     \begin{center}
       \hspace{2cm}
-      \includegraphics[height=50mm]{img/brown-loglog-rf}
+      \includegraphics[height=45mm]{img/brown-loglog-rf}
     \end{center}
   \end{itemize}
 
@@ -291,6 +293,7 @@
   \frametitle{Zipf's law}
   \framesubtitle{Fitting the Brown rank/frequency profile}
 
+  \ungap[1.5]
   \begin{center}
     \includegraphics[height=7.5cm]{img/brown-zipf-rf}
   \end{center}
@@ -326,6 +329,7 @@
   \frametitle{Zipf-Mandelbrot vs.\ Zipf's law} 
   \framesubtitle{Fitting the Brown rank/frequency profile}
 
+  \ungap[1.5]
   \begin{center}
     \includegraphics[height=7.5cm]{img/brown-zipf-man-rf}
   \end{center}
@@ -341,15 +345,15 @@
   \item Most important application: \h{extrapolation} of vocabulary size and
     frequency spectrum to larger sample sizes
     \begin{itemize}
-    \item productivity (in morphology, syntax, \ldots)
-    \item lexical richness\\ (in stylometry, language acquisition, clinical linguistics, \ldots)
-    \item practical NLP (est.\ proportion of OOV words, typos, \ldots)
+    \item morphological productivity \citep[e.g.][]{Luedeling:Evert:05}
+    \item lexical richness in stylometry \citep{Efron:Thisted:76}, language acquisition, clinical linguistics \citep{Garrard:etc:05}
+    \item language technology (estimate proportion of OOV words, unseen grammra rules, typos, \ldots)
     \end{itemize}
   \item[\hand] need method for predicting vocab.\ growth on unseen data
   \item[]\pause
   \item Direct applications of Zipf's law
     \begin{itemize}
-    \item population model for Good-Turing smoothing
+    \item population model for Good-Turing smoothing \citep{Good:53,Gale:Sampson:95}
     \item realistic prior for Bayesian language modelling
     \end{itemize}
   \item[\hand] need model of type probability distribution in the population
@@ -421,10 +425,10 @@
   \ungap[1.5]
   \begin{center}
     \begin{tabular}{cc}
-      \includegraphics[width=40mm]{img/02-models-normal} &
-      \includegraphics[width=40mm]{img/02-models-zm-1} \\
-      \includegraphics[width=40mm]{img/02-models-zm-3} &
-      \includegraphics[width=40mm]{img/02-models-zm-2}
+      \includegraphics[width=40mm]{img/05-models-normal} &
+      \includegraphics[width=40mm]{img/05-models-zm-1} \\
+      \includegraphics[width=40mm]{img/05-models-zm-3} &
+      \includegraphics[width=40mm]{img/05-models-zm-2}
     \end{tabular}
   \end{center}
 \end{frame}
@@ -455,10 +459,10 @@
   \ungap[1.5]
   \begin{center}
     \begin{tabular}{cc}
-      \includegraphics[width=40mm]{img/02-models-zm-param-4} &
-      \includegraphics[width=40mm]{img/02-models-zm-param-1} \\
-      \includegraphics[width=40mm]{img/02-models-zm-param-3} &
-      \includegraphics[width=40mm]{img/02-models-zm-param-2}
+      \includegraphics[width=40mm]{img/05-models-zm-param-4} &
+      \includegraphics[width=40mm]{img/05-models-zm-param-1} \\
+      \includegraphics[width=40mm]{img/05-models-zm-param-3} &
+      \includegraphics[width=40mm]{img/05-models-zm-param-2}
     \end{tabular}
   \end{center}
 \end{frame}
@@ -469,10 +473,10 @@
   \ungap[1.5]
   \begin{center}
     \begin{tabular}{cc}
-      \includegraphics[width=40mm]{img/02-models-zm-log-4} &
-      \includegraphics[width=40mm]{img/02-models-zm-log-1} \\
-      \includegraphics[width=40mm]{img/02-models-zm-log-3} &
-      \includegraphics[width=40mm]{img/02-models-zm-log-2}
+      \includegraphics[width=40mm]{img/05-models-zm-log-4} &
+      \includegraphics[width=40mm]{img/05-models-zm-log-1} \\
+      \includegraphics[width=40mm]{img/05-models-zm-log-3} &
+      \includegraphics[width=40mm]{img/05-models-zm-log-2}
     \end{tabular}
   \end{center}
 \end{frame}
@@ -524,8 +528,8 @@
   by a Zipf-Mandelbrot model: % with parameters $a=3$ and $b=50$
   \begin{center}
     \begin{tabular}{cc}
-      \includegraphics[width=30mm]{img/02-samples-zm-model} &
-      \includegraphics[width=30mm]{img/02-samples-zm-model-log} 
+      \includegraphics[width=30mm]{img/05-samples-zm-model} &
+      \includegraphics[width=30mm]{img/05-samples-zm-model-log} 
     \end{tabular}
   \end{center}
   
@@ -659,12 +663,12 @@
 
   \ungap[1]
   \begin{tabular}{ccc}
-    \includegraphics[width=40mm]{img/02-samples-tfl-r-1} &
-    \includegraphics[width=40mm]{img/02-samples-tfl-r-2} &
+    \includegraphics[width=40mm]{img/05-samples-tfl-r-1} &
+    \includegraphics[width=40mm]{img/05-samples-tfl-r-2} &
     \raisebox{2cm}{$r\leftrightarrow f_r$} \\
     
-    \includegraphics[width=40mm]{img/02-samples-tfl-k-1} &
-    \includegraphics[width=40mm]{img/02-samples-tfl-k-2} &
+    \includegraphics[width=40mm]{img/05-samples-tfl-k-1} &
+    \includegraphics[width=40mm]{img/05-samples-tfl-k-2} &
     \raisebox{2cm}{$k\leftrightarrow f_k$} 
   \end{tabular}
 \end{frame}
@@ -674,12 +678,18 @@
 
   \ungap[1]
   \begin{center}
-    \begin{tabular}{cc}
-      \includegraphics[width=40mm]{img/02-samples-spc-1} &
-      \includegraphics[width=40mm]{img/02-samples-spc-2} \\
-      \includegraphics[width=40mm]{img/02-samples-spc-3} &
-      \includegraphics[width=40mm]{img/02-samples-spc-4} 
-    \end{tabular}
+    \only<beamer:0| handout:1>{%
+      \begin{tabular}{cc}
+        \includegraphics[width=40mm]{img/05-samples-spc-1} &
+        \includegraphics[width=40mm]{img/05-samples-spc-2} \\
+        \includegraphics[width=40mm]{img/05-samples-spc-3} &
+        \includegraphics[width=40mm]{img/05-samples-spc-4} 
+      \end{tabular}%
+    }%
+    \only<beamer:1| handout:0>{\includegraphics[width=70mm]{img/05-samples-spc-1}}%
+    \only<beamer:2| handout:0>{\includegraphics[width=70mm]{img/05-samples-spc-2}}%
+    \only<beamer:3| handout:0>{\includegraphics[width=70mm]{img/05-samples-spc-3}}%
+    \only<beamer:4| handout:0>{\includegraphics[width=70mm]{img/05-samples-spc-4}}%
   \end{center}
 \end{frame}
 
@@ -688,12 +698,18 @@
 
   \ungap[1]
   \begin{center}
-    \begin{tabular}{cc}
-      \includegraphics[width=40mm]{img/02-samples-vgc-1} &
-      \includegraphics[width=40mm]{img/02-samples-vgc-2} \\
-      \includegraphics[width=40mm]{img/02-samples-vgc-3} &
-      \includegraphics[width=40mm]{img/02-samples-vgc-4} 
-    \end{tabular}
+    \only<beamer:0| handout:1>{%
+      \begin{tabular}{cc}
+        \includegraphics[width=40mm]{img/05-samples-vgc-1} &
+        \includegraphics[width=40mm]{img/05-samples-vgc-2} \\
+        \includegraphics[width=40mm]{img/05-samples-vgc-3} &
+        \includegraphics[width=40mm]{img/05-samples-vgc-4} 
+      \end{tabular}%
+    }%
+    \only<beamer:1| handout:0>{\includegraphics[width=70mm]{img/05-samples-vgc-1}}%
+    \only<beamer:2| handout:0>{\includegraphics[width=70mm]{img/05-samples-vgc-2}}%
+    \only<beamer:3| handout:0>{\includegraphics[width=70mm]{img/05-samples-vgc-3}}%
+    \only<beamer:4| handout:0>{\includegraphics[width=70mm]{img/05-samples-vgc-4}}%
   \end{center}
 \end{frame}
 
@@ -715,8 +731,8 @@
       size $N$
     \item rather than to the specific values $V$ and $V_m$\\
       observed in a particular sample or a real-world data set
+    \item[]
     \end{itemize}
-  \item[]
   \item Expected values can be calculated efficiently \emph{without}
     generating thousands of random samples
   \end{itemize}
@@ -727,12 +743,18 @@
 
   \ungap[1]
   \begin{center}
-    \begin{tabular}{cc}
-      \includegraphics[width=40mm]{img/02-samples-spc-exp-vs-sample-1} &
-      \includegraphics[width=40mm]{img/02-samples-spc-exp-vs-sample-2} \\
-      \includegraphics[width=40mm]{img/02-samples-spc-exp-vs-sample-3} &
-      \includegraphics[width=40mm]{img/02-samples-spc-exp-vs-sample-4} 
-    \end{tabular}
+    \only<beamer:0| handout:1>{%
+      \begin{tabular}{cc}
+        \includegraphics[width=40mm]{img/05-samples-spc-exp-vs-sample-1} &
+        \includegraphics[width=40mm]{img/05-samples-spc-exp-vs-sample-2} \\
+        \includegraphics[width=40mm]{img/05-samples-spc-exp-vs-sample-3} &
+        \includegraphics[width=40mm]{img/05-samples-spc-exp-vs-sample-4} 
+      \end{tabular}%
+    }%
+    \only<beamer:1| handout:0>{\includegraphics[width=70mm]{img/05-samples-spc-exp-vs-sample-1}}%
+    \only<beamer:2| handout:0>{\includegraphics[width=70mm]{img/05-samples-spc-exp-vs-sample-2}}%
+    \only<beamer:3| handout:0>{\includegraphics[width=70mm]{img/05-samples-spc-exp-vs-sample-3}}%
+    \only<beamer:4| handout:0>{\includegraphics[width=70mm]{img/05-samples-spc-exp-vs-sample-4}}%
   \end{center}
 \end{frame}
 
@@ -742,8 +764,8 @@
   \ungap[1]
   \begin{center}
     \begin{tabular}{c @{} c}
-      \includegraphics[width=50mm]{img/02-samples-vgc-exp-vs-samples} &
-      \includegraphics[width=50mm]{img/02-samples-vgc-V1-exp-vs-samples}
+      \includegraphics[width=50mm]{img/05-samples-vgc-exp-vs-samples} &
+      \includegraphics[width=50mm]{img/05-samples-vgc-V1-exp-vs-samples}
     \end{tabular}
   \end{center}
 \end{frame}
@@ -754,10 +776,16 @@
   \ungap[1]
   \begin{center}
     \begin{tabular}{c @{} c}
-      \includegraphics[width=50mm]{img/02-samples-vgc-exp-vs-samples-conf} &
-      \includegraphics[width=50mm]{img/02-samples-vgc-V1-exp-vs-samples-conf}
+      \includegraphics[width=50mm]{img/05-samples-vgc-exp-vs-samples-conf} &
+      \includegraphics[width=50mm]{img/05-samples-vgc-V1-exp-vs-samples-conf}
     \end{tabular}
   \end{center}
+
+  ``Confidence intervals'' indicate predicted sampling distribution:
+  \begin{itemize}
+  \item[\hand] for 95\% of samples generated by the LNRE model, VGC will fall within the range delimited by the thin red lines
+  \end{itemize}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -768,21 +796,21 @@
 
   \begin{center}
     \begin{tabular}{c @{} c}
-      \only<beamer:1| handout:1>{\includegraphics[width=50mm]{img/02-estimation-spc-1}}%
-      \only<beamer:2| handout:2>{\includegraphics[width=50mm]{img/02-estimation-spc-2}}%
-      \only<beamer:3| handout:3>{\includegraphics[width=50mm]{img/02-estimation-spc-3}}%
-      \only<beamer:4| handout:0>{\includegraphics[width=50mm]{img/02-estimation-spc-1}}%
-      \only<beamer:5| handout:0>{\includegraphics[width=50mm]{img/02-estimation-spc-4}}%
-      \only<beamer:6| handout:0>{\includegraphics[width=50mm]{img/02-estimation-spc-5}}%
-      \only<beamer:7| handout:7>{\includegraphics[width=50mm]{img/02-estimation-spc-6}}%
+      \only<beamer:1| handout:1>{\includegraphics[width=50mm]{img/05-estimation-spc-1}}%
+      \only<beamer:2| handout:2>{\includegraphics[width=50mm]{img/05-estimation-spc-2}}%
+      \only<beamer:3| handout:3>{\includegraphics[width=50mm]{img/05-estimation-spc-3}}%
+      \only<beamer:4| handout:0>{\includegraphics[width=50mm]{img/05-estimation-spc-1}}%
+      \only<beamer:5| handout:0>{\includegraphics[width=50mm]{img/05-estimation-spc-4}}%
+      \only<beamer:6| handout:0>{\includegraphics[width=50mm]{img/05-estimation-spc-5}}%
+      \only<beamer:7| handout:7>{\includegraphics[width=50mm]{img/05-estimation-spc-6}}%
       &
-      \only<beamer:1| handout:1>{\includegraphics[width=50mm]{img/02-estimation-vgc-1}}%
-      \only<beamer:2| handout:2>{\includegraphics[width=50mm]{img/02-estimation-vgc-2}}%
-      \only<beamer:3| handout:3>{\includegraphics[width=50mm]{img/02-estimation-vgc-3}}%
-      \only<beamer:4| handout:0>{\includegraphics[width=50mm]{img/02-estimation-vgc-1}}%
-      \only<beamer:5| handout:0>{\includegraphics[width=50mm]{img/02-estimation-vgc-4}}%
-      \only<beamer:6| handout:0>{\includegraphics[width=50mm]{img/02-estimation-vgc-5}}%
-      \only<beamer:7| handout:7>{\includegraphics[width=50mm]{img/02-estimation-vgc-6}}%
+      \only<beamer:1| handout:1>{\includegraphics[width=50mm]{img/05-estimation-vgc-1}}%
+      \only<beamer:2| handout:2>{\includegraphics[width=50mm]{img/05-estimation-vgc-2}}%
+      \only<beamer:3| handout:3>{\includegraphics[width=50mm]{img/05-estimation-vgc-3}}%
+      \only<beamer:4| handout:0>{\includegraphics[width=50mm]{img/05-estimation-vgc-1}}%
+      \only<beamer:5| handout:0>{\includegraphics[width=50mm]{img/05-estimation-vgc-4}}%
+      \only<beamer:6| handout:0>{\includegraphics[width=50mm]{img/05-estimation-vgc-5}}%
+      \only<beamer:7| handout:7>{\includegraphics[width=50mm]{img/05-estimation-vgc-6}}%
     \end{tabular}
   \end{center}
 \end{frame}
@@ -793,8 +821,8 @@
 
   \begin{center}
     \begin{tabular}{c @{} c}
-      \includegraphics[width=50mm]{img/02-estimation-spc-estimated} &
-      \includegraphics[width=50mm]{img/02-estimation-vgc-estimated} 
+      \includegraphics[width=50mm]{img/05-estimation-spc-estimated} &
+      \includegraphics[width=50mm]{img/05-estimation-vgc-estimated} 
     \end{tabular}
   \end{center}
 
@@ -802,8 +830,102 @@
   \begin{itemize}
     \item By trial \& error we found $a=2.0$ and $b=550$
     \item Automatic estimation procedure: $a=2.39$ and $b=1968$
-    \item Goodness-of-fit: $p\approx 0$ (multivariate chi-squared test)
   \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Reliability}
+
+\begin{frame}
+  \frametitle{Goodness-of-fit}
+
+  \begin{itemize}
+  \item Goodness-of-fit statistics measure how well the model has been fitted to the observed training data
+  \item Compare observed \vs expected frequency distribution
+    \begin{itemize}
+    \item \primary<2->{frequency spectrum} (\so easier)
+    \item vocabulary growth curve
+    \end{itemize}
+  \item<2-> Similarity measures
+    \begin{itemize}
+    \item mean square error (\so dominated by large $V$ / $V_m$)
+    \item multivariate \primary<3->{chi-squared statistic $X^2$} takes sampling variaton (and covariance of spectrum elements) into account
+    \end{itemize}
+  \item<3-> Multivariate chi-squared test for goodness-of-fit
+    \begin{itemize}
+    \item $H_0:$ observed data = sample from LNRE model\\
+      (i.e.\ fitted LNRE model describes the true population)
+    \item p-value derived from $X^2$ statistic ($X^2 \sim \chi_{\text{df}}$ under $H_0$)
+    \item in previous example: $p\approx 0$ $\quad$\sadsmilie
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{How reliable are the fitted models?}
+  
+  Three potential issues:
+  \begin{enumerate}
+  \item<2-> Model assumptions $\neq$ population\\
+    (e.g.\ distribution does not follow a Zipf-Mandelbrot law)
+    \begin{itemize}
+    \item[\hand] model cannot be adequate, regardless of parameter settings
+    \item[]
+    \end{itemize}
+  \item<3-> Parameter estimation unsuccessful\\
+    (i.e.\ suboptimal goodness-of-fit to training data)
+    \begin{itemize}
+    \item[\hand] optimization algorithm trapped in local minimum
+    \item[\hand] can result in highly inaccurate model
+    \item[]
+    \end{itemize}
+  \item<4-> \primary<5->{Uncertainty due to sampling variation}\\
+    (i.e.\ observed training data differ from population distribution)
+    \begin{itemize}
+    \item[\hand] model fitted to training data, may not reflect true population
+    \item[\hand] another training sample would have led to different parameters
+    \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bootstrapping}
+
+  \begin{itemize}
+  \item<1-> An empirical approach to sampling variation:
+    \begin{itemize}
+    \item take many random samples from the same population
+    \item estimate LNRE model from each sample
+    \item analyse distribution of model parameters, goodness-of-fit, etc.
+      (mean, median, s.d., boxplot, histogram, \ldots)
+    \item problem: how to obtain the additional samples?
+    \end{itemize}
+  \item<2-> Bootstrapping \citep{Efron:79}
+    \begin{itemize}
+    \item resample from observed data \emph{without replacement}
+    \item this approach is not suitable for type-token distributions
+      (resamples underestimate vocabulary size $V$!)
+    \end{itemize}
+  \item<3-> Parametric bootstrapping
+    \begin{itemize}
+    \item use fitted model to generate samples, i.e.\ sample from the population described by the model
+    \item advantage: ``correct'' parameter values are known
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bootstrapping}
+  \framesubtitle{parametric bootstrapping with 100 replicates}
+
+  \begin{center}
+    \only<beamer:1| handout:1>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-alpha}}%
+    \only<beamer:2| handout:0>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-A}}%
+    \only<beamer:3| handout:0>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-B}}%
+    \only<beamer:4| handout:2>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-X2}}%
+    \only<beamer:5| handout:0>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-S}}%
+    \only<beamer:6| handout:3>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-S-zoomed}}%
+  \end{center}
 \end{frame}
 
 \begin{frame}
@@ -859,7 +981,7 @@
 \begin{frame}[fragile]
   \frametitle{Loading}
 
-\begin{verbatim}
+\begin{alltt}
 > library(zipfR)
 
 > ?zipfR
@@ -868,7 +990,7 @@
 
 \REM{package overview in HTML help leads to zipfR tutorial}
 > help.start() 
-\end{verbatim}
+\end{alltt}
 
 \end{frame}
 
@@ -876,16 +998,17 @@
 \begin{frame}[fragile]
   \frametitle{Importing data}
 
-\begin{verbatim}
-> data(ItaRi.spc)
+\begin{alltt}
+> data(ItaRi.spc)     \REM{not necessary in recent package versions}
 > data(ItaRi.emp.vgc)
 
+\REM{load your own data sets (see \texttt{?read.spc} etc.\ for file format)}
 > my.spc <- read.spc("my.spc.txt")
 > my.vgc <- read.vgc("my.vgc.txt")
 
 > my.tfl <- read.tfl("my.tfl.txt")
-> my.spc <- tfl2spc(my.tfl)
-\end{verbatim}
+> my.spc <- tfl2spc(my.tfl) \REM{compute spectrum from frequency list}
+\end{alltt}
 
 \end{frame}
 
@@ -898,11 +1021,11 @@
 
 > N(ItaRi.spc)
 > V(ItaRi.spc)
-> Vm(ItaRi.spc,1)
-> Vm(ItaRi.spc,1:5)
+> Vm(ItaRi.spc, 1)
+> Vm(ItaRi.spc, 1:5)
 
-\REM{Baayen's P}
-> Vm(ItaRi.spc,1) / N(ItaRi.spc)
+\REM{Baayen's P = estimate for slope of VGC}
+> Vm(ItaRi.spc, 1) / N(ItaRi.spc)
 
 > plot(ItaRi.spc)
 > plot(ItaRi.spc, log="x")
@@ -923,20 +1046,19 @@
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Creating VGCs with binomial interpolation}
+  \frametitle{Smoothing VGCs with binomial interpolation}
+  \framesubtitle{\citep[for details, see][Sec. 2.6.1]{Baayen:01}}
 
 \begin{alltt}
 \REM{interpolated VGC}
-
-> ItaRi.bin.vgc <- vgc.interp(ItaRi.spc,
-  N(ItaRi.emp.vgc), m.max=1)
+> ItaRi.bin.vgc <- 
+  vgc.interp(ItaRi.spc, N(ItaRi.emp.vgc), m.max=1)
 
 > summary(ItaRi.bin.vgc)
 
 \REM{comparison}
-
 > plot(ItaRi.emp.vgc, ItaRi.bin.vgc,
-  legend=c("observed","interpolated"))
+       legend=c("observed", "interpolated"))
 \end{alltt}
 
 
@@ -960,7 +1082,8 @@
   \frametitle{Estimating LNRE models}
 
 \begin{alltt}
-\REM{fZM model; you can also try ZM and GIGP, and compare}
+\REM{fit a fZM model}
+\REM{(you can also try ZM and GIGP, and compare them with fZM)}
 
 > ItaUltra.fzm <- lnre("fzm", ItaUltra.spc)
 
@@ -974,19 +1097,16 @@
   \frametitle{Observed/expected spectra at estimation size}
 \begin{alltt}
 \REM{expected spectrum}
-
-> ItaUltra.fzm.spc <- lnre.spc(ItaUltra.fzm, 
-  N(ItaUltra.fzm))
+> ItaUltra.fzm.spc <- 
+  lnre.spc(ItaUltra.fzm, N(ItaUltra.fzm))
 
 \REM{compare}
-
 > plot(ItaUltra.spc, ItaUltra.fzm.spc,
-  legend=c("observed","fzm"))
+       legend=c("observed", "fzm"))
 
 \REM{plot first 10 elements only}
-
 > plot(ItaUltra.spc, ItaUltra.fzm.spc, 
-  legend=c("observed","fzm"), m.max=10)
+       legend=c("observed", "fzm"), m.max=10)
 \end{alltt}
 \end{frame}
 
@@ -1068,22 +1188,59 @@
   \frametitle{Compare growth of two categories}
 \begin{alltt}
 \REM{extrapolation of \emph{ultra-} VGC to sample size of \emph{ri-} data}
-
-> ItaUltra.ext.vgc <- lnre.vgc(ItaUltra.fzm,
-  N(ItaRi.emp.vgc))
+> ItaUltra.ext.vgc <- 
+  lnre.vgc(ItaUltra.fzm, N(ItaRi.emp.vgc))
 
 \REM{compare}
-
 > plot(ItaUltra.ext.vgc, ItaRi.bin.vgc,
-  N0=N(ItaUltra.fzm), legend=c("ultra-","ri-"))
+       N0=N(ItaUltra.fzm), legend=c("ultra-", "ri-"))
 
 \REM{zooming in}
-
 > plot(ItaUltra.ext.vgc, ItaRi.bin.vgc,
-  N0=N(ItaUltra.fzm), legend=c("ultra-","ri-"),
-  xlim=c(0,1e+5))
+       N0=N(ItaUltra.fzm), legend=c("ultra-", "ri-"),
+       xlim=c(0, 100e3))
 \end{alltt}
 \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Model validation by parametric bootstrapping}
+\begin{alltt}
+\REM{define function to extract relevant information from fitted model}
+> extract.stats <- function (m)
+    data.frame(alpha=m$param$alpha, A=m$param$A, 
+               B=m$param$B, S=m$S, X2=m$gof$X2)
+
+\REM{run bootstrapping procedure (default = 100 replicates)}
+> runs <- lnre.bootstrap(ItaUltra.fzm, N(ItaUltra.fzm), 
+                         lnre, extract.stats, type="fzm")
+
+\REM{combine results into single data frame}
+> runs <- do.call(rbind, runs)
+
+\REM{NB: don't try this with large samples (N \(>\) 1M tokens)}
+\end{alltt} %$
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Model validation by parametric bootstrapping}
+\begin{alltt}
+\REM{distribution of estimated model parameters}
+> hist(runs$alpha, freq=FALSE, xlim=c(0, 1))
+> lines(density(runs$alpha), lwd=2, col="red")
+> abline(v=ItaUltra.fzm$param$alpha, lwd=2, col="blue")
+
+\REM{try the other parameters for yourself!}
+
+\REM{distribution of goodness-of-fit values}
+> hist(runs$X2, freq=FALSE)
+> lines(density(runs$X2), lwd=2, col="red")
+
+\REM{estimated population vocabulary size}
+> hist(runs$S) \REM{what is wrong here?}
+\end{alltt} %$
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% References (if any)
