@@ -13,28 +13,23 @@
   \textbf{\large --- Exercise Sheet for Unit \#5 ---}
 \end{center}
 
-
-In this exercise, you will familiarize yourself with the \emph{zipfR}
-package, although, especially for the second part, some more general R
-skills will also come in handy.  
-
-\section{Type richness of German NP and PP constructions}
+\subsection*{1. Type richness of German NP and PP constructions}
 
 Although the notions of productivity and type richness have been used mostly
 in morphology, similar ideas can also be applied to the study of syntax.  The
 \emph{zipfR} package comes with data sets reporting frequency information
-about the ``expansions'' of the German NP and PP phrases in the German TIGER
-treebank (see \texttt{?TigerNP.spc} for more information).
+about the ``expansions'' of German NP and PP phrases in the German TIGER
+treebank (see \texttt{?TigerNP} for more information).
 
 Import the German NP and PP data sets. For the data set with more tokens,
-compute a binomially interpolated vocabulary growth curve (VGC).  For the
-smaller one, estimate an LNRE model (pick your favorite model, or try them
+compute a binomially interpolated vocabulary growth curve (VGC) using \texttt{vgc.interp()}.  
+For the smaller one, estimate an LNRE model (pick your favorite model, or try them
 all) and use it to compute an expected VGC up to the size of the larger data
-set.  Plot the interpolated and extrapolated VGCs, and determine which of the
+set with \texttt{lnre.vgc()}.  Plot the interpolated and extrapolated VGCs, and determine which of the
 two constructions appears to be more productive (in terms of type growth).
 
 
-\section{Data lost with cut-off points}
+\subsection*{2. Data lost with cut-off points}
 
 Before you tackle this part of the exercise, read the second case study in
 the \emph{zipfR} tutorial.
@@ -48,14 +43,31 @@ considered, on the basis of a sample from a relatively small corpus.
 
 First, load the file \texttt{bigrams.100k.tfl} (containing bigrams extracted
 from the first 100,000 tokens of the Brown corpus) as a \emph{zipfR} type
-frequency list, and generate a frequency spectrum from this (see the
-\emph{zipfR} documentation and tutorial).
+frequency list with \texttt{read.tfl()}, and generate a frequency spectrum from this 
+with \texttt{tfl2spc()}.
 
 What proportion of bigram types occur only once? What proportion of types
 occur 4 times or less?
 
 Now, suppose that we want to use our data to estimate the proportion
 of bigram types that would be lost by using the same two frequency
-cut-offs if we had a 1 million word corpus.  How will you go about it?
+cut-offs if we had a 1 million word corpus.  
+Fit a LNRE model to the observed frequency spectrum, then compute $\mathrm{E}[V]$ and $\mathrm{E}[V_m]$
+for a sample size of $N = 10^6$.  You can either use \texttt{lnre.spc()} for this purpose, or obtain the
+necessary expectations directly with \texttt{EV()} and \texttt{EVm()}.
+
+
+\subsection*{3. Reliability of the fitted model}
+
+In the last part of this exercise, you will use parametric bootstrapping to determine how reliable the estimated model parameters are. For our analysis of type richness, the slope parameter $\alpha$ and the population vocabulary size $S$ are of particular importance; the goodness-of-fit statistic $X^2$ is also useful because indicates suboptimal paramater estimates.
+
+Train an fZM model on the German NP data (\texttt{TigerNP.spc}).  Apply \texttt{lnre.bootstrap} to generate 100 samples\footnote{of the same size as the NP data} from this model, fit a new fZM model to each sample, and extract the values of $\alpha$, $S$ and $X^2$.  Combine the bootstrapped values into a data frame with 100 rows.
+
+Use your knowledge about descriptive statistics from Unit 3a to describe and visualize the distribution of the three values.  How do you interpret your observations?
+
+Would we also be able to determine type richness based on a much smaller treebank?   Apply the bootstrapping procedure to 10\% of the original sample size ($N \approx 11{,}000$).  Then compare the distribution of $\alpha$, $S$ and $X^2$ for the small samples with the previous results.
+
+We can also use bootstrapping to estimate how reliable it is to extrapolation vocabulary growth curves.  Re-run \texttt{lnre.bootstrap()} for a sample size of $N \approx 11{,}000$, but collect the extrapolated values $\mathrm{E}[V]$ and $\mathrm{E}[V_1]$ for the full data size (i.e.\ \texttt{N(TigerNP.spc)}).  You will have to design a suitable callback function based on the methods \texttt{EV()} and \texttt{EVm()} in order to do so.  Compare the distribution of the expected values to the actual values of $V$ and $V_1$ for the German NP data.
 
 \end{document}
+
