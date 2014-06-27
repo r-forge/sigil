@@ -8,7 +8,7 @@ library(SIGIL)
 FakeCensus <- simulated.census()
 WackypediaStats <- simulated.wikipedia()
 
-source("functions.R")
+source("R/03_utilities.R")
 dev.save <- function (basename) {
 	dev.copy2pdf(file=paste("../latex-slides/img/",basename,".pdf",sep=""), bg="white", onefile=FALSE)
 }
