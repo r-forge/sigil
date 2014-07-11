@@ -1,6 +1,6 @@
 %% \documentclass[handout,t]{beamer} % HANDOUT
-\documentclass[handout,notes=show,t]{beamer} % NOTES
-%% \documentclass[t]{beamer} % SLIDES
+%% \documentclass[handout,notes=show,t]{beamer} % NOTES
+\documentclass[t]{beamer} % SLIDES
 
 \usetheme{SIGIL}
 \usepackage{beamer-tools-sigil}
@@ -39,27 +39,31 @@
 \subsection{Preliminaries}
 
 \begin{frame}
-  \frametitle{Inferential statistics}
+  \frametitle{Inferential statistics for continuous data}
   % \framesubtitle{}
 
   \begin{itemize}
   \item Goal: infer (characteristics of) population distribution from small
     random sample, or test hypotheses about population
     \begin{itemize}
-    \item in particular, we will estimate/test characteristics $\mu$ and $\sigma$\\
-      \hand\ only makes sense if we have a \h{parametric} model
+    \item problem: overwhelmingly infinite coice of possible distributions
+    \item can estimate/test characteristics such as mean $\mu$ and s.d.\ $\sigma$
+    \item but $H_0$ doesn't determine a unique sampling distribution
+    \item[\hand] only makes sense for \h{parametric} model
+    \item[]
     \end{itemize}
-  \item Nonparametric tests need fewer assumptions, but \ldots
+  \item<2-> In this session, we assume a \h{Gaussian population} distribution%
+    \begin{itemize}
+    \item estimate/test parameters $\mu$ and $\sigma$ of this distribution 
+    \item sometimes a scale transformation is necessary (e.g.\ lognormal)
+    \item[]
+    \end{itemize}
+  \item<3-> Nonparametric tests need fewer assumptions, but \ldots
     \begin{itemize}
     \item cannot test hypotheses about $\mu$ and $\sigma$\\
       (instead: median, IQR = inter-quartile range, etc.)
     \item more complicated and computationally expensive procedures
     \item correct interpretation of results often difficult
-    \item[]
-    \end{itemize}
-  \item In this session, we assume a \h{Gaussian population} distribution%
-    \begin{itemize}
-    \item sometimes a scale transformation is necessary (e.g.\ lognormal)
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -321,11 +325,23 @@
     with $n$ \hh{degrees of freedom} ($\text{df} = n$)
   \item The $\chi^2_n$ distribution has expectation $\bigExp{\sum_i Z_i^2} =
     n$ and variance $\bigVar{\sum_i Z_i^2} = 2n$ \so confirms $\Exp{V} = n \sigma^2$%
-    \pause
-  \item Appropriate rejection thresholds for $V$ can be obtained with R
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{A test for the variance}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item Under $H_0: \sigma = \sigma_0$, we have
+    \[
+    \frac{V}{\sigma_0^2} = Z_1^2 + \dots + Z_n^2 \sim \chi^2_n
+    \]
+  \item Appropriate rejection thresholds for the test statistic $V / \sigma_0^2$ can easily be obtained with R
     \begin{itemize}
     \item $\chi^2_n$ distribution is not symmetric, so one-sided tail
       probabilities are used (with $\alpha' = \alpha/2$ for two-sided test)
+    \item[]
     \end{itemize}
     \pause
   \item Again, there are two problems:
@@ -375,8 +391,6 @@
   \frametitle{Intermission: Distributions in R}
   %% \framesubtitle{}
 
-  % \ungap[1]
-  \newcommand{\Zsquare}{\sum_i Z_i^2}
   \begin{alltt}
 > x <- rnorm(50, mean=100, sd=15) \REM{random sample of 50 IQ scores}
 > hist(x, freq=FALSE, breaks=seq(45,155,10)) \REM{histogram}
@@ -385,16 +399,37 @@
 > yG <- dnorm(xG, mean=100, sd=15)
 > lines(xG, yG, col="blue", lwd=2)
 
+\REM{What is the probability of an IQ score above 150?}
+\REM{(we need to compute an upper tail probability to answer this question)}
+> pnorm(150, mean=100, sd=15, lower.tail=FALSE)
+
+\REM{What does it mean to be among the bottom 25\% of the population?}
+> qnorm(.25, mean=100, sd=15) \REM{inverse tail probability}
+  \end{alltt}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Intermission: Distributions in R}
+  %% \framesubtitle{}
+
+  \newcommand{\Zsquare}{\sum_i Z_i^2}
+  \begin{alltt}
 \REM{Now do the same for a chi-squared distribution with 5 degrees of freedom}
 \REM{(hint: the parameter you're looking for is \texttt{df=5})}
+\pause
+> xC <- seq(0, 10, .1)
+> yC <- dchisq(xC, df=5)
+> plot(xC, yC, type="l", col="blue", lwd=2)
 
-pchisq(10, df=5, lower.tail=FALSE) \REM{tail prob.\ for \(\Zsquare \geq 10\)}
+\REM{tail probability for \(\Zsquare \geq 10\)}
+> pchisq(10, df=5, lower.tail=FALSE) 
 
 \REM{What is the appropriate rejection criterion for a variance test with \(\alpha = 0.05\)?}
-qchisq(0.05, df=5, lower.tail=FALSE) \REM{one-sided test}
+> qchisq(.05, df=5, lower.tail=FALSE) \REM{one-sided test}
 
   \end{alltt}
 \end{frame}
+
 
 
 \begin{frame}
@@ -463,6 +498,7 @@ qchisq(0.05, df=5, lower.tail=FALSE) \REM{one-sided test}
     \]
     with sampling distribution $(n-1) S^2 / \sigma^2 \sim \chi^2_{n-1}$
   \item $S^2$ is an unbiased estimator of variance: $\Exp{S^2} = \sigma^2$
+    \pause
   \item We can use $S^2$ to test $H_0: \sigma = \sigma_0$ without making any
     assumptions about the true mean $\mu$ \so \h{chi-squared test}
     \begin{itemize}
@@ -470,12 +506,29 @@ qchisq(0.05, df=5, lower.tail=FALSE) \REM{one-sided test}
     \end{itemize}
   \item Remarks
     \begin{itemize}
-    \item compare sample variance ($\frac{1}{n-1}$) with population variance ($\frac{1}{m}$)
+    \item sample variance ($\frac{1}{n-1}$) \vs population variance ($\frac{1}{m}$)
     \item $\chi^2$ distribution doesn't have parameters $\sigma^2$ etc., so we
       need to specify the distribution of $S^2$ in a roundabout way
     \item independence of $S^2$ and $\bar{X}$ will play an important role later
     \end{itemize}
   \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Sample data for this session}
+  %% \framesubtitle{}
+
+  \begin{alltt}
+\REM{Let us take a reproducible sample from the population of Ingary}
+> library(SIGIL)
+> Census <- simulated.census()
+> Survey <- Census[1:100, ]
+
+\REM{We will be testing hypotheses about the distribution of body heights}
+> x <- Survey$height \REM{sample data: \(n\) items}
+> n <- length(x)
+    
+  \end{alltt}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -487,19 +540,20 @@ qchisq(0.05, df=5, lower.tail=FALSE) \REM{one-sided test}
   \newcommand{\sigmaSq}{\sigma^2}
   \newcommand{\sigmaNull}{\sigma_0}
   \begin{alltt}
-> x <- Survey$height \REM{sample data: \(n\) items}
-> n <- length(x)
 
 \REM{Chi-squared test for a hypothesis about the s.d. (with unknown mean)}
-\REM{\(\Hnull: \sigma = 13\) (one-sided test against \(\sigma > \sigmaNull\))}
-> sigma0 <- 13
+\REM{\(\Hnull: \sigma = 12\) (one-sided test against \(\sigma > \sigmaNull\))}
+> sigma0 <- 12 \REM{you can also use the name \texttt{\(\sigma\)0} in a Unicode locale}
 > S2 <- sum((x - mean(x))^2) / (n-1) \REM{unbiased estimator of \(\sigmaSq\)}
+> S2 <- var(x) \REM{this should give exactly the same value}
 > X2 <- (n-1) * S2 / sigma0^2   \REM{has \(\chisq\) distribution under \(\Hnull\)}
 > pchisq(X2, df=n-1, lower.tail=FALSE)
 
-\REM{Here's a trick to carry out a two-sided test (try e.g.\ with \(\sigmaNull=20\))}
-alt.higher <- S2 > sigma0^2
-2 * pchisq(X2, df=n-1, lower.tail=!alt.higher)
+\REM{How do you carry out a one-sided test against \(\sigma < \sigmaNull\)?}
+
+\REM{Here's a trick for an approximate two-sided test (try e.g.\ with \(\sigmaNull=20\))}
+> alt.higher <- S2 > sigma0^2
+> 2 * pchisq(X2, df=n-1, lower.tail=!alt.higher)
 
   \end{alltt} %$
 \end{frame}
@@ -518,7 +572,7 @@ alt.higher <- S2 > sigma0^2
     \[
     Z = \frac{\bar{X} - \mu_0}{\sigma / \sqrt{n}}
     \]
-    replace the unknown true s.d.\ $\sigma$ by the sample estimate
+    replace the unknown true s.d.\ $\sigma$ by the unbiased sample estimate
     $\hat{\sigma} = \sqrt{S^2}$, resulting in a so-called \h{t-score}:
     \[    
     T = \frac{\bar{X} - \mu_0}{\sqrt{S^2 / n}}
@@ -538,18 +592,43 @@ alt.higher <- S2 > sigma0^2
     T \sim t_{n-1} \quad\text{under}\quad H_0: \mu = \mu_0
     \]
     Student's \h{$t$ distribution} with $\text{df} = n-1$ degrees of freedom
-  \item In order to carry out a one-sample $t$~test, calculate the statistic
+  \item<2-> In order to carry out a one-sample $t$~test, calculate the statistic
     \[
     t = \frac{\bar{x} - \mu_0}{\sqrt{s^2 / n}}    
     \]
     and reject $H_0: \mu=\mu_0$ if $\abs{t} > C$
-  \item Rejection threshold $C$ depends on $\text{df} = n-1$ and desired
+  \item<3-> Rejection threshold $C$ depends on $\text{df} = n-1$ and desired
     significance level $\alpha$ (in R: \secondary{\texttt{-qt($\alpha$/2, $n-1$)}})
     \begin{itemize}
     \item[\hand] close to z-score thresholds for $n > 30$
     \end{itemize}
   \end{itemize}
-  \addnote{TODO -- mathematical explanation of the ``miracle'' that cancels out $\sigma^2$}%
+\end{frame}
+
+\begin{frame}
+  \frametitle{The mathematical magic behind Student's $t$ test}
+
+  \begin{itemize}
+  \item Student's $t$ distribution characterizes the quantity
+    \[
+    \frac{Z}{\sqrt{V / k}} \sim t_k
+    \]
+    where $Z\sim N(0, 1)$ and $V\sim \chi^2_k$ are \primary{independent} r.v.
+  \item<2-> $T\sim t_{n-1}$ under $H_0: \mu = \mu_0$ because the unknown population variance $\sigma^2$ cancels out between the independent r.v.\ $\bar{X}$ and $S^2$
+    \begin{align*}
+      T &= \frac{\bar{X} - \mu_0}{\sqrt{S^2 / n}}
+      \visible<3->{
+        = \frac{\frac{\bar{X} - \mu_0}{\sigma}}{\sqrt{\frac{S^2}{n\sigma^2}}}
+      }
+      \visible<4->{
+        = \frac{\primary{\frac{\bar{X} - \mu_0}{\sigma / \sqrt{n}}}}{\sqrt{\frac{S^2}{\sigma^2}}}
+      }
+      \visible<5->{
+        = \frac{\primary{\frac{\bar{X} - \mu_0}{\sigma / \sqrt{n}}}}{\sqrt{\secondary{\frac{(n-1) S^2}{\sigma^2}} / (n-1)}}
+      }
+    \end{align*}
+  \item<6->[] with $Z = \primary{\frac{\bar{X} - \mu_0}{\sigma / \sqrt{n}}} \sim N(0,1)$ and $V = \secondary{\frac{(n-1) S^2}{\sigma^2}} \sim \chi^2_{n-1}$
+  \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -567,11 +646,11 @@ alt.higher <- S2 > sigma0^2
 \REM{\(\Hnull: \mu = 165\) cm}
 > mu0 <- 165
 > x.bar <- mean(x) \REM{sample mean \(\bar{x}\)}
-> s2 <- sum((x - x.bar)^2) / (n-1) \REM{sample variance \(\sSq\)}
-> s2 <- sd(x)^2 \REM{easier with built-in function (check equality!)}
-> t.score <- (x.bar - mu0) / sqrt(s^2 / n) \REM{\(t\) statistic}
-> print(t.score) \REM{positive indicates \(\mu > \muNull\), negative \(\mu < \muNull\)}
+> s2 <- var(x)     \REM{sample variance \(\sSq\)}
+> t.score <- (x.bar - mu0) / sqrt(s2 / n) \REM{\(t\) statistic}
+> print(t.score)   \REM{positive indicates \(\mu > \muNull\), negative \(\mu < \muNull\)}
 > -qt(0.05/2, n-1) \REM{two-sided rejection threshold for \(|t|\) at \(\alpha = .05\)}
+> 2 * pt(abs(t.score), n-1, lower=FALSE) \REM{two-sided p-value}
 \REM{Mini-task: plot density function of \(t\) distribution for different d.f.}
 
 > t.test(x, mu=165) \REM{agrees with our ``manual'' t-test}
@@ -595,55 +674,25 @@ alt.higher <- S2 > sigma0^2
     \item in principle same procedure as for binomial confidence intervals
     \item implemented in R for $t$~test and chi-squared test
     \end{itemize}
-  \item For $t$ test, confidence interval has a particularly simple form, so
-    we can carry out the procedure by hand
-    \begin{itemize}
-    \item we'll write $\hat{\mu} = \bar{x}$ here to emphasise its use as
-      estimator
-    \end{itemize}
+  \item Confidence interval has a particularly simple form for the $t$ test
     \pause
   \item Given $H_0: \mu = a$ for some $a\in\setR$, we reject $H_0$ if
     \[
-    \abs{t} = \absscale{\frac{\hat{\mu} - a}{\sqrt{s^2 / n}}} > C
+    \abs{t} = \absscale{\frac{\bar{x} - a}{\sqrt{s^2 / n}}} > C
     \]
     with $C\approx 2$ for $\alpha = .05$ and $n > 30$%
     \pause
-  \item This leads to $\hat{\mu} - C\cdot s / \sqrt{n} \leq \mu \leq
-    \hat{\mu} + C\cdot s / \sqrt{n}$
-    \begin{itemize}
-    \item[\hand] origin of the ``$\pm 2$ standard deviations'' rule
+    \[
+    \text{\So}\quad \bar{x} - C \frac{s}{\sqrt{n}} \;\leq\; \mu \;\leq\; \bar{x} + C \frac{s}{\sqrt{n}}
+    \]
+    \begin{itemize}\ungap[1]
+    \item[\hand] this is the origin of the ``$\pm 2$ standard deviations'' rule of thumb
     \end{itemize}
   \end{itemize}
 \end{frame}
 
-% \begin{frame}
-%   \frametitle{}
-%   % \framesubtitle{}
-
-% \end{frame}
-
-% \begin{frame}[fragile]
-%   \frametitle{}
-%   %% \framesubtitle{}
-
-%   % \ungap[1]
-%   \begin{alltt}
-%   \end{alltt}
-% \end{frame}
-
-\begin{frame}[c]
-  %\frametitle{}
-  % \framesubtitle{}
-
-  \begin{center}
-    \h{\Large Switch to blackboard mode \ldots}
-  \end{center}
-\end{frame}
-
-\end{document}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Multiple samples}
+\section{Two-sample tests}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Comparing the means of two samples}
@@ -651,10 +700,6 @@ alt.higher <- S2 > sigma0^2
 \begin{frame}
   \frametitle{}
   % \framesubtitle{}
-
-  \begin{itemize}
-  \item 
-  \end{itemize}
 
 \end{frame}
 
@@ -668,7 +713,43 @@ alt.higher <- S2 > sigma0^2
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{}
+\subsection{Comparing the variances of two samples}
+
+\begin{frame}
+  \frametitle{}
+  % \framesubtitle{}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{}
+  %% \framesubtitle{}
+
+  % \ungap[1]
+  \begin{alltt}
+  \end{alltt}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The paired $t$ test for related samples}
+
+\begin{frame}
+  \frametitle{}
+  % \framesubtitle{}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{}
+  %% \framesubtitle{}
+
+  % \ungap[1]
+  \begin{alltt}
+  \end{alltt}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Multiple comparisons}
 
 \begin{frame}
   \frametitle{}
