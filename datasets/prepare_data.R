@@ -31,7 +31,12 @@ KrennPPV <- read.delim("tbl/krenn_pp_verb.tbl", quote="", fileEncoding="UTF-8", 
 save(KrennPPV, file="rda/KrennPPV.rda", compress="xz")
 
 ## passive counts for each text in the Brown and Lob corpora
-BrownLOBPassives <- read.delim("tbl/brown_lob_passives.tbl", quote="")
+BrownLOBPassives <- read.delim("tbl/brown_lob_passives.tbl", quote="", stringsAsFactors=FALSE)
+BrownLOBPassives <- transform(BrownLOBPassives,
+  genre = factor(genre, levels=BrownPassives$name), # ensure genres are listed in "natural" order
+  cat = factor(cat, levels=BrownPassives$cat),
+  lang = factor(lang, levels=c("AmE", "BrE"))
+)
 save(BrownLOBPassives, file="rda/BrownLOBPassives.rda", compress="xz")
 
 ## -- tbl/bigrams.100k.tfl has to be loaded with zipfR package, so don't include in SIGIL

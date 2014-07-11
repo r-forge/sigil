@@ -1,0 +1,32 @@
+# -*-org-*-
+#+TITLE:  Notes and TODO for SIGIL course and packages
+#+AUTHOR: Stefan Evert
+#+EMAIL:  stefan.evert@fau.de
+#+LANGUAGE:  en
+#+OPTIONS:   H:3 num:t toc:nil \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="orgmode.css" />
+
+* SIGIL Course
+
+** Unit #3
+- show Anscombe's quartet as a warning on trusting summary statistics
+  - see http://en.wikipedia.org/wiki/Anscombe's_quartet
+  - included in base R as data set =anscombe=
+  - we haven't talked about correlation measures yet, but include as a preview
+
+** Unit #8
+- redo illustration plots for passives example
+  - R code already imported into SVN, revise as necessary
+- re-structure and improve discussion of non-randomness
+- develop exercise using the passives data (or perhaps noun frequencies)
+  - LM / GLM regression
+  - either include register/dsm predictors in SIGIL package
+  - or use data set from BNC with more comprehensive metadata
+
+* SIGIL Package
+- TODO
+
+* corpora Package
+- re-think purpose and structure of =corpora= package
+- avoid duplication of =BNCmeta= data set in =SIGIL= and =corpora=
