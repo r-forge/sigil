@@ -1,10 +1,12 @@
 ##
-## Our solution to Exercise #5(type richness and vocabulary growth)
+## Our solution to Exercise #5 (type richness and vocabulary growth)
 ##
 
-## Problem 1: German NP and PP constructions
-
 library(zipfR)  # start by loading the zipfR library
+
+##
+## Problem 1: German NP and PP constructions
+##
 
 ## - Use the German NP and PP data sets included in zipfR
 N(TigerNP.spc)  # check which data set is larger
@@ -34,8 +36,9 @@ plot(NP.vgc, PP.vgc, TigerNP.emp.vgc, TigerPP.emp.vgc, legend=c("NP (interpolate
 
 ## Actual PP growth seems to be somewhat steeper than predicted by the model, possibly because of non-randomness in the data.  As a consequence, the true divergence of vocabulary growth curves may not be as large as suggested by our analysis (in fact, PP and NP curves almost seem to run parallel in the range from N=60,000 to N=90,000).
 
-
+##
 ## Problem 2: Data lost with cut-off points
+## 
 
 ## - First, load the file bigrams.100k.tfl (containing bigrams extracted from the first 100,000 tokens of the Brown corpus)
 bigrams.tfl <- read.tfl("bigrams.100k.tfl") # don't forget to set the working directory first
@@ -60,8 +63,9 @@ sum(EVm(bigrams.zm, 1:4, N)) / EV(bigrams.zm, N)
 
 # Final remark: comparison with the actual frequency spectrum for bigrams from the full 1M word Brown corpus shows that the predictions made by ZM are indeed much better than those of GIGP, especially for the proportion of hapax legomena (true value: 74.7%, ZM predicts 80.5%, GIGP predicts 65.4%).
 
-
+##
 ## Problem 3: Reliability of the fitted model
+##
 
 TigerNP.fzm <- lnre("fzm", TigerNP.spc)
 extract.stats <- function (m) data.frame(alpha=m$param$alpha, S=m$S, X2=m$gof$X2)
@@ -106,4 +110,3 @@ summary(runs3)
 
 show.hist(runs3$V, true.val=V(TigerNP.spc), xlim=c(0, 5000)) # some variability, but reasonable predictions
 show.hist(runs3$V1, true.val=Vm(TigerNP.spc, 1), xlim=c(0, 5000)) # relative variability much larger for V1
-
