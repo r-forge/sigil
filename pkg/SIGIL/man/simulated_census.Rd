@@ -1,7 +1,7 @@
 \name{simulated.census}
 \alias{simulated.census}
 \alias{FakeCensus}
-\title{Simulated census data for examples and illustrations (corpora)}
+\title{Simulated census data for examples and illustrations (SIGIL)}
 
 \description{
 

@@ -1,7 +1,7 @@
 \name{simulated.wikipedia}
 \alias{simulated.wikipedia}
 \alias{WackypediaStats}
-\title{Simulated type and token counts for Wikipedia articles (corpora)}
+\title{Simulated type and token counts for Wikipedia articles (SIGIL)}
 
 \description{
 

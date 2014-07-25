@@ -1,1 +1,1 @@
-export(simulated.census, simulated.wikipedia)
+export(simulated.census, simulated.wikipedia, simulated.language.course)
