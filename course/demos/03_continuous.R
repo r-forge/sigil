@@ -149,9 +149,55 @@ Female <- subset(Survey, sex == "f")
 t.test(Male$height, Female$height)
 t.test(Male$height, Female$height, var.equal=TRUE) # assuming equal variances
 
-var.test(Male$height, Female$height)
+t.test(height ~ sex, data=Survey) # "formula" interface
+boxplot(height ~ sex, data=Survey)
 
+s2.male <- var(Male$height)
+s2.female <- var(Female$height)
+f <- s2.male / s2.female
+f
 
+var.test(Male$height, Female$height) # F test in R
+
+before <- runif(100, 1, 6)
+after <- before - 0.5 + rnorm(100)
+after <- pmax(1, pmin(after, 6))
+
+data.frame(before=before, after=after)[1:10,]
+
+boxplot(before, after)
+t.test(before, after)
+
+plot(before, after)
+abline(0, 1)
+
+data.frame(before=before, after=after, diff=after-before)[1:10,]
+
+t.test(after - before, mu=0)
+boxplot(before, after, after - before)
+
+t.test(after, before, paired=TRUE) # paired t-test
+
+## test 20 different drugs, two are significant at 5% level
+dbinom(2, 20, .05) # this happens with a probability of 18.9%
+pbinom(1, 20, .05, lower.tail=FALSE) # Pr( >= 2 type I errors )
+
+## Sidak correction
+pbinom(1, 20, .01, lower.tail=FALSE) # individual tests at 1% level
+pbinom(1, 20, .001, lower.tail=FALSE) # individual tests at 0.1% level
+
+prop.cint(1, 20, alternative="greater") # Bonferroni correction
+
+summary(chickwts)
+boxplot(weight ~ feed, data=chickwts)
+
+# TukeyHSD(weight ~ feed, data=chickwts)
+
+?aov
+res <- aov(weight ~ feed, data=chickwts) # ANOVA
+res
+summary(res)
+TukeyHSD(res)
 
 library(languageR)
 
@@ -160,3 +206,4 @@ data(english) # visual lexical decision and naming latencies
 
 # - t-test for size, familiarity, frequency of plants vs. animals
 # - paired t-test for size/weight ratings
+
