@@ -59,7 +59,7 @@ necessary expectations directly with \texttt{EV()} and \texttt{EVm()}.
 
 \subsection*{3. Reliability of the fitted model}
 
-In the last part of this exercise, you will use parametric bootstrapping to determine how reliable the estimated model parameters are. For our analysis of type richness, the slope parameter $\alpha$ and the population vocabulary size $S$ are of particular importance; the goodness-of-fit statistic $X^2$ is also useful because indicates suboptimal paramater estimates.
+In the last part of this exercise, you will use parametric bootstrapping to determine how reliable the estimated model parameters are. For our analysis of type richness, the slope parameter $\alpha$ and the population vocabulary size $S$ are of particular importance; the goodness-of-fit statistic $X^2$ is also useful because indicates suboptimal parameter estimates.
 
 Train an fZM model on the German NP data (\texttt{TigerNP.spc}).  Apply \texttt{lnre.bootstrap} to generate 100 samples\footnote{of the same size as the NP data} from this model, fit a new fZM model to each sample, and extract the values of $\alpha$, $S$ and $X^2$.  Combine the bootstrapped values into a data frame with 100 rows.
 
@@ -67,7 +67,7 @@ Use your knowledge about descriptive statistics from Unit 3a to describe and vis
 
 Would we also be able to determine type richness based on a much smaller treebank?   Apply the bootstrapping procedure to 10\% of the original sample size ($N \approx 11{,}000$).  Then compare the distribution of $\alpha$, $S$ and $X^2$ for the small samples with the previous results.
 
-We can also use bootstrapping to estimate how reliable it is to extrapolation vocabulary growth curves.  Re-run \texttt{lnre.bootstrap()} for a sample size of $N \approx 11{,}000$, but collect the extrapolated values $\mathrm{E}[V]$ and $\mathrm{E}[V_1]$ for the full data size (i.e.\ \texttt{N(TigerNP.spc)}).  You will have to design a suitable callback function based on the methods \texttt{EV()} and \texttt{EVm()} in order to do so.  Compare the distribution of the expected values to the actual values of $V$ and $V_1$ for the German NP data.
+Bootstrapping can also give an indication how reliable it is to use LNRE models for the extrapolation of vocabulary growth curves.  Re-run \texttt{lnre.bootstrap()} for a sample size of $N \approx 11{,}000$, but collect the extrapolated values $\mathrm{E}[V]$ and $\mathrm{E}[V_1]$ for the full data size (i.e.\ \texttt{N(TigerNP.spc)}).  You will have to design a suitable callback function based on the methods \texttt{EV()} and \texttt{EVm()} in order to do so.  Compare the distribution of the expected values to the actual values of $V$ and $V_1$ for the German NP data.
 
 \end{document}
 
