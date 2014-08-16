@@ -23,7 +23,7 @@ Comparison of written and spoken noun frequencies in the British National Corpus
 
 \usage{
 
-head(BNCcomparison)
+BNCcomparison
 
 }
 

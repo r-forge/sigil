@@ -1,3 +1,8 @@
+Version 0.5:
+  - all SIGIL data sets have been moved to the new SIGIL package
+  - maintainer information has been updated
+  - this is a transitory release, pending a re-design and substantial new functionality to be included in the package
+
 Version 0.4-4:
 
   - move some example data sets and support functions to new SIGIL package
