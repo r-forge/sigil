@@ -33,10 +33,10 @@ build_SIGIL:
 check:	check_corpora check_SIGIL
 
 check_corpora:	clean_corpora build_corpora $(CORPORA)
-	R CMD check --multiarch $(CORPORA)
+	R CMD check --multiarch --as-cran $(CORPORA)
 
 check_SIGIL:	clean_SIGIL build_SIGIL $(SIGIL)
-	R CMD check --multiarch $(SIGIL)
+	R CMD check --multiarch --as-cran $(SIGIL)
 
 
 install:	install_corpora install_SIGIL

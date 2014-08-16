@@ -24,7 +24,7 @@
   with sufficient accuracy by the automatic methods.  For further information on
   the extraction methodology, see Gasthaus (2007, 20-21).  The original data set
   and the Python scripts used for feature extraction are available from
-  \url{http://cogsci.uni-osnabrueck.de/~CL/research/gasthaus2007/}.
+  \url{http://cogsci.uni-osnabrueck.de/~CL/download/BSc_Gasthaus2007/}.
 
 }
 
@@ -141,7 +141,7 @@ data(BNCbiber)
 
   Gasthaus, Jan (2007). \emph{Prototype-Based Relevance Learning for Genre Classification.}
   B.Sc.\ thesis, Institute of Cognitive Science, University of \enc{Osnabrück}{Osnabrueck}.
-  Data sets and software available from \url{http://cogsci.uni-osnabrueck.de/~CL/research/gasthaus2007/}.
+  Data sets and software available from \url{http://cogsci.uni-osnabrueck.de/~CL/download/BSc_Gasthaus2007/}.
 
 }
 
