@@ -1,0 +1,25 @@
+Feature extraction scripts used for the experiments performed for the 
+Bachelor's thesis entitled 
+"Prototype-based Relevance Learning for Genre Classification". 
+
+(c) 2007 Jan A. Gasthaus
+
+FILES
+=====
+  * biberextractor.py
+    
+    Script to extract the features described in Appendix II of 
+    "Variation across speech and writing" by D. Biber [1981].
+
+  * posextractor.py
+    
+    Script to extract POS uni-, bi-, and trigram frequencies.
+
+  * Several supplementary files on which these extractors are based, 
+    amounting to a framework for extracting linguistic features from
+    tab-separated, one-token-per-line corpus files.
+
+Running the script without parameters will give a help message, but have a 
+look at the source code for further information
+.
+

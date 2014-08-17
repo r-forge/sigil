@@ -51,6 +51,13 @@ save(BNCcomparison, file="rda/BNCcomparison.rda", compress="xz")
 BNCdomains <- read.delim("tbl/bnc_domains.tbl", quote="")
 save(BNCdomains, file="rda/BNCdomains.rda", compress="xz")
 
+## Biber features for texts in British National Corpus (from Gasthaus 2007)
+BNCbiber <- read.delim("tbl/bnc_biber.tbl", quote="", check.names=FALSE)
+ids <- BNCbiber[, 1]
+BNCbiber <- as.matrix(BNCbiber[, -1])
+rownames(BNCbiber) <- ids
+colnames(BNCbiber) <- paste0("f", colnames(BNCbiber))
+save(BNCbiber, file="rda/BNCbiber.rda", compress="xz")
 
 
 ## make ZIP archive containing all data files
