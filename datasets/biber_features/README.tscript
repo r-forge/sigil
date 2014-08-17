@@ -1,0 +1,31 @@
+
+    Biber's Register Features for Various Corpora
+
+1) General remarks
+
+  - feature extractor designed by Gasthaus (2007) for CLAWS-5 tag set (BNC)
+  - patched versions with some bug fixes
+    - passive counts far too low (often 0) because of misplaced \s in regexp RE_PASSIVES_1
+
+**TODO**
+  - check for further bugs
+  - compare with specificaions in appendix of Biber (1988)
+  - word forms should be matched case-insensitive (at first letter); or apply to lemma
+  - adapt to other tag sets (esp. Penn and/or CLAWS-7)
+  - re-implement as sequence of CQP queries?
+
+2) BNC
+
+  - extract BNC texts into individual .vrt files
+
+$ mkdir bnc_texts
+$ ./cwb-export-vrt-files.perl BNC bnc_texts/ text_id s word pos hw
+
+  - extract Biber feature vectors and move to data table directory
+
+$ featex-1.0-patched/biberextractor.py bnc_texts/*.txt
+$ mv BiberExtractor*.tab ../tbl/bnc_biber.tbl
+
+  - clean up
+
+$ rm -rf bnc_texts
