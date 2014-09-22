@@ -23,17 +23,16 @@ package.
 
 \begin{itemize}
 \item If you haven't done so already in Unit 1, download and install the
-  \texttt{corpora} package from CRAN (see installation notes in handout from
+  \texttt{SIGIL} package from CRAN (see installation notes in handout from
   Unit 1).
 \item We will use the \texttt{BNCInChargeOf} and \texttt{BNCcomparison} data
   sets included in this package. After loading the package with
-  \texttt{library(corpora)}, familiarise yourself with the data sets by
-  reading the respective help pages (\texttt{?BNCInChargeOf} and
+  \texttt{library(SIGIL)}, familiarise yourself with the data sets by
+  reading the respective help pages (with \texttt{?BNCInChargeOf} and
   \texttt{?BNCcomparison}).
-\item The \texttt{BNCInChargeOf} data set contains positional collocates for
+\item The \texttt{BNCInChargeOf} data set contains surface collocates of
   the phrase \emph{in charge of}, extracted from the British National Corpus.
-  You can load this data set into your R session with the command
-  \texttt{data(BNCInChargeOf)}.  Re-read the description of contingency tables
+  Re-read the description of contingency tables
   for surface cooccurrences in the lecture slides, then calculate the
   contingency table of observed frequencies from the provided frequency
   information (\texttt{f.in}, \texttt{N.in}, \texttt{f.out}, \texttt{N.out}).
