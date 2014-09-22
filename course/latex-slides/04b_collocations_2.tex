@@ -1,6 +1,6 @@
 %% \documentclass[handout,t]{beamer} % HANDOUT
-\documentclass[handout,notes=show,t]{beamer} % NOTES
-%% \documentclass[t]{beamer} % SLIDES
+%% \documentclass[handout,notes=show,t]{beamer} % NOTES
+\documentclass[t]{beamer} % SLIDES
 
 \usetheme{SIGIL}
 \usepackage{beamer-tools-sigil}
@@ -18,8 +18,7 @@
   Statistical Association Measures (Pt.~2)}
 \subtitle{Statistics for Linguists with R -- A SIGIL Course}
 \sigilauthors
-\date[sigil.r-forge.r-project.org]{%
-  \light{\tiny \sigilcopyright}}
+\sigilcopyright
 
 \begin{document}
 
@@ -567,7 +566,11 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
   \frametitle{The PP-verb data set}
 
   \begin{itemize}
-  \item \verb|krenn_pp_verb.tbl| available from course homepage
+    \item Co-occurrence data included in \texttt{SIGIL} package as \texttt{KrennPPV}
+    \begin{itemize}
+    \item file \verb|krenn_pp_verb.tbl| available from course homepage
+    \item[]
+    \end{itemize}
   \item Data frame with 5102 rows and 14 columns:
     \begin{itemize}
     \item \h{PP} = prepositional phrase (lemmatised)
@@ -588,10 +591,10 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
   \frametitle{Precision tables: your turn!}
 
   \begin{alltt}
-> PPV <- read.delim("krenn_pp_verb.tbl")
-> colnames(PPV)
+> library(SIGIL)
+> colnames(KrennPPV)
 
-> attach(PPV)
+> attach(KrennPPV)
 
 \REM{You should now be able to sort the data set and calculate}
 \REM{precision for some association measures and n-best lists.}
@@ -609,7 +612,7 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
 
 \REM{use \texttt{cumsum()} to calculate precision for all n-best lists}
 > prec <- cumsum(is.colloc[idx.logl]) / 
-  (1:nrow(PPV))
+  (1:nrow(KrennPPV))
 > prec[c(100,200,500,1000,1500,2000)]    
   \end{alltt}
 \end{frame}
@@ -619,17 +622,17 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
 
   \begin{alltt}
 > show.prec <- function(myData, AM, n) \{
-  stopifnot(AM \%in\% colnames(myData)) \REM{safety first!}
-  sort.idx <- order(myData[[AM]], decreasing=TRUE)
-  prec <- cumsum(myData\$is.colloc[sort.idx]) / 
-          (1:nrow(myData))
-  result <- data.frame(100 * prec[n]) \REM{percentages}
-  rownames(result) <- n  \REM{add nice row/column labels}
-  colnames(result) <- AM
-  result  \REM{return single-column data frame with precision values}
+    stopifnot(AM \%in\% colnames(myData)) \REM{safety first!}
+    sort.idx <- order(myData[[AM]], decreasing=TRUE)
+    prec <- cumsum(myData\$is.colloc[sort.idx]) / 
+            (1:nrow(myData))
+    result <- data.frame(100 * prec[n]) \REM{percentages}
+    rownames(result) <- n  \REM{add nice row/column labels}
+    colnames(result) <- AM
+    result  \REM{return single-column data frame with precision values}
   \}
 
-> show.prec(PPV, "chisq", c(100,200,500,1000))
+> show.prec(KrennPPV, "chisq", c(100,200,500,1000))
 
   \end{alltt}
 \end{frame}
@@ -642,15 +645,15 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
 
 \REM{data frames of same height can be combined in this way}
 > prec.table <- cbind(
-    show.prec(PPV, "log.like", n.list),
-    show.prec(PPV, "Fisher", n.list),
-    show.prec(PPV, "chisq", n.list),
-    show.prec(PPV, "chisq.corr", n.list),
-    show.prec(PPV, "z.score", n.list),
-    show.prec(PPV, "t.score", n.list),
-    show.prec(PPV, "MI", n.list),
-    show.prec(PPV, "Dice", n.list),
-    show.prec(PPV, "freq", n.list)
+    show.prec(KrennPPV, "log.like", n.list),
+    show.prec(KrennPPV, "Fisher", n.list),
+    show.prec(KrennPPV, "chisq", n.list),
+    show.prec(KrennPPV, "chisq.corr", n.list),
+    show.prec(KrennPPV, "z.score", n.list),
+    show.prec(KrennPPV, "t.score", n.list),
+    show.prec(KrennPPV, "MI", n.list),
+    show.prec(KrennPPV, "Dice", n.list),
+    show.prec(KrennPPV, "freq", n.list)
   )
   \end{alltt}
 \end{frame}
@@ -663,7 +666,7 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
 > prec.list <- lapply(
     c("log.like", "Fisher", "chisq", "chisq.corr", 
       "z.score", "t.score", "MI", "Dice", "freq"), 
-    function (AM) show.prec(PPV, AM, n.list)
+    function (AM) show.prec(KrennPPV, AM, n.list)
   )
 
 > prec.table <- do.call(cbind, prec.list)
@@ -692,7 +695,7 @@ Brown\$R1 <- Brown\$O11 + Brown\$O12 \REM{etc.}
 
   \begin{alltt}
 \REM{second, calculate precision for all n-best lists}
-> n.vals <- 1:nrow(PPV)
+> n.vals <- 1:nrow(KrennPPV)
 
 > prec.ll <- cumsum(is.colloc[idx.ll]) * 100 /  n.vals
 > prec.chisq <- cumsum(is.colloc[idx.chisq]) *

@@ -2,7 +2,8 @@
 ## Unit 4: Collocations & contingency tables (Part 2)
 ## -- code examples --
 
-Brown <- read.delim("brown_bigrams.tbl")
+library(SIGIL)
+Brown <- BrownBigrams
 
 ## demonstration: looping over large data sets is extremely slow
 attach(Brown) # just this once :-) ... and don't forget to detach below
@@ -142,10 +143,10 @@ show.nbest(Brown, "chi")
 
 ## Evaluation of association measures for MWE extraction: Brigitte Krenn's PNV data.
 # load and attach the data set
-PPV <- read.delim("krenn_pp_verb.tbl")
-colnames(PPV)
+library(SIGIL)
+colnames(KrennPPV)
 
-attach(PPV)
+attach(KrennPPV)
 
 ## You should now be able to sort the data set and calculate precision for
 ## some association measures and n-best lists.  (hint: sum() counts TRUE
@@ -156,7 +157,7 @@ sum(is.colloc[idx.logl[1:500]]) / 500   # \(n = 500\)
 sum(is.colloc[idx.logl[1:1000]]) / 1000 # \(n = 1000\)
 
 # use cumsum() to calculate precision for all n-best lists
-prec <- cumsum(is.colloc[idx.logl]) /  (1:nrow(PPV))
+prec <- cumsum(is.colloc[idx.logl]) /  (1:nrow(KrennPPV))
 prec[c(100,200,500,1000,1500,2000)]    
 
 show.prec <- function(myData, AM, n) {
@@ -169,25 +170,25 @@ show.prec <- function(myData, AM, n) {
   result  # return single-column data frame with precision values
   }
 
-show.prec(PPV, "chisq", c(100,200,500,1000))
+show.prec(KrennPPV, "chisq", c(100,200,500,1000))
 
 
 # data frames of same height can be combined in this way
 n.list <- c(100,200,500,1000,1500,2000)
 prec.table <- cbind(
-    show.prec(PPV, "log.like", n.list),
-    show.prec(PPV, "Fisher", n.list),
-    show.prec(PPV, "chisq", n.list),
-    show.prec(PPV, "chisq.corr", n.list),
-    show.prec(PPV, "z.score", n.list),
-    show.prec(PPV, "t.score", n.list),
-    show.prec(PPV, "MI", n.list),
-    show.prec(PPV, "Dice", n.list),
-    show.prec(PPV, "freq", n.list)
+    show.prec(KrennPPV, "log.like", n.list),
+    show.prec(KrennPPV, "Fisher", n.list),
+    show.prec(KrennPPV, "chisq", n.list),
+    show.prec(KrennPPV, "chisq.corr", n.list),
+    show.prec(KrennPPV, "z.score", n.list),
+    show.prec(KrennPPV, "t.score", n.list),
+    show.prec(KrennPPV, "MI", n.list),
+    show.prec(KrennPPV, "Dice", n.list),
+    show.prec(KrennPPV, "freq", n.list)
   )
 
 # remember the lapply / do.call trick?
-prec.list <- lapply(c("log.like", "Fisher", "chisq", "chisq.corr", "z.score", "t.score", "MI", "Dice", "freq"), function (AM) show.prec(PPV, AM, n.list))
+prec.list <- lapply(c("log.like", "Fisher", "chisq", "chisq.corr", "z.score", "t.score", "MI", "Dice", "freq"), function (AM) show.prec(KrennPPV, AM, n.list))
 prec.table <- do.call(cbind, prec.list)
 
 
@@ -204,7 +205,7 @@ idx.Dice <- order(Dice, decreasing=TRUE)
 idx.f <- order(freq, decreasing=TRUE)
 
 # second, calculate precision for all n-best lists
-n.vals <- 1:nrow(PPV)
+n.vals <- 1:nrow(KrennPPV)
 
 prec.ll <- cumsum(is.colloc[idx.ll]) * 100 /  n.vals
 prec.chisq <- cumsum(is.colloc[idx.chisq]) * 100 / n.vals
@@ -228,7 +229,7 @@ lines(n.vals, prec.Dice, lwd=2, col="blue", lty="dashed")
 lines(n.vals, prec.f, lwd=2, col="red", lty="dashed")
 
 # add horizontal line for baseline precision
-abline(h = 100 * sum(is.colloc) / nrow(PPV))
+abline(h = 100 * sum(is.colloc) / nrow(KrennPPV))
 
 # and legend with labels for the precision lines
 legend("topright", inset=.05, # easy positioning of box
