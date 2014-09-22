@@ -52,8 +52,11 @@ log(fisher.test(B2)$conf.int)
 fisher.test(B1, alternative="greater")    # high scores (significance and log odds ratio)
 fisher.test(B2, alternative="greater")    # low scores (significance and log odds ratio)
 
+library(SIGIL)
+Brown <- BrownBigrams
 
-Brown <- read.delim("brown_bigrams.tbl")
+## or load from TAB-delimited file
+# Brown <- read.delim("brown_bigrams.tbl")
 
 # Now select a number of bigrams (e.g. low and high cooccurrence frequency, or
 # specific part-of-speech combinations), construct the corresponding

@@ -1,6 +1,6 @@
 %% \documentclass[handout,t]{beamer} % HANDOUT
-\documentclass[handout,notes=show,t]{beamer} % NOTES
-%% \documentclass[t]{beamer} % SLIDES
+%% \documentclass[handout,notes=show,t]{beamer} % NOTES
+\documentclass[t]{beamer} % SLIDES
 
 \usetheme{SIGIL}
 \usepackage{beamer-tools-sigil}
@@ -18,8 +18,7 @@
   Tables (Pt.~1)}
 \subtitle{Statistics for Linguists with R -- A SIGIL Course}
 \sigilauthors
-\date[sigil.r-forge.r-project.org]{%
-  \light{\tiny \sigilcopyright}}
+\sigilcopyright
 
 \begin{document}
 
@@ -649,6 +648,7 @@
   \begin{itemize}
   \item Data set of bigrams with $f\geq 5$ in the Brown corpus
     \begin{itemize}
+    \item included in \texttt{SIGIL} package as \texttt{BrownBigrams}
     \item available on course homepage as \texttt{brown\_bigrams.tbl}
     \end{itemize}
   \item[]
@@ -671,7 +671,8 @@
   \frametitle{Practice: bigrams in the Brown corpus}
 
   \begin{alltt}
-> Brown <- read.delim("brown_bigrams.tbl")
+> library(SIGIL)
+> Brown <- BrownBigrams
 
 \REM{Now select a number of bigrams (e.g. low and high cooccurrence}
 \REM{frequency, or specific part-of-speech combinations), construct}
