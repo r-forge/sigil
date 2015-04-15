@@ -216,7 +216,8 @@
   \frametitle{Introductions}
 
   \begin{center}
-    \includegraphics[height=5cm]{img/uncle-sam-wants-you}
+    \vspace{-5mm}
+    \includegraphics[height=6cm]{img/uncle-sam-wants-you-cutout}
 
     \vspace{5mm}
     \begin{Large}
@@ -373,7 +374,7 @@
   \item Install R with standard package manager (e.g.\ \emph{Synaptic})
   \item Add CRAN repository to obtain up-to-date version of R
     \begin{itemize}
-    \item e.g.\ \secondary{http://cran.at.r-project.org/bin/linux/ubuntu precise/}
+    \item e.g.\ \secondary{http://cran.at.r-project.org/bin/linux/ubuntu trusty/}
     \item pkgs: \counterpoint{r-base-core r-base-html r-base-dev r-doc-html r-doc-pdf}
     \end{itemize}
   \item Various GUIs available, e.g.\ \primary{Rkward} and \primary{R Commander}
@@ -409,7 +410,7 @@
   \begin{itemize}
   \item Install packages from within R (system-wide with \texttt{sudo R})
     \begin{itemize}
-    \item e.g.\ \texttt{install.packages(c("\counterpoint{languageR}", "\counterpoint{corpora}"))}
+    \item e.g.\ \texttt{install.packages(c("\counterpoint{languageR}", "\counterpoint{SIGIL}"))}
     \item select CRAN mirror from pop-up list (recommended: Austria)
     \end{itemize}
   \end{itemize}
@@ -425,8 +426,6 @@
     \item \primary{Download R \ldots\ for Windows}, then run the installer
     \item if Windows complains, allow installer to run \& make changes
     \item select ``full installation'' and keep defaults for everything else
-    \item start R, adjust GUI preferences and save to default location\\
-      (make sure to select \primary{SDI mode} if you use Tinn-R GUI)
     \item[]
     \end{itemize}
     \pause
@@ -439,9 +438,9 @@
     \item check successful installation with these R commands:
       \begin{scriptsize}
         \begin{alltt}
-library(corpora)
-help("VSS") \REM[\scriptsize]{should pop up Web browser with help page}
-data(VSS); head(VSS, 20)
+library(SIGIL)
+help("BNCcomparison") \REM[\scriptsize]{should pop up Web browser with help page}
+head(BNCcomparison, 20)
         \end{alltt}
       \end{scriptsize}
     \end{itemize}
