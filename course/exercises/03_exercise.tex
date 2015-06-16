@@ -1,0 +1,100 @@
+\documentclass[a4paper,12pt]{article}
+
+\input{style.tex}
+
+\begin{document}
+
+\emph{Marco Baroni \& Stefan Evert} \hfill %
+{\small \url{http://SIGIL.R-Forge.R-Project.org/}}
+
+\begin{center}
+  \textbf{\large Statistical Analysis of Corpus Data with R}
+
+  \textbf{\large --- Exercise Sheet for Unit \#3 ---}
+\end{center}
+
+In this exercise, you will use techniques of descriptive and inferential statistics for continuous data to analyze the frequencies of passive verb phrases across texts from the extended \emph{Brown Family} of corpora (for details, see Xiao 2008, 395--397).  These corpora are collections of edited written American English (AmE, published in the U.S.) and British English (BrE, published in the UK) from the 1930s, 1960s and 1990s.  Here, we focus on the four central corpora: Brown (AmE, 1960), LOB (BrE, 1960), Frown (AmE, 1990) and FLOB (BrE, 1990).
+
+Your goal is to determine whether there are significant differences between the frequency of passives in American and British English, and whether there is evidence for a decline between the 1960s and 1990s as claimed by Leech et al.\ (2009, 164).
+
+The data set \texttt{PassiveBrownFam} included in the \texttt{SIGIL} package provides separate counts of passive and active verb phrases for each text in the extended Brown Family, as well as precomputed percentages of passive VPs.  Check that you have access to this data set and familiarize yourself with its structure:
+
+\begin{alltt}
+    > library(SIGIL)
+    > nrow(PassiveBrownFam)  \REM{check that data set is available}\begin{Rout}
+    [1] 2499 \end{Rout}
+    > ?PassiveBrownFam       \REM{read documentation carefully}
+\end{alltt}
+
+Now answer the following questions and carry out the specified tasks:
+
+\begin{enumerate}[topsep=0em]
+\item How many texts are there in each corpus of the extended Brown Family? What is their distribution across different genres?
+  \begin{itemize}[nosep]
+  \item Display tables of text counts by corpus and by genre.
+  \item Is the genre distribution the same for each corpus?
+  \item \emph{optional:} visualize the distributions with suitable bar plots
+  \end{itemize}
+\item Use the \texttt{subset} command to obtain separate data sets for the four target corpora.
+\item Summarize the distribution of passive frequencies (i.e.\ percentages of passive VPs) across texts in each corpus.
+  \begin{itemize}[nosep]
+  \item Compute the mean $\mu$ and standard deviation $\sigma$ of passive frequencies.
+  \item Which other summary statistics might be useful?
+  \end{itemize}
+\item Visualize the distribution of passive frequencies.
+  \begin{itemize}[nosep]
+  \item Plot a histogram for each corpus.
+  \item Add a contour line showing the estimated density function.
+  \item \emph{optional:} Can you combine all four histograms and/or contours into a single plot?
+  \end{itemize}
+\item Do the frequency counts follow a Gaussian distribution (at least roughly)?
+  \begin{itemize}[nosep]
+  \item Add suitable Gaussian density curves to the histogram plots.
+  \item Use quantile-quantile plots to assess normality of the distribution.
+  \end{itemize}
+\pagebreak %%%%%%%%%%%%%%%%%%%%
+\item Use Student's $t$-test for a pairwise comparison of the four corpora.
+  \begin{itemize}[nosep]
+  \item Which pairs of corpora can meaningfully be compared?
+  \item Which version of the $t$-test is appropriate in this situation?
+  \item Specify the precise null hypothesis $H_0$ of this test.
+  \item Report and interpret the full results of the significance tests.
+  \item \emph{optional:} Carry out non-parametric Mann-Whitney tests (using the \texttt{wilcox.test} function), and compare the two sets of results.
+  \end{itemize}
+\item Discuss the results of your analysis.
+  \begin{itemize}[nosep]
+  \item Is there a significant difference between American and British English?
+  \item Do your data corroborate Leech et al.'s (2009) claim of a decline in passive use?
+  \item What linguistic conclusions can you draw from your observations?   
+  \end{itemize}
+\item Do passive frequencies vary between different genres?
+  \begin{itemize}[nosep]
+  \item Use the ``formula'' interface of \texttt{boxplot} to display side-by-side boxplots of passive frequencies in the different genres.
+  \item Which significance test can be used to assess whether there are genuine differences between genres? What is its precise null hypothesis $H_0$?
+  \item Why would it be problematic to carry out pairwise comparisons for all genre combinations with Student's $t$-test?
+  \item \emph{optional:} Use a suitable adjustment or other procedure to determine which genres are significantly different from each other.
+  \end{itemize}
+\item How meaningful are frequency comparisons between corpora?
+  \begin{itemize}[nosep]
+  \item Discuss the implications of significant genre differences for the corpus-level comparisons you have carried out above.
+  \end{itemize}
+\end{enumerate}
+
+
+\subsubsection*{References}
+
+\begin{thebibliography}{99}
+
+\bibitem[Leech {\em et~al.}(2009)]{Leech:etc:09}
+Leech, Geoffrey; Hundt, Marianne; Mair, Christian; Smith, Nicholas (2009).
+{\em Change in Contemporary English: A Grammatical Study}.
+Studies in English Language. Cambridge University Press, Cambridge.
+
+\bibitem[Xiao(2008)]{Xiao:08}
+Xiao, Richard (2008).
+Well-known and influential corpora.
+In A.~L{\"u}deling and M.~Kyt{\"o} (eds.), {\em Corpus Linguistics. An International Handbook}, chapter~20, pages 383--457. Mouton de Gruyter, Berlin.
+
+\end{thebibliography}
+
+\end{document}
