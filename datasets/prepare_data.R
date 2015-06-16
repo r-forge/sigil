@@ -2,10 +2,15 @@
 ##  Prepare data sets for inclusion in corpora/SIGIL package
 ##
 
+library(plyr)
+
+
 ## BNC metadata
 BNCmeta <- read.delim("tbl/bnc_metadata_utf8.tbl", quote="", fileEncoding="UTF-8", encoding="UTF-8")
+BNCmeta$id <- as.character(BNCmeta$id)
 BNCmeta$title <- as.character(BNCmeta$title)
 save(BNCmeta, file="rda/BNCmeta.rda", compress="xz")
+
 
 ## text statistics for Brown and LOB corpora
 BrownStats <- read.delim("tbl/brown.stats.txt", quote="")
@@ -14,30 +19,53 @@ save(BrownStats, file="rda/BrownStats.rda", compress="xz")
 LOBStats <- read.delim("tbl/lob.stats.txt", quote="")
 save(LOBStats, file="rda/LOBStats.rda", compress="xz")
 
+
 ## number of passives per genre in Brown and LOB corpora
-BrownPassives <- read.csv("tbl/passives.brown.csv")
+BrownPassives <- read.csv("tbl/passives.brown.csv", stringsAsFactors=FALSE)
 save(BrownPassives, file="rda/BrownPassives.rda", compress="xz")
 
-LOBPassives <- read.csv("tbl/passives.lob.csv")
+LOBPassives <- read.csv("tbl/passives.lob.csv", stringsAsFactors=FALSE)
 save(LOBPassives, file="rda/LOBPassives.rda", compress="xz")
+
 
 ## adjacent bigrams in the Brown corpus
 BrownBigrams <- read.delim("tbl/brown_bigrams.tbl", quote="")
 BrownBigrams <- transform(BrownBigrams, word1=as.character(word1), word2=as.character(word2))
 save(BrownBigrams, file="rda/BrownBigrams.rda", compress="xz")
 
+
 ## PP-verb collocations annotated by Brigitte Krenn
 KrennPPV <- read.delim("tbl/krenn_pp_verb.tbl", quote="", fileEncoding="UTF-8", encoding="UTF-8", stringsAsFactors=FALSE)
 save(KrennPPV, file="rda/KrennPPV.rda", compress="xz")
 
+
+## lookup vector for genre labels (indexed by section code)
+brown.genres <- structure(BrownPassives$name, names=BrownPassives$cat)
+
 ## passive counts for each text in the Brown and Lob corpora
 BrownLOBPassives <- read.delim("tbl/brown_lob_passives.tbl", quote="", stringsAsFactors=FALSE)
 BrownLOBPassives <- transform(BrownLOBPassives,
-  genre = factor(genre, levels=BrownPassives$name), # ensure genres are listed in "natural" order
-  cat = factor(cat, levels=BrownPassives$cat),
+  genre = factor(genre, levels=brown.genres), # ensure genres are listed in "natural" order
+  cat = factor(cat, levels=names(brown.genres)),
   lang = factor(lang, levels=c("AmE", "BrE"))
 )
 save(BrownLOBPassives, file="rda/BrownLOBPassives.rda", compress="xz")
+
+
+## passive counts wrt. VP tokens for each text in the Brown Family (courtesy of Gerold Schneider)
+PassBFtokens <- read.delim("tbl/brownfam_vp_tokens.tbl.gz", stringsAsFactors=FALSE)
+PassiveBrownFam <- ddply(PassBFtokens, .(id, corpus, section, genre, period, lang, n.words), function (X) table(X$voice))
+PassiveBrownFam <- transform(PassiveBrownFam,
+  corpus=factor(corpus, levels=c("BLOB", "Brown", "LOB", "Frown", "FLOB")),
+  section=factor(section, levels=names(brown.genres)),
+  genre=factor(genre, levels=brown.genres),
+  period=factor(period),
+  lang=factor(lang, levels=c("AmE", "BrE")),
+  verbs=act+pass,
+  p.pass=100*pass/(act+pass))
+rownames(PassiveBrownFam) <- PassiveBrownFam$id
+save(PassiveBrownFam, file="rda/PassiveBrownFam.rda", compress="xz")
+
 
 ## -- tbl/bigrams.100k.tfl has to be loaded with zipfR package, so don't include in SIGIL
 
