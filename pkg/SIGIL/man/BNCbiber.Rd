@@ -30,7 +30,9 @@
 }
 
 \usage{
-data(BNCbiber)
+
+BNCbiber
+
 }
 
 \format{
