@@ -24,7 +24,9 @@
 }
 
 \usage{
-data(BNCmeta)
+
+BNCmeta
+
 }
 
 \format{
