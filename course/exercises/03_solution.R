@@ -20,8 +20,7 @@ print(tb)
 
 ## Optional: visualization (with some nice display options)
 par(mar=c(7,4,2,1)+.1) # better margins for plots below
-barplot(t(tb), beside=TRUE, col=1:5, border=NA, las=3)
-legend("topright", legend=colnames(tb), fill=1:5)
+barplot(t(tb), beside=TRUE, legend=colnames(tb), col=1:5, border=NA, las=3)
 
 ## -- Question 2 --
 
