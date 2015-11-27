@@ -1,0 +1,23 @@
+
+    PREPARE EXAMPLE DATA SETS FOR SIGIL COURSE
+
+1) Per-text frequency counts in BNC (to be aggregated)
+
+ - grammatical phenomena use sentence as unit of measurement, i.e. count sentences containing one or more instances
+ - split infinitives: _TO0 +ly_AV0 _V?I
+ - non-split infinitives with adverb: +ly_AV0 _TO0 _V?I
+ - superlative: the (_AJS | most _AJ0)
+ - paste tense: _V?D
+ - wh question: <s> _[PNQ,AVQ] _{V}
+
+$ ./cwb_freq_by_text.perl -D BNC -s raw/bnc_freqs_sentence.tbl  split.inf.S='[pos="TO0"] [word=".+ly" & pos="AV0"] [pos="V.I"]'  adv.inf.S='[word=".+ly" & pos="AV0"] [pos="TO0"] [pos="V.I"]'  superlative.S='[word="the"%c] ([pos="AJS"] | [word="most"%c] [pos="AJ0"])'  past.S='[pos="V.D"]'  wh.question.S='<s> [pos="PNQ|AVQ"] [pos="V.."]'
+ 
+ - lexical phenomena use word as unit of measurement, i.e. count total number of instances in each text
+ - "stop to think": {stop/V} to _{V}
+ - "time": {time/N}
+ - "click": {click/V}
+ - nouns: _NN?
+ - nominalizations: +[tion,tions,ment,ments,ity,ities]_NN?
+ - downtoners: almost|barely|hardly|merely|mildly|nearly|only|partially|partly|practically|scarcely|slightly|somewhat
+
+$ ./cwb_freq_by_text.perl -D BNC -s raw/bnc_freqs_word.tbl  stop.to='[lemma="stop_VERB"] [word="to"%c] [class="VERB"]'  time='[lemma="time_SUBST"]'  click='[lemma="click_VERB"]'  noun='[pos="NN."]'  nominalization='[word=".+(tions?|ments?|ity|ities)"%c & pos="NN."]'  downtoner='[word="almost|barely|hardly|merely|mildly|nearly|only|partially|partly|practically|scarcely|slightly|somewhat"%c & pos="AV0"]'

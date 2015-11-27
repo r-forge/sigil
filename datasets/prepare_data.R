@@ -69,6 +69,7 @@ save(PassiveBrownFam, file="rda/PassiveBrownFam.rda", compress="xz")
 
 ## -- tbl/bigrams.100k.tfl has to be loaded with zipfR package, so don't include in SIGIL
 
+
 ## BNC sample data for frequency comparison and collocation analysis
 BNCInChargeOf <- read.delim("tbl/bnc_in_charge_of.tbl", quote="", stringsAsFactors=FALSE)
 save(BNCInChargeOf, file="rda/BNCInChargeOf.rda", compress="xz")
@@ -79,6 +80,7 @@ save(BNCcomparison, file="rda/BNCcomparison.rda", compress="xz")
 BNCdomains <- read.delim("tbl/bnc_domains.tbl", quote="")
 save(BNCdomains, file="rda/BNCdomains.rda", compress="xz")
 
+
 ## Biber features for texts in British National Corpus (from Gasthaus 2007)
 BNCbiber <- read.delim("tbl/bnc_biber.tbl", quote="", check.names=FALSE)
 ids <- BNCbiber[, 1]
@@ -86,6 +88,17 @@ BNCbiber <- as.matrix(BNCbiber[, -1])
 rownames(BNCbiber) <- ids
 colnames(BNCbiber) <- paste0("f", colnames(BNCbiber))
 save(BNCbiber, file="rda/BNCbiber.rda", compress="xz")
+
+
+## per-text frequency counts for some BNCweb queries (see prepare_data.tscript)
+BNCqueries1 <- read.delim("raw/bnc_freqs_sentence.tbl", stringsAsFactors=FALSE)
+BNCqueries2 <- read.delim("raw/bnc_freqs_word.tbl", stringsAsFactors=FALSE)
+stopifnot(all(BNCqueries1$id == BNCqueries2$id))
+BNCqueries <- cbind(BNCqueries1, subset(BNCqueries2, select=-id))
+write.table(BNCqueries, file="tbl/bnc_queries.tbl", sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE)
+tmp <- read.delim("tbl/bnc_queries.tbl", stringsAsFactors=FALSE)
+stopifnot(identical(tmp, BNCqueries)) # validate generated disk file
+save(BNCqueries, file="rda/BNCqueries.rda", compress="xz")
 
 
 ## make ZIP archive containing all data files
