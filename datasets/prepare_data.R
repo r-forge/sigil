@@ -69,15 +69,15 @@ save(PassiveBrownFam, file="rda/PassiveBrownFam.rda", compress="xz")
 
 ## corresponding distributional features for advanced GLM analysis
 load("raw/distfeat_brownfam.rda", verbose=TRUE)
-text.id <- grep("^(brown|lob|frown|flob)", rownames(BrownLReg10), value=TRUE, perl=TRUE) # text IDs we want to use
+text.id <- grep("^(brown|lob|frown|flob|blob)", rownames(BrownLReg10), value=TRUE, perl=TRUE) # text IDs we want to use
 stopifnot(all(text.id %in% rownames(BrownLRegV10)))
 stopifnot(all(text.id %in% rownames(BrownLTop10)))
 DistFeatBrownFam <- data.frame(id=text.id, row.names=text.id, stringsAsFactors=FALSE)
-DistFeatBrownFam <- cbind(DistFeatBrownFam, BrownLTop10[text.id, ], BrownLReg10[text.id, ], BrownLRegV10[text.id, 1:5])
+DistFeatBrownFam <- cbind(DistFeatBrownFam, BrownLTop10[text.id, 1:9], BrownLReg10[text.id, 1:9], BrownLRegV10[text.id, 1:4])
 tmp <- DistFeatBrownFam
 for (i in 2:ncol(tmp)) tmp[, i] <- round(tmp[, i], 6)
 write.table(tmp, file=gzfile("tbl/brownfam_distfeat.tbl.gz"), sep="\t", quote=FALSE, row.names=FALSE, col.names=TRUE)
-
+save(DistFeatBrownFam, file="rda/DistFeatBrownFam.rda", compress="xz")
 
 ## -- tbl/bigrams.100k.tfl has to be loaded with zipfR package, so don't include in SIGIL
 
