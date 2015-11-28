@@ -4,10 +4,10 @@ Title: Data sets and utility functions for the SIGIL course
 Version: 0.1-0
 Depends: R (>= 3.0.0)
 Suggests: corpora (>= 0.5)
-Date: 2015-06-16
+Date: 2015-11-28
 Author: Stefan Evert [http://www.stefan-evert.de/], Marco Baroni [http://clic.cimec.unitn.it/marco/]
 Maintainer: Stefan Evert <stefan.evert@fau.de>
-Description: A collection of example data sets and some utility functions used in the course units and exercises of "Statistical Inference: A Gentle Introduction for Computational Linguists and Similar Creatures"  (SIGIL)
+Description: A collection of example data sets and some utility functions used in the course units and exercises of "Statistical Inference: A Gentle Introduction for Computational Linguists and Similar Creatures" (SIGIL)
 License: GPL-3
 URL: http://SIGIL.R-Forge.R-Project.org/
 LazyData: yes
