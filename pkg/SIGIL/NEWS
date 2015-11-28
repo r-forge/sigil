@@ -3,4 +3,5 @@ Version 0.1-0:
   - created SIGIL package as companion for SIGIL course
   - provides SIGIL data sets and support functions previously available in corpora package
   - other SIGIL data sets previously available as text files are also included in the package
+  - several new data sets have been added for revised course units
 

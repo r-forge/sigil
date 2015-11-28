@@ -27,7 +27,7 @@ PassiveBrownFam
 
 \format{
 
-  A data set with 2499 rows and the following 11 columns:
+  A data frame with 2499 rows and the following 11 columns:
 
   \describe{
     \item{\code{id}:}{A unique ID for each text (also used as row name)}
@@ -47,7 +47,7 @@ PassiveBrownFam
 
 \details{
 
-  No frequency data were obtained for text \code{N02} in the Frown corpus.  This entry has been omitted from the table.
+  No frequency data could be obtained for text \code{N02} in the Frown corpus.  This entry has been omitted from the table.
   
 }
 
