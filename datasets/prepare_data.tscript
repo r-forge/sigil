@@ -18,6 +18,6 @@ $ ./cwb_freq_by_text.perl -D BNC -s raw/bnc_freqs_sentence.tbl  split.inf.S='[po
  - "click": {click/V}
  - nouns: _NN?
  - nominalizations: +[tion,tions,ment,ments,ity,ities]_NN?
- - downtoners: almost|barely|hardly|merely|mildly|nearly|only|partially|partly|practically|scarcely|slightly|somewhat
+ - downtoners: [almost,barely,hardly,merely,mildly,nearly,only,partially,partly,practically,scarcely,slightly,somewhat]
 
 $ ./cwb_freq_by_text.perl -D BNC -s raw/bnc_freqs_word.tbl  stop.to='[lemma="stop_VERB"] [word="to"%c] [class="VERB"]'  time='[lemma="time_SUBST"]'  click='[lemma="click_VERB"]'  noun='[pos="NN."]'  nominalization='[word=".+(tions?|ments?|ity|ities)"%c & pos="NN."]'  downtoner='[word="almost|barely|hardly|merely|mildly|nearly|only|partially|partly|practically|scarcely|slightly|somewhat"%c & pos="AV0"]'
