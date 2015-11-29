@@ -114,6 +114,11 @@ save(BNCqueries, file="rda/BNCqueries.rda", compress="xz")
 
 
 ## make ZIP archive containing all data files
-zip.name <- "sigil_datasets.zip"
-if (file.exists(zip.name)) stopifnot(file.remove(zip.name))
-system2("zip", c("-r", zip.name, "tbl/*"))
+if (FALSE) {
+  ## should rather pack selected files manually
+  zip.name <- "sigil_datasets.zip"
+  if (file.exists(zip.name)) stopifnot(file.remove(zip.name))
+  setwd("tbl")
+  system2("zip", c("-r", paste0("../", zip.name), "*"))
+  setwd("..")
+}
