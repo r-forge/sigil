@@ -1,1 +1,0 @@
-../data/bigrams.100k.spc
