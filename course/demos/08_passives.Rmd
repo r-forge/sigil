@@ -1,0 +1,174 @@
+---
+title: "Unit #8: The frequency of passives"
+author: "Stefan Evert"
+date: "28 November 2015"
+output: pdf_document
+--- 
+
+# Preliminaries
+
+```{r}
+library(SIGIL)
+library(effects)
+library(lattice)
+```
+
+In this exercise, we will try to answer the question whether there is a significant difference between the frequency of passives in American English and in British English.  While this has repeatedly been claimed in the literature, these analyses are based on an invalid application of tests for contingency tables to pooled frequency counts.  Here, we will use a more appropriate linear regression model in order to take differences between individual texts -- and the resulting smaller effective sample size -- into account.
+
+Note that we use a standard linear model (LM) instead of the more appropriate binomial generalized linear model (GLM) for reasons of simplicity.  You can find GLM example code in Unit #8 of the SIGIL course.
+
+The SIGIL package includes a data frame with per-text frequency counts for passive and active VPs in the extended Brown Family of corpora (see `?PassiveBrownFam`).
+
+```{r}
+table(PassiveBrownFam$corpus)
+```
+
+Let us first select the four corpora analysed in the literature, so we can compare AmE vs. BrE in the 1960s vs. 1990s.
+```{r}
+BF <- subset(PassiveBrownFam, corpus != "BLOB")
+```
+
+Note that the `corpus` variable is a so-called "factor" and remembers there all three categories ("levels" of the factor) even though `BF` no longer contains any texts from the 1930s.
+
+```{r}
+table(BF$period)
+BF <- droplevels(BF) # remove unused factor levels
+table(BF$period)
+```
+
+# Linear models based on metadata
+
+The goal of the linear model is to predict the relative frequency of passives (`p.pass`) based on various factors such as language variety (AmE/BrE), time period (1960/1990) or text genre using an equation of the form
+$$
+p_i = \beta_0 + \beta_{\text{AmE/BrE}} + \beta_{\text{1960/1990}} + \beta_{\text{genre}} + \ldots + \epsilon_i .
+$$
+The parameters $\mathbf{\beta}$ will be chosen so as to minimize the error sum of squares (ESS)
+$$
+\text{ESS} = \sum_{i=1}^n \epsilon_i^2 .
+$$
+The goodness-of-fit of a "trained" LM is measure by the relative reduction in ESS compared to the baseline model $p_i = \beta_0 + \epsilon_i$, which corresponds to the variance of the dependent variable $p_i$.  For this reason, we can think of the goodness-of-fit measure $R^2$ as the percentage of variance "explained" by the LM.
+
+Let us fit a first model that only considers differences between the language varieties and time periods:
+
+```{r}
+lm1 <- lm(p.pass ~ lang + period, data=BF)
+anova(lm1)
+```
+
+The analysis of variance consecutively tests each factor for significance, i.e. whether it explains significantly more variance than the previous factors alone.  In this case, both language variety and time period are highly significant.  A summary of the model shows the effect sizes with standard errors in a rather unintuitive form:
+
+```{r}
+summary(lm1)
+```
+
+It is slightly more intuitive to compute confidence intervals for the model parameters based on their standard errors
+
+```{r}
+confint(lm1)
+```
+
+but a much better approach is to compute and visualize the _partial effects_ of each factor:
+
+```{r}
+Effect("lang", lm1)
+plot(Effect("lang", lm1))
+plot(Effect(c("lang", "period"), lm1)) # combined effect
+plot(Effect(c("lang", "period"), lm1), multiline=TRUE, ci.style="bars")
+```
+
+The summary above also reveals that this LM only explains 1.6% of the variance, which is highly unsatisfactory.  One possible reason is that there may be an interaction between the two factors (i.e. the difference between AmE and BrE changes between the 1990s and the 1960s).  Let us fit a second LM with an _interaction effect_:
+
+```{r}
+lm2 <- lm(p.pass ~ lang * period, data=BF)
+anova(lm2)
+plot(Effect(c("lang", "period"), lm2), multiline=TRUE, ci.style="bars")
+```
+
+While the difference is more pronounced in the 1990s than the 1960s, this interaction effect is not significant!  Let us try to account better for frequency differences between texts by including the text genre as a factor:
+
+```{r}
+lm3 <- lm(p.pass ~ lang + period + genre, data=BF)
+anova(lm3)
+summary(lm3)$adj.r.squared # 44% explained variance is much better
+```
+
+It's very hard to make sense of confidence intervals for the many levels of `genre`, so let us rather plot its partial effects.
+
+```{r echo=2}
+trellis.par.set("axis.text", list(cex=0.5))
+plot(Effect(c("lang", "period", "genre"), lm3), multiline=TRUE, ci.style="bars", rotx=45)
+```
+
+Again, there might be interactions between the three factors, so we should test their significance.
+
+```{r}
+lm4 <- lm(p.pass ~ lang * period * genre, data=BF)
+anova(lm4)
+```
+
+Most interactions aren't significant, but $R^2$ has improved slightly to `r summary(lm4)$adj.r.squared`.  This apparent improvement in goodness-of-fit is misleading, though, because the LM with interactions has many more parameters than the previous one, allowing it to fit random patterns in the data set.  One way of assessing whether there is an actual improvement is Akaike's Information Criterion (AIC), which adjusts $R^2$ for the number of model parameters:
+
+```{r}
+AIC(lm1, lm2, lm3, lm4)
+```
+
+The AIC for `lm4` is actually worse than for `lm3`, showing that we are indeed overfitting random patterns with the interaction model.  However, you may also have noticed that the interaction between language variety became highly significant in `lm4` -- it is quite typical for such effects to become visible only when other sources of variation are taken into account.  Let us try another model that includes only this interaction effect:
+
+```{r}
+lm5 <- lm(p.pass ~ lang * period + genre, data=BF)
+anova(lm5)
+```
+
+Take a look at the partial effects of `lang` and `period` and their confidence intervals.  Use `AIC` to confirm that this model is actually better than `lm3`.  What is your (linguistic) interpretation of the analysis?
+
+# Linear models based on distributional features
+
+As explained in the lecture slides, 44% of explained variance is still somewhat unsatisfactory, leaving a large part of the frequency differences between texts unaccounted for.  We will now try to use latent features from an unsupervised distributional analysis of the Brown Family texts as additional predictors, starting from the best model so far (`lm5`).  These distributional features are included in the SIGIL package (see `?DistFeatBrownFam`).
+
+We could use the `merge` function to append these features to the data frame `BF` (needed because there is one text missing in `BF`, so the two data frames wouldn't align), but in this case there is a much easier solution.  The rows of `DistFeatBrownFam` have helpfully been labelled with text IDs, so we can directly extract the desired rows:
+
+```{r}
+BF <- cbind(BF, DistFeatBrownFam[BF$id, -1]) # -1 removes duplicate id column
+```
+
+Here is a linear model with all latent topic dimensions and latent registers (excluding verb tags to avoid circularity).  Unfortunately, the variable names have to be spelled out, but that's what cut & paste is for.
+
+```{r}
+lm6 <- lm(p.pass ~ lang * period + genre
+          + top1 + top2 + top3 + top4 + top5 + top6 + top7 + top8 + top9 
+          + reg1 + reg2 + reg3 + reg4 + reg5 + reg6 + reg7 + reg8 + reg9, data=BF)
+anova(lm6)
+```
+
+We have a wild mixture of significant and non-significant factors now.  A common practice is to remove all predictors that do not improve the model fit by stepwise feature selection:
+
+```{r results="hide"}
+lm7 <- step(lm6)
+anova(lm7)
+```
+
+Have you noticed that the effects for language variety and time period as well as their interaction are all highly significant now?  The LM with distributional features also achieves a much better goodness-of-fit of 71.7%:
+
+```{r}
+summary(lm7)$adj.r.squared
+AIC(lm5, lm6, lm7) # stepwise selection improves AIC
+```
+
+Can you explain why the partial effects plots for the distributional features look different than before?
+
+```{r}
+plot(Effect(c("top1", "lang", "period"), lm7), multiline=TRUE, ci.style="bands")
+```
+
+If you look closely, you'll find that `genre` is no longer included in the final model as a predictive factor.  Can you explain what might be going on here?
+
+Finally, one should always look at the model diagnostics to check hints that model assumptions (such as normality or the infamous _homoscedasticity_) may be violated or that outliers may have distorted the analysis.
+
+```{r echo=2}
+old.par <- par(mfrow=c(2,2), mar=c(4,4,2,2), cex=.5)
+plot(lm7)
+par(old.par)
+```
+
+
+
