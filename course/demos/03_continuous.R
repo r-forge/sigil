@@ -9,21 +9,22 @@ library(corpora) # for sample.df
 ## Part A: Descriptive Statistics
 ##
 
-# generate simulated population data
+## generate simulated population data
 Census <- simulated.census()
 Wiki <- simulated.wikipedia()
 
-# histograms
+## histograms visualize distribution of variable
 hist(Census$height, col="lightblue", breaks=50, freq=FALSE)
 lines(density(Census$height), lwd=4, col="red")
 
 hist(Census$shoe.size, col="lightblue", breaks=seq(29.75,55.25,.5), freq=FALSE)
 lines(density(Census$shoe.size), lwd=4, col="red")
 
-# discrete data!
+## histogram for discrete data: use table() rather than hist()
 plot(2 * table(Census$shoe.size) / nrow(Census))
 lines(density(Census$shoe.size), lwd=4, col="red")
 
+## compare histogram with Gaussian distribution
 hist(Census$weight, col="lightblue", breaks=50, freq=FALSE, xlim=c(30,150), ylim=c(0,.03))
 lines(density(Census$weight), lwd=4, col="red")
 mu <- mean(Census$weight)
@@ -31,33 +32,37 @@ sigma <- sd(Census$weight)
 data.frame(mu=mu, sigma=sigma)
 abline(v=mu, lwd=3, lty="dashed")
 abline(v=c(mu-2*sigma, mu+2*sigma), lwd=2)
-# compare with normal approximation
+
+## normal (Gaussian) approximation: best parameters are empirical mu and sigma
 t <- seq(35, 145, length.out=200)
 g.t <- dnorm(t, mean=mu, sd=sigma)
 lines(t, g.t, lwd=4, col="blue")
 
-# histograms for Wackypedia 
+## histograms for Wackypedia 
 hist(Wiki$ttr, col="lightblue", breaks=50, freq=FALSE)
 lines(density(Wiki$ttr), lwd=4, col="red")
 
 hist(Wiki$avglen, col="lightblue", breaks=50, freq=FALSE)
 lines(density(Wiki$avglen), lwd=4, col="red")
 
-x <- Wiki$types # cheat: remove outliers
+## a skewed distribution
+x <- Wiki$types # cheat: remove outliers for reasonable plot
 sum(x >= 700)
 x <- x[x < 700]
 hist(x, col="lightblue", breaks=50, freq=FALSE)
 lines(density(x), lwd=4, col="red")
 
+## log-transformation of skewed distribution often has a Gaussian shape
+x <- Wiki$types # no need to remove outliers here
 hist(log10(x), col="lightblue", breaks=50, freq=FALSE) # log-transformed counts
 lines(density(log10(x)), lwd=4, col="red")
 
 hist(log10(x), col="lightblue", breaks=200, freq=FALSE) # type counts are really discrete
 
-# Now take a small random sample (i.e. a survey)
+## Now take a small random sample (i.e. a survey)
 Survey <- sample.df(Census, 100, sort=TRUE)
 
-# Assessing normality: histogram & density function
+## Assessing normality: histogram & density function
 x <- Survey$weight
 
 hist(x, freq=FALSE) # example code from slides
@@ -66,10 +71,10 @@ xG <- seq(min(x),max(x),len=100)
 yG <- dnorm(xG,mean(x),sd(x))
 lines(xG,yG,col="red")
 
-qqnorm(x)
+qqnorm(x)           # example code from slides
 qqline(x,col="red")
 
-# histograms and Q-Q plots for some other variables
+## histograms and Q-Q plots for some other variables
 hist(Survey$height, breaks=20, freq=FALSE) # is normality assumption plausible?
 lines(density(Survey$height), lwd=2, col="red")
 
@@ -110,7 +115,8 @@ plot(xC, yC, type="l", col="blue", lwd=2)
 pchisq(10, df=5, lower.tail=FALSE) # tail probability for Z2 >= 10
 
 ## what is the appropriate rejection criterion for a variance test with alpha = 0.05?
-qchisq(0.05, df=5, lower.tail=FALSE)
+qchisq(0.025, df=5, lower.tail=FALSE) # two-sided test for V > n * (sigma_0)^2
+qchisq(0.025, df=5, lower.tail=TRUE)  # two-sided test for V < n * (sigma_0)^2
 
 ## For the following examples, let us take a reproducible sample of the population
 Survey <- Census[1:100, ]

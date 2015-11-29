@@ -1,9 +1,53 @@
 library(SIGIL)
 library(corpora)
 
-LanguageCourse <- simulated.language.course()
-sample.df(LanguageCourse, size=20, sort=TRUE)
-summary(LanguageCourse)
+## results of a study testing the effectiveness of a computer-based language course
+LC <- simulated.language.course()
+sample.df(LC, size=20, sort=TRUE)
+summary(LC) # what was the setup of the study?
+
+## inappropriate t-test for independent samples
+t.test(LC$post, LC$pre) # n.s.
+boxplot(LC$pre, LC$post, names=c("pre", "post"), ylim=c(0,100), ylab="test score") # what is actually compared
+
+## pre/post scores aren't independet samples because both depend on individual skills of students
+plot(post ~ pre, data=LC, xlim=c(0,100), ylim=c(0,100)) # results in strong correlation
+abline(0, 1, col="red") # suggests that most students actually improve
+
+## appropriate test: t-test for paired samples
+t.test(LC$post, LC$pre, data=LC, paired=TRUE) # ***, effect size >= 1.75 pts
+t.test(LC$post - LC$pre) # simply a one-sample test of post-pre differences
+
+## are there differences between the classes (in terms of language skills / level)?
+
+## how many pairwise t-tests are carried out?
+
+## what's the chance of at least one type I error if all H0 are true?
+## --> family-wise error rate (FWER)
+
+## Sidak correction, Bonferroni correction
+## is Sidak too conservative or too liberal in this case?
+
+## ANOVA + boxplot
+## (perhaps mention var.test)
+
+## post-hoc test for pair-wise diffs: TukeyHSD
+
+## how do you test whether the course was successful in all classes?
+
+
+
+
+
+
+
+
+## (ANOVA or multiple tests with Sidak correction)
+
+## did you remember to verify the normality assumption?
+
+
+
 
 
 ## 1) Differences between classes?

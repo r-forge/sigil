@@ -413,6 +413,7 @@
   %% \framesubtitle{}
 
   \newcommand{\Zsquare}{\sum_i Z_i^2}
+  \newcommand{\sigmasquare}{\sigma_0^2}
   \begin{alltt}
 \REM{Now do the same for a chi-squared distribution with 5 degrees of freedom}
 \REM{(hint: the parameter you're looking for is \texttt{df=5})}
@@ -425,7 +426,8 @@
 > pchisq(10, df=5, lower.tail=FALSE) 
 
 \REM{What is the appropriate rejection criterion for a variance test with \(\alpha = 0.05\)?}
-> qchisq(.05, df=5, lower.tail=FALSE) \REM{one-sided test}
+> qchisq(.025, df=5, lower.tail=FALSE) \REM{two-sided: \(V / \sigmasquare > n\)}
+> qchisq(.025, df=5, lower.tail=TRUE)  \REM{two-sided: \(V / \sigmasquare < n\)}
 
   \end{alltt}
 \end{frame}
@@ -691,19 +693,42 @@
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Confidence intervals}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item Can you work out a similar confidence interval for $\sigma^2$?
+  \item Test hypotheses $H_0: \sigma^2 = a$ for different values $a > 0$
+    \begin{itemize}
+    \item[\hand] Which $H_0$ are rejected given the observed sample variance $s^2$?
+    \end{itemize}
+  \item If $H_0$ is true, we have the sampling distribution
+    \[
+    Z^2 := (n-1) S^2 / a \sim \chi^2_{n-1}
+    \]
+  \item Reject $H_0$ if $Z^2 > C_1$  or $Z^2 < C_2$ (not symmetric)
+  \item Solve inequalities to obtain confidence interval
+    \[
+    (n-1) s^2 / C_1 \leq \sigma^2 \leq (n-1) s^2 / C_2
+    \]
+  \end{itemize}
+\end{frame}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Two-sample tests}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Comparing the means of two samples}
 
-\begin{frame}
+\begin{frame}[c]
   \frametitle{Comparing two samples}
   % \framesubtitle{}
   
-  \begin{itemize}
-  \item In 
-  \end{itemize}
+  \begin{center}
+    \huge \hand{} whiteboard
+  \end{center}
 \end{frame}
 
 \begin{frame}
