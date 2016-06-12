@@ -29,6 +29,7 @@ BNCqueries
 
   The list below shows the BNCweb query used for each feature in CEQL syntax (Hoffmann et al. 2008, Ch. 6).
   \describe{
+    \item{\code{id}:}{text ID}
     \item{\code{split.inf.S}:}{number of sentences containing a split infinitive with \emph{-ly} adverb; query: \code{_TO0 +ly_AV0 _V?I}}
     \item{\code{adv.inf.S}:}{number of sentences containing a non-split infinitive with \emph{-ly} adverb; query: \code{+ly_AV0 _TO0 _V?I}}
     \item{\code{superlative.S}:}{number of sentences containing a superlative adjective; query: \code{the (_AJS | most _AJ0)}}

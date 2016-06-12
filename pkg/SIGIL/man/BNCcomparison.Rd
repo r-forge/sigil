@@ -29,7 +29,7 @@ BNCcomparison
 
 \format{
 
-  A data set with 61 rows and the following columns:
+  A data frame with 61 rows and the following columns:
 
   \describe{
     \item{\code{noun}:}{lemmatised noun (aka stem form)}
