@@ -31,6 +31,7 @@ save(LOBPassives, file="rda/LOBPassives.rda", compress="xz")
 ## adjacent bigrams in the Brown corpus
 BrownBigrams <- read.delim("tbl/brown_bigrams.tbl", quote="")
 BrownBigrams <- transform(BrownBigrams, word1=as.character(word1), word2=as.character(word2))
+BrownBigrams <- transform(BrownBigrams, O11=as.numeric(O11), O12=as.numeric(O12), O21=as.numeric(O21), O22=as.numeric(O22))
 save(BrownBigrams, file="rda/BrownBigrams.rda", compress="xz")
 
 
@@ -40,7 +41,7 @@ save(KrennPPV, file="rda/KrennPPV.rda", compress="xz")
 
 
 ## lookup vector for genre labels (indexed by section code)
-brown.genres <- structure(BrownPassives$name, names=BrownPassives$cat)
+brown.genres <- structure(as.character(BrownPassives$name), names=as.character(BrownPassives$cat))
 
 ## passive counts for each text in the Brown and Lob corpora
 BrownLOBPassives <- read.delim("tbl/brown_lob_passives.tbl", quote="", stringsAsFactors=FALSE)
@@ -49,6 +50,7 @@ BrownLOBPassives <- transform(BrownLOBPassives,
   cat = factor(cat, levels=names(brown.genres)),
   lang = factor(lang, levels=c("AmE", "BrE"))
 )
+BrownLOBPassives <- droplevels(BrownLOBPassives) # remove genres not included in the table
 save(BrownLOBPassives, file="rda/BrownLOBPassives.rda", compress="xz")
 
 
