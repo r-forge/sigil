@@ -1,1 +1,4 @@
+importFrom(stats, rnorm, runif)
+importFrom(utils, combn)
+
 export(simulated.census, simulated.wikipedia, simulated.language.course)

@@ -33,9 +33,9 @@ DistFeatBrownFam
 
   \describe{
     \item{\code{id}:}{A unique ID for each text (also used as row name)}
-    \item{\code{top1}\ldots \code{top9}:}{latent dimension scores for the first 9 topic dimensions}
-    \item{\code{reg1}\ldots \code{reg9}:}{latent dimension scores for the first 9 register dimensions (excluding verb-related tags)}
-    \item{\code{vreg1}\ldots \code{vreg4}:}{latent dimension scores for the first 4 register dimensions based only on verb-related tags}
+    \item{\code{top1}, \code{top2}, \code{top3}, \code{top4}, \code{top5}, \code{top6}, \code{top7}, \code{top8}, \code{top9}:}{latent dimension scores for the first 9 topic dimensions}
+    \item{\code{reg1}, \code{reg2}, \code{reg3}, \code{reg4}, \code{reg5}, \code{reg6}, \code{reg7}, \code{reg8}, \code{reg9}:}{latent dimension scores for the first 9 register dimensions (excluding verb-related tags)}
+    \item{\code{vreg1}, \code{vreg2}, \code{vreg3}, \code{vreg4}:}{latent dimension scores for the first 4 register dimensions based only on verb-related tags}
   }
 
 }

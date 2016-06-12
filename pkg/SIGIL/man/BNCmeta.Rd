@@ -31,7 +31,7 @@ BNCmeta
 
 \format{
 
-  A data set with 4048 rows and the columns listed below.
+  A data frame with 4048 rows and the columns listed below.
   Unless specified otherwise, columns are coded as factors.
 
   \describe{

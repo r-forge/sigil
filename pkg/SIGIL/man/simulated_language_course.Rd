@@ -39,7 +39,7 @@ simulated.language.course(n=c(15,20,10,10,14,18,15), mean=c(60,50,30,70,55,50,60
 
 \value{
 
-  A data set with \code{sum(n)} rows corresponding to individual subjects participating in the study and the following columns
+  A data frame with \code{sum(n)} rows corresponding to individual subjects participating in the study and the following columns
 
   \describe{
     \item{\code{id}:}{unique ID code of subject}
