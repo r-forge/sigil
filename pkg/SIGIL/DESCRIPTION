@@ -1,6 +1,6 @@
 Package: SIGIL
 Type: Package
-Title: Data Sets and Utility Functions for the SIGIL Course
+Title: Data Sets and Utility Functions for the 'SIGIL' Course
 Version: 0.1-0
 Depends: R (>= 3.0.0)
 Imports: stats, utils
