@@ -37,7 +37,7 @@ BNCmeta <- read.delim("bnc_metadata_utf8.tbl", quote="",
 
 Read the help page `?BNCmeta` in order to find out which metadata are available for the different texts.  In order to list the categories distinguished by a given metadat variable, it is easiest to tabulate the corresponding column of `BNCmeta`:
 
-```{r}
+```{r, R.options=list(width=80)}
 table(BNCmeta$derived_type) # What do those numbers mean?
 ```
 
