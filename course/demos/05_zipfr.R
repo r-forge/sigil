@@ -24,10 +24,10 @@ ItaRi.spc
 
 N(ItaRi.spc)
 V(ItaRi.spc)
-Vm(ItaRi.spc,1)
-Vm(ItaRi.spc,1:5)
+Vm(ItaRi.spc, 1)
+Vm(ItaRi.spc, 1:5)
 
-Vm(ItaRi.spc,1) / N(ItaRi.spc) # Baayen's productivity index P
+Vm(ItaRi.spc, 1) / N(ItaRi.spc) # Baayen's productivity index P
 
 plot(ItaRi.spc)
 plot(ItaRi.spc, log="x")
@@ -35,7 +35,7 @@ plot(ItaRi.spc, log="x")
 ## vocabulary growth curves (VGC)
 summary(ItaRi.emp.vgc)
 ItaRi.emp.vgc
-N(ItaRi.emp.vgc)
+head(N(ItaRi.emp.vgc), 20)
 
 plot(ItaRi.emp.vgc, add.m=1)
 
@@ -77,7 +77,8 @@ plot(ItaRi.bin.vgc, ItaUltra.ext.vgc, N0=N(ItaUltra.fzm), legend=c("ri-", "ultra
 ## how reliable is the model fit for the small ItaUltra data set?
 extract.stats <- function (m) data.frame(alpha=m$param$alpha, A=m$param$A, B=m$param$B, S=m$S, X2=m$gof$X2)
 runs <- lnre.bootstrap(ItaUltra.fzm, N(ItaUltra.fzm), lnre, extract.stats, type="fzm")
-runs <- do.call(rbind, runs)
+## runs <- do.call(rbind, runs) # may be needed for older versions of zipfR package
+head(runs)
 
 hist(runs$alpha, freq=FALSE, xlim=c(0, 1))
 lines(density(runs$alpha), lwd=2, col="red")

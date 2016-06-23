@@ -48,10 +48,16 @@
     \item remember the distinction between \h{types} and \h{tokens}?
     \end{itemize}
   \item[]
-  \item Different from other categorical data because of\\
-    the extreme richness of types
+  \item Different from other categorical data because of the extremely large
+    number of distinct types
     \begin{itemize}
     \item people often speak of \h{Zipf's law} in this context
+    \end{itemize}
+  \item[]
+  \item Key applications: \h{productivity} and \hh{vocabulary richness}
+    \begin{itemize}
+    \item prevalence of low-frequency types
+    \item vocabulary growth for incremental samples
     \end{itemize}
   \end{itemize}
 \end{frame} 
@@ -81,7 +87,7 @@
   \begin{itemize}
   \item The sample: \texttt{\textbf{c a a b c c a c d}}
   \item Frequency list ordered by decreasing frequency
-    \begin{center}
+    \begin{center}\small
       \begin{tabular}{r|r}
         $t$ & $f$\\
         \hline
@@ -93,7 +99,7 @@
     \end{center}
     \pause
   \item Rank / frequency profile: ranks instead of type labels
-    \begin{center}
+    \begin{center}\small
       \begin{tabular}{r|r}
         $r$ & $f$\\
         \hline
@@ -103,7 +109,7 @@
         4 & 1
       \end{tabular}
     \end{center}
-  \item Expresses type frequency $f_r$ as function of rank of a type
+  \item Expresses type frequency $f_r$ as function of rank $r$ of a type
   \end{itemize}
 
 \end{frame}
@@ -175,7 +181,7 @@
  \frametitle{Vocabulary growth curve}
 
   \begin{itemize}
-  \item<1-> The sample: \texttt{\hh<2->{a} \hh<3->{b b} \hh<4->{c a} \hh<5->{a b a}}
+  \item<1-> The sample: \texttt{\h<2->{a} \h<3->{b b} \h<4->{c a} \h<5->{a b a}}
   \item<2-> $N = 1$, $V = 1$, $V_1 = 1$ $\;$ ($V_2 = 0$, \ldots)
   \item<3-> $N = 3$, $V = 2$, $V_1 = 1$ $\;$ ($V_2 = 1$, $V_3 = 0$, \ldots)
   \item<4-> $N = 5$, $V = 3$, $V_1 = 1$ $\;$ ($V_2 = 2$, $V_3 = 0$, \ldots)
@@ -185,7 +191,7 @@
 
 \begin{frame}
   \frametitle{Vocabulary growth curve of Brown corpus}
-  \framesubtitle{With $V_1$ growth in red (curve smoothed with binomial interpolation)}
+  \framesubtitle{With $V_1$ growth in red (idealized curve smoothed by binomial interpolation)}
 
   \ungap[1.5]
   \begin{center}
@@ -272,14 +278,15 @@
     \]
   \item If we take logarithm of both sides, we obtain:
     \[
-    \log f(w)= \log C - a \log r(w)
+    \only<beamer:1| handout:0>{%
+      \log f(w)= \log C - a \cdot \log r(w)}%
+    \only<beamer:2-| handout:1>{%
+      \secondary{\underbrace{\log f(w)}_y}
+      = \log C - a \cdot \secondary{\underbrace{\log r(w)}_x}}%
     \]
-  \item Zipf's law predicts that rank / frequency profiles are
+  \item<2-> Zipf's law predicts that rank / frequency profiles are
     straight lines in double logarithmic space
-  \item Best fit $a$ and $C$ can be found with least-squares
-    method%
-    \pause
-  \item Provides intuitive interpretation of $a$ and $C$:
+  \item<3-> Provides intuitive interpretation of $a$ and $C$:
     \begin{itemize}
     \item $a$ is \h{slope} determining how fast log frequency decreases
     \item $\log C$ is \h{intercept}, i.e., predicted log frequency of word
@@ -291,7 +298,7 @@
 
 \begin{frame}
   \frametitle{Zipf's law}
-  \framesubtitle{Fitting the Brown rank/frequency profile}
+  \framesubtitle{Least-squares fit = linear regression in log-space (Brown corpus)}
 
   \ungap[1.5]
   \begin{center}
@@ -309,7 +316,7 @@
     f(w)=\frac{C}{(r(w) + b)^a}
     \]
   \item Zipf's law is special case with $b=0$
-  \item Assuming $a=1$, $C=$60,000, $b=1$:
+  \item Assuming $a=1$, $C=$ 60,000, $b=1$:
     \begin{itemize}
     \item For word with rank 1, Zipf's law predicts frequency of
       60,000; Mandelbrot's variation predicts frequency of 30,000
@@ -327,7 +334,7 @@
 
 \begin{frame}
   \frametitle{Zipf-Mandelbrot vs.\ Zipf's law} 
-  \framesubtitle{Fitting the Brown rank/frequency profile}
+  \framesubtitle{Non-linear least-squares fit (Brown corpus)}
 
   \ungap[1.5]
   \begin{center}
@@ -342,17 +349,18 @@
   \frametitle{Applications of word frequency distributions}
 
   \begin{itemize}
-  \item Most important application: \h{extrapolation} of vocabulary size and
+  \item Application 1: \h{extrapolation} of vocabulary size and
     frequency spectrum to larger sample sizes
     \begin{itemize}
     \item morphological productivity \citep[e.g.][]{Luedeling:Evert:05}
     \item lexical richness in stylometry \citep{Efron:Thisted:76}, language acquisition, clinical linguistics \citep{Garrard:etc:05}
-    \item language technology (estimate proportion of OOV words, unseen grammra rules, typos, \ldots)
+    \item language technology (estimate proportion of OOV words, unseen grammar rules, typos, \ldots)
     \end{itemize}
   \item[\hand] need method for predicting vocab.\ growth on unseen data
   \item[]\pause
-  \item Direct applications of Zipf's law
+  \item Application 2: Zipfian \h{frequency distribution} across types
     \begin{itemize}
+    \item measures of lexical richness based on population ($\neq$ sample)
     \item population model for Good-Turing smoothing \citep{Good:53,Gale:Sampson:95}
     \item realistic prior for Bayesian language modelling
     \end{itemize}
@@ -384,7 +392,7 @@
 
 \begin{frame}
   \frametitle{Vocabulary growth: Pronouns vs.\ \textcite{ri-} in Italian}
-  \framesubtitle{Vocabulary growth curves}
+  \framesubtitle{Vocabulary growth curves ($V$ and $V_1$)}
 
   \hspace{-1cm}%
   \begin{tabular}{cc}
@@ -401,7 +409,7 @@
 
   \begin{itemize}
   \item LNRE = large number of rare events \citep[cf.][]{Baayen:01}
-  \item Statistics: corpus = random sample from \h{population}
+  \item Statistics: corpus as random sample from \h{population}
     \begin{itemize}
     \item population characterised by vocabulary of \h{types} $w_k$ with
       occurrence \h{probabilities} $\pi_k$
@@ -416,6 +424,8 @@
     \item type probabilities $\pi_k$ cannot be estimated reliably from a
       corpus, but parameters of LNRE model can
     \end{itemize}
+  \item[]\pause
+  \item[\So] \hh{Parametric} statistical \hh{model}
   \end{itemize}
 \end{frame}
 
@@ -446,7 +456,7 @@
   \item Two free parameters: $a > 1$ and $b \geq 0$
   \item $C$ is not a parameter but a normalization constant,\\
     needed to ensure that $\sum_k \pi_k = 1$
-  \item this is the \h{Zipf-Mandelbrot} population model
+  \item This is the \h{Zipf-Mandelbrot} population model
   \end{itemize}
 \end{frame}
 
@@ -490,7 +500,7 @@
     population: there is no upper bound on $k$, and the type probabilities
     $\pi_k$ can become arbitrarily small
   \item $\pi = 10^{-6}$ (once every million words), $\pi = 10^{-9}$ (once
-    every billion words), $\pi = 10^{-12}$ (once on the entire Internet), $\pi
+    every billion words), $\pi = 10^{-15}$ (once on the entire Internet), $\pi
     = 10^{-100}$ (once in the universe?)%
     \pause
   \item Alternative: finite (but often very large) number\\
@@ -771,7 +781,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Confidence intervals for the expected VGC}
+  \frametitle{Prediction intervals for the expected VGC}
 
   \ungap[1]
   \begin{center}
@@ -781,7 +791,7 @@
     \end{tabular}
   \end{center}
 
-  ``Confidence intervals'' indicate predicted sampling distribution:
+  ``Confidence intervals'' that indicate predicted sampling distribution:%
   \begin{itemize}
   \item[\hand] for 95\% of samples generated by the LNRE model, VGC will fall within the range delimited by the thin red lines
   \end{itemize}
@@ -849,7 +859,7 @@
   \item<2-> Similarity measures
     \begin{itemize}
     \item mean square error (\so dominated by large $V$ / $V_m$)
-    \item multivariate \primary<3->{chi-squared statistic $X^2$} takes sampling variaton (and covariance of spectrum elements) into account
+    \item multivariate \primary<3->{chi-squared statistic $X^2$} takes sampling variation (and covariance of spectrum elements) into account
     \end{itemize}
   \item<3-> Multivariate chi-squared test for goodness-of-fit
     \begin{itemize}
@@ -879,7 +889,7 @@
     \item[\hand] can result in highly inaccurate model
     \item[]
     \end{itemize}
-  \item<4-> \primary<5->{Uncertainty due to sampling variation}\\
+  \item<4-> \primary<4->{Uncertainty due to sampling variation}\\
     (i.e.\ observed training data differ from population distribution)
     \begin{itemize}
     \item[\hand] model fitted to training data, may not reflect true population
@@ -902,7 +912,7 @@
     \end{itemize}
   \item<2-> Bootstrapping \citep{Efron:79}
     \begin{itemize}
-    \item resample from observed data \emph{without replacement}
+    \item resample from observed data \emph{with replacement}
     \item this approach is not suitable for type-token distributions
       (resamples underestimate vocabulary size $V$!)
     \end{itemize}
@@ -918,10 +928,17 @@
   \frametitle{Bootstrapping}
   \framesubtitle{parametric bootstrapping with 100 replicates}
 
+  \ungap[.5]
+  \only<beamer:1| handout:1>{\h{Zipfian slope $a = 1 / \alpha$}}%
+  \only<beamer:2| handout:0>{\h{Offset $b = (1 - \alpha) / (B\cdot \alpha)$}}%
+  \only<beamer:3| handout:0>{\h{fZM probability cutoff $A = \pi_S$}}%
+  \only<beamer:4| handout:2>{\h{Goodness-of-fit statistic $X^2$} \secondary{(model not plausible for $X^2 > 11$)}}%
+  \only<beamer:5-6| handout:3>{\h{Population vocabulary size $S$}}%
+  \ungap[.5]
   \begin{center}
     \only<beamer:1| handout:1>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-alpha}}%
-    \only<beamer:2| handout:0>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-A}}%
-    \only<beamer:3| handout:0>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-B}}%
+    \only<beamer:2| handout:0>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-B}}%
+    \only<beamer:3| handout:0>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-A}}%
     \only<beamer:4| handout:2>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-X2}}%
     \only<beamer:5| handout:0>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-S}}%
     \only<beamer:6| handout:3>{\includegraphics[width=10cm]{img/05-bootstrap-ultra-S-zoomed}}%
@@ -934,20 +951,20 @@
   LNRE modelling in a nutshell:%
   \pause
   \begin{enumerate}
-  \item compile \h{observed} frequency spectrum (and vocabulary growth curves)
+  \item Compile \h{observed} frequency spectrum (and vocabulary growth curves)
     for a given corpus or data set%
     \pause
-  \item estimate parameters of \h{LNRE model} by matching observed and
+  \item Estimate parameters of \h{LNRE model} by matching observed and
     expected frequency spectrum%
     \pause
-  \item evaluate \h{goodness-of-fit} on spectrum \citep{Baayen:01} or by
+  \item Evaluate \h{goodness-of-fit} on spectrum \citep{Baayen:01} or by
     testing extrapolation accuracy \citep{Baroni:Evert:07a}
     \begin{itemize}
       \item in principle, you should only go on if model gives a plausible
         explanation of the observed data!
     \end{itemize}
     \pause
-  \item use LNRE model to compute \h{expected} frequency spectrum for
+  \item Use LNRE model to compute \h{expected} frequency spectrum for
     arbitrary sample sizes\\
     \so \h{extrapolation} of vocabulary growth curve
     \begin{itemize}
@@ -1215,8 +1232,7 @@
 > runs <- lnre.bootstrap(ItaUltra.fzm, N(ItaUltra.fzm), 
                          lnre, extract.stats, type="fzm")
 
-\REM{combine results into single data frame}
-> runs <- do.call(rbind, runs)
+> head(runs)
 
 \REM{NB: don't try this with large samples (N \(>\) 1M tokens)}
 \end{alltt} %$
