@@ -48,8 +48,9 @@
     \begin{itemize}
     \item problem: overwhelmingly infinite coice of possible distributions
     \item can estimate/test characteristics such as mean $\mu$ and s.d.\ $\sigma$
-    \item but $H_0$ doesn't determine a unique sampling distribution
-    \item[\hand] only makes sense for \h{parametric} model
+    \item but $H_0$ doesn't determine a unique sampling distribution then
+    \item[\hand] \h{parametric} model, where the population distribution of a
+      r.v.\ $X$ is completely determined by a small set of parameters
     \item[]
     \end{itemize}
   \item<2-> In this session, we assume a \h{Gaussian population} distribution%
@@ -61,7 +62,7 @@
   \item<3-> Nonparametric tests need fewer assumptions, but \ldots
     \begin{itemize}
     \item cannot test hypotheses about $\mu$ and $\sigma$\\
-      (instead: median, IQR = inter-quartile range, etc.)
+      (instead: median $m$, IQR = inter-quartile range, etc.)
     \item more complicated and computationally expensive procedures
     \item correct interpretation of results often difficult
     \end{itemize}
@@ -69,35 +70,56 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{A note on extremeness}
+  \frametitle{Inferential statistics for continuous data}
   % \framesubtitle{}
 
+  Rationale similar to binomial test for frequency data:
+  measure observed \h{statistic} $T$ in sample, which is compared against its
+  \h{expected} value $\Exp[0]{T}$ \so if difference is large enough, reject $H_0$
   \begin{itemize}
-  \item Rationale similar to binomial test for frequency data:\\
-    measure observed \h{statistic} in sample, which is compared against
-    \h{expected} value \so if difference is large, reject $H_0$
-  \item Crucial question: what is ``large enough''?
+  \item[]
+  \item<2-> Question 1: What is a suitable statistic?
     \begin{itemize}
-    \item[\hand] reject if difference is unlikely to arise by chance
+    \item depends on null hypothesis $H_0$
+    \item large difference $T - \Exp[0]{T}$ should provide evidence against $H_0$
+    \item e.g.\ unbiased estimator for population parameter to be tested
     \end{itemize}
-    \pause
-  \item Measuring the extremeness of a single item sampled from $\Omega$
+  \item[]
+  \item<3-> Question 2: what is ``large enough''?
     \begin{itemize}
-    \item If someone is 195~cm tall, would we consider him unusual?%
-      \pause
-    \item no absolute scale \so ``ordinary'' defined by central range,\\
-      i.e.\ how tall the majority of people we meet are (say, 95\%)
-    \item for Gaussian distribution: range from $\mu - 1.96\sigma$ to $\mu + 1.96\sigma$
+    \item reject if difference is unlikely to arise by chance
+    \item need to compute sampling distribution of $T$ under $H_0$
     \end{itemize}
-    \pause
-  \item This suggests the \h{z-score} measure of extremeness:
-    \[
-    Z(\omega) \coloneq \frac{X(\omega) - \mu}{\sigma}
-    \]
-    with central range characterised by $\abs{Z} \leq 1.96$
   \end{itemize}
-  \addnote{NB: we can only calculate such a z-score if we know the true mean
-    $\mu$ and s.d.\ $\sigma$ of the Gaussian distribution!}%
+\end{frame}
+
+\begin{frame}
+  \frametitle{Inferential statistics for continuous data}
+  % \framesubtitle{}
+  
+  \begin{itemize}
+  \item Easy if statistic $T$ has a Gaussian distribution $T \sim N(\mu, \sigma^2)$
+    \begin{itemize}
+    \item $\mu$ and $\sigma^2$ are determined by null hypothesis $H_0$
+    \item reject $H_0$ at two-sided significance level $\alpha = .05$\\
+      if $T < \mu - 1.96\sigma$ or $T > \mu + 1.96\sigma$
+    \end{itemize}
+  \end{itemize}
+
+  \begin{columns}[b]
+    \begin{column}{55mm}
+      \begin{itemize}
+      \item<2-> This suggests a standardized \h{z-score} as a measure of extremeness:
+        \[
+        Z \coloneq \frac{T - \mu}{\sigma}
+        \]
+      \item<2-> Central range of sampling variation: $\abs{Z} \leq 1.96$
+      \end{itemize}
+    \end{column}
+    \begin{column}{45mm}
+    \hspace*{-1cm}\includegraphics[width=55mm]{img/gaussian_parameters}      
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}
@@ -105,7 +127,7 @@
   % \framesubtitle{}
 
   \begin{itemize}
-  \item Random sample of $n \ll m$ items
+  \item Random sample of $n \ll m = \abs{\Omega}$ items
     \begin{itemize}
     \item e.g.\ participants of survey, Wikipedia sample, \ldots
     \item recall importance of completely random selection
@@ -114,8 +136,12 @@
     \[
     x_1, \ldots, x_n; \quad y_1, \ldots, y_n; \quad z_1, \ldots, z_n
     \]
-    (don't know which $\omega\in\Omega$ were selected \so $x_i$ instead of
-    $X(\omega)$)%
+    \ungap[1]
+    \begin{itemize}
+    \item[\hand] specific items $\omega_1, \ldots, \omega_n$ are irrelevant,
+      we are only interested in their properties $x_i = X(\omega_i)$,
+      $y_i = Y(\omega_i)$, etc.
+    \end{itemize}
     \pause
   \item Mathematically, $x_i, y_i, z_i$ are realisations of random variables
     \[
@@ -124,7 +150,7 @@
   \item $X_1,\ldots, X_n$ are independent from each other and each one has the
     same distribution $X_i \sim X$ \so \h{i.i.d.} random variables
     \begin{itemize}
-    \item[\hand] this is the formal definition of a random sample
+    \item[\hand] each random experiment now yields complete sample of size $n$
     \end{itemize}
   \end{itemize}
 
@@ -183,7 +209,7 @@
     \]
     \pause
   \item An important property of the Gaussian distribution: if $X \sim N(\mu_1,
-    \sigma^2_1)$ and $Y \sim N(\mu_2, \sigma^2_2)$ are independent, then
+    \sigma^2_1)$ and $Y \sim N(\mu_2, \sigma^2_2)$ are \primary{independent}, then
     \begin{align*}
       X + Y &\sim N(\mu_1 + \mu_2, \sigma^2_1 + \sigma^2_2)\\
       r\cdot X &\sim N(r\mu_1, r^2 \sigma^2_1) \quad \text{ for } r\in \setR
@@ -219,7 +245,7 @@
       \bar{X} = \frac{1}{n} \bigl( X_1 + \dots + X_n \bigr) 
       \sim N(\mu, \frac{\sigma^2}{n})
     \end{gather*}
-  \item $\bar{X}$ has Gaussian distribution with same $\mu$ but smaller s.d.\
+  \item $\bar{X}$ has Gaussian distribution with same mean $\mu$ but smaller s.d.\
     than the original r.v.\ $X$: $\sigma_{\bar{X}} = \sigma / \sqrt{n}$
     \begin{itemize}
     \item[\hand] explains why normality assumptions are so convenient
@@ -287,7 +313,7 @@
   % \framesubtitle{}
 
   \begin{itemize}
-  \item An intuitive test statistic for $\sigma^2$ is the sum of squares
+  \item An intuitive test statistic for $\sigma^2$ is the error sum of squares
     \[
     V = (X_1 - \mu)^2 + \dots + (X_n - \mu)^2
     \]
@@ -317,6 +343,8 @@
   % \framesubtitle{}
   
   \begin{itemize}
+  \item Note that the distribution of $Z_1^2 + \dots + Z_n^2$ does not depend
+    on the population parameters $\mu$ and $\sigma^2$ (unlike $V$)
   \item Statisticians have worked out the distribution of $\sum_{i=1}^n Z_i^2$
     for i.i.d.\ $Z_i\sim N(0,1)$, known as the \h{chi-squared distribution}
     \[
@@ -443,13 +471,20 @@
     \[
     V' = (X_1 - \bar{X})^2 + \dots + (X_n - \bar{X})^2 
     \]
-    \ungap[1.5]
+  \item But there are two problems:
     \begin{itemize}
-    \item[\hand] terms are no longer i.i.d.\ because $\bar{X}$ depends on all
-      $X_i$
+    \item[\hand] $X_i - \bar{X} \sim N(0, \sigma^2)$ not guaranteed because $\bar{X} \neq \mu$
+    \item[\hand] terms are no longer i.i.d.\ because $\bar{X}$ depends on all $X_i$
     \end{itemize}
-    \pause
-  \item We can work out the distribution of $V'$ for $n=2$:
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The sample variance}
+  % \framesubtitle{}
+
+  \begin{itemize}
+  \item We can easily work out the distribution of $V'$ for $n=2$:
     \begin{align*}
       V' &= (X_1 - \bar{X})^2 + (X_2 - \bar{X})^2 \\
       &= (X_1 - \tfrac{X_1 + X_2}{2})^2 + (X_2 - \tfrac{X_1 + X_2}{2})^2 \\
@@ -458,8 +493,12 @@
     \end{align*}
     where $X_1 - X_2 \sim N(0, 2\sigma^2)$ for i.i.d.\ $X_1, X_2\sim N(\mu,
     \sigma^2)$
+  \item[]
+  \item Can also show that $V'$ and $\bar{X}$ are independent
     \begin{itemize}
-    \item[\hand] one can also show that $X_1 - X_2$ and $\bar{X}$ are independent
+    \item follows from independence of $X_1 - X_2$ and $X_1 + X_2$
+    \item this is only the case for independent Gaussian variables\\
+      (Geary 1936, p.~178)
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -602,7 +641,7 @@
   \item<3-> Rejection threshold $C$ depends on $\text{df} = n-1$ and desired
     significance level $\alpha$ (in R: \secondary{\texttt{-qt($\alpha$/2, $n-1$)}})
     \begin{itemize}
-    \item[\hand] close to z-score thresholds for $n > 30$
+    \item[\hand] very close to z-score thresholds for $n > 30$
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -715,6 +754,7 @@
   \end{itemize}
 \end{frame}
 
+\end{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Two-sample tests}
