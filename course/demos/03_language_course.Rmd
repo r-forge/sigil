@@ -1,0 +1,209 @@
+---
+title: 'Unit #3: The effectiveness of a language course'
+author: "Stefan Evert"
+date: "9 July 2016"
+output: pdf_document
+---
+
+```{r knitrSetup, include=FALSE, echo=FALSE, cache=FALSE}
+knitr::opts_chunk$set(cache=FALSE, dev.args=list(pointsize=9))
+## knitr::opts_knit$set(global.par=TRUE) # to use single graphics device for entire document
+```
+
+In this exercise, we evaluate the effectiveness of a corpus-driven language course for second language teaching. The `SIGIL` package includes a data set with the results of a simulated evaluation study.
+
+```{r loadData}
+library(SIGIL)
+LC <- simulated.language.course()
+knitr::kable(LC[seq(5, 95, 10), ])
+```
+
+Students from seven different classes (in different schools) took a standardized language test (`pre`), then worked with the language course for one month, then took another standardized test (`post`) at the same difficulty level as the first test. The data frame `LC` lists the scores obtained by each student in the two tests (with a maximum of 100 points) together with an anonymized personal code (`id`) and an anonymized label for the student's school (`class`).
+
+To get an overview of the study, let us check how many students participated in the study and how many students there are from each school:
+
+```{r noStudentsClasses}
+nrow(LC)        # number of students
+table(LC$class) # also shows there are seven schools
+```
+
+# Comparing the means of independent samples
+
+Using the results of the `pre` test, we can test whether the language skills of students differ between schools. For this purpose, each class is considered to be a random sample representative of the type of students attending this school. Our goal is to make inferences about the average test score $\mu$ achieved by such students.
+
+Since the samples are drawn from different populations, it is appropriate to apply tests for two or more independent samples.
+
+## The t-test for two independent samples
+
+Let us begin by comparing schools A and B:
+
+```{r schoolsAB}
+A <- subset(LC, class == "A")
+B <- subset(LC, class == "B")
+```
+
+We can use **Student's t-test** for two independent samples to compare the means of these two schools. The null hypothesis underlying this test is
+$$
+H_0: \mu_1 = \mu_2
+$$
+where $\mu_1$ is the average test score of (the kind of) students attending school A and $\mu_2$ the average test score of those attending school B.
+
+```{r tTestAB}
+t.test(A$pre, B$pre)
+```
+
+Student's version of the t-test for independent samples makes the (often unrealistic) assumption that the variances of test scores in both populations are equal, i.e. $\sigma_1^2 = \sigma_2^2$.  The R implementation automatically applies a suitable correction (Welch 1947), which adjusts the number of degrees of freedom (df) in case they are not.
+
+> **Q:** Is there a reason to assume that $\sigma^2$ may differ between schools A and B? (hint: `?var.test`)
+
+The t-test above yields a highly significant result ($p \approx .0019^{**}$), so we can reject $H_0$ with confidence. In order to interpret this result in a meaningful way, it is essential also to look at the effect size
+$$
+\delta = \mu_1 - \mu_2
+$$
+(recall that $H_0: \delta = 0$).  The `t.test` function also computes a 95% confidence interval for $\delta$, which we can access directly in the data structured returned:
+
+```{r confIntAB}
+t.test(A$pre, B$pre)$conf.int
+```
+
+Students from school A score at least 7.8 points better on average than students from school B. The confidence interval also shows how much uncertainty there is in these two small samples: the true difference $\delta$ may be as large as 31.3 points.
+
+# Multiple comparisons
+
+In principle, we could now apply multiple t-tests in order to make pairwise comparisons between all seven schools, which results in a total of $\binom{7}{2} = 21$ tests: 
+
+```{r numOfTests}
+choose(7, 2)
+```
+
+There is a fundamental problem in such multiple comparisons, though. If we're willing to reject $H_0$ for $p < .05$, we run a 5% risk of a type I error in each individual test. At this risk, one would expect one false positive among 21 tests (under the usual assumption that $H_0$ is true). The risk of committing one or more type I errors in the entire family of tests is thus much higher than the nominal significance level of 5%.
+
+Statisticians speak of the **family-wise error rate** (FWER) for such multiple comparisons. If we assume the results of tests are independent from each other, we can work out the precise distribution of the number of type I errors. Each test is like throwing a coin, with the probability of a type I error being $\pi = .05$; the total number of such false positives among $n$ independent tests then follows a binomial distribution $B(n, \pi)$:
+$$
+\mathop{\text{Pr}}(k) = \binom{n}{k} \pi^k (1 - \pi)^{n-k}
+$$
+For example, there is a chance of 37.6% of a single false positive in the family of tests, a chance of 19.8% that there are two false positives, etc.
+
+```{r binomDistFWER}
+round(dbinom(0:7, size=21, p=0.05), 3)
+```
+
+The probability of committing no type I error at all is only 34.1%. By the same token, the FWER probability of at least one type I error is almost 66%!
+
+```{r FWER}
+1 - dbinom(0, size=21, p=0.05)
+```
+
+> **Q:** You can also compute this tail probability directly with `pbinom`.  Can you work out how?
+
+In many applications, it is more important to control the FWER rather than the risk of a type I error in each individual test. This can be achieved by using a more conservative significance threshold $\alpha'$ in the individual tests in order to keep the FWER below the desired significance level $\alpha$.
+
+Assuming independence of the tests, we can work out the **Šidák correction** from the binomial distribution above:
+$$
+\alpha_S = 1 - (1 - \alpha)^{\frac{1}{n}}
+$$
+In our case, the adjusted significance level is $\alpha_S \approx 0.244\%$ for FWER $\alpha = 5\%$.
+
+```{r alphaSidak}
+alphaS <- 1 - (1 - .05) ^ (1 / 21)
+alphaS
+```
+
+Let us confirm that the correction works as expected:
+
+```{r checkSidak}
+1 - dbinom(0, size=21, p=alphaS)
+```
+
+The independence assumption made by the Šidák correction is often not valid, especially for pairwise comparisons. Assume, for example, that we obtain a sample of particularly good students from one of the seven schools by coincidence. How many false positives would we observe in this situation? Would you expect such a result under Šidák's independence assumption?
+
+Unless there are good reasons to believe that individual tests are indeed independent from each other, more conservative corrections should be applied. A simple option is the **Bonferroni correction**
+$$
+\alpha_B = \alpha / n
+$$
+In practice, $\alpha_B \approx 0.238\%$ is only slightly smaller than $\alpha_S$. The R function `p.adjust` implements more sophisticated stepwise procedures which take the actual p-value computed by each test into account. For pairwise t-tests, there is a pre-defined convenience function:
+
+```{r pairwiseTTest}
+pairwise.t.test(LC$pre, LC$class) # compare pre-test scores by school)
+```
+
+> **Q:** Which schools can be considered to be significantly different based on this result?
+
+# Analysis of variance
+
+A second option is to avoid multiple comparisons altogether and carry out only a single test for the null hypothesis
+$$
+H_0: \mu_1 = \mu_2 = \ldots = \mu_7
+$$
+
+> **Q:** What exactly does this null hypothesis entail? What can you conclude from a significant rejection?
+
+Such a null hypothesis of multiple equality can be tested with a generalization of Student's t-test known as **analysis of variance** (ANOVA). Note that the R function for ANOVA is called `aov` rather than `anova` (which has a related, but different purpose). The `aov` function supports the convenient "formula" interface:
+
+```{r anova}
+res <- aov(pre ~ class, data=LC)
+summary(res) # need summary() to compute p-value
+```
+
+You should be able to spot the highly significant p-value in this output. The main problem of ANOVA is that it doesn't show us _where_ the differences lie if $H_0$ has been rejected. For this purpose, a series of **post-hoc tests** have to be applied, e.g. Tukey's procedure of _honest significant differences_ (HSD):
+
+```{r HSD}
+print(TukeyHSD(res), digits=3)
+```
+
+The HSD comparisons can also be visualized with a pre-defined `plot` method.
+
+```{r plotHSD}
+plot(TukeyHSD(res), las=1)
+```
+
+> **Q:** Compare the HSD results to the output of `pairwise.t.test` above. Do the two procedures agree on which comparisons should be considered significant? Which approach seems more usefult to you?
+
+When carrying ouy multiple comparisons, it is always a good idea to visualize the distributions in the observed samples with a side-by-side `boxplot` first, so it's easier to make sense of positive and negative effect sizes. You should also use the boxplots to check for individual outliers -- e.g. a student who didn't finish his test -- which might distort your results.
+
+```{r boxplot}
+boxplot(pre ~ class, data=LC, ylim=c(0, 100))
+```
+
+# Comparisons between dependent samples
+
+Our main interest is to find out whether the language course has been effective, i.e. whether there is a significant improvement of test results from the pre-test to the post-test. One might be tempted to simply apply Student's t-test to the `pre` and `post` scores:
+
+```{r wrongTest}
+t.test(LC$post, LC$pre) # THIS IS WRONG!
+```
+
+> **Q:** What is wrong with this approach? Can you explain why the test doesn't find a significant difference even though average scores in the post-test (57.6 points) are more than 3 points higher than in the pre-test (54.5 points)?
+
+# Comparing two dependent samples
+
+The two-sample t-test assumes two independent samples from different populations, but here we have a single sample of 102 students with two "measurements" for each student. Our incorrect application of the t-test takes the large variability of test scores betweeen schools and individual students into account, concluding that the observed difference can easily be explained by the random selection of students from the pre-test and post-test groups. In fact, however, a large part of the variability is due to the individual language skills of students. Most of the students improve between pre- and post-test, giving strong evidence for a positive effect of the course. This situation can be visualized with a scatterplot, where each point corresponds to a single student. Any student above the blue diagonal has achieved a personal improvement in the post-test.
+
+```{r scatterPlot, fig.width=4, fig.height=4, echo=2:4}
+par(mar=c(4,4,1,1))
+plot(LC$pre, LC$post, pch=20, 
+     xlim=c(0, 100), ylim=c(0, 100), xlab="pre-test", ylab="post-test")
+abline(0, 1, col="blue")
+```
+
+The plot above suggests that it is more meaningful to look at the differences between pre-test score $x_i$ and post-test score $y_i$ for each student $i$ rather than comparing the $x_i$ and $y_i$ as independent samples:
+$$
+d_i = y_i - x_i
+$$
+We can now simply apply a one-sample t-test for $H_0: \mu = 0$, i.e. that there is no change between pre- and post-test on average. This procedure is known as a **paired t-test**.
+
+```{r pairedTTest}
+t.test(LC$post, LC$pre, paired=TRUE)
+```
+
+The paired t-test yields a highly significant p-value $p\approx .000017^{***}$. The confidence interval $1.75 \leq \mu \leq 4.48$ shows that students improve by at least 1.75 points on average.
+
+An interesting follow-up question would be whether the course was particularly effective in some of the schools or for certain groups of students. A boxplot of the differences $d_i$, grouped by school, gives a first indication:
+
+```{r pairedBoxplot}
+boxplot((post - pre) ~ class, data=LC, ylab="improvement in post-test")
+abline(h=0, col="blue")
+```
+
+> **Q:** Can you work out whether the differences visible in the boxplot above are significant? Which test do you need for this purpose, and what are the data for the test?
+
