@@ -374,8 +374,8 @@
   \item Install R with standard package manager (e.g.\ \emph{Synaptic})
   \item Add CRAN repository to obtain up-to-date version of R
     \begin{itemize}
-    \item e.g.\ \secondary{http://cran.at.r-project.org/bin/linux/ubuntu trusty/}
-    \item pkgs: \counterpoint{r-base-core r-base-html r-base-dev r-doc-html r-doc-pdf}
+    \item e.g.\ \secondary{deb http://cloud.r-project.org/bin/linux/ubuntu xenial/}
+    \item pkgs: \counterpoint{r-base r-base-dev r-recommended}
     \end{itemize}
   \item Various GUIs available, e.g.\ \primary{Rkward} and \primary{R Commander}
   \item Power users: Emacs + ESS or shell command \texttt{R} in terminal
@@ -467,8 +467,8 @@ head(BNCcomparison, 20)
   \begin{description}
   \item[\texttt{rgl}] animated 3D graphics with OpenGL (also: \secondary{\texttt{misc3d}})
   \item[\texttt{vcd}] visualisation of categorical data (contingency tables)
-  \item[\texttt{plyr}, \texttt{doBy},] convenience functions for data manipulation
-  \item[\texttt{reshape2}]
+  \item[\texttt{plyr}, \texttt{doBy}, \texttt{reshape2}] convenience func's for data manipulation
+  \item[\texttt{iotools}, \texttt{readr}] load large data tables efficiently 
   \end{description}
 \end{frame}
 
