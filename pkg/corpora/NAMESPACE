@@ -1,6 +1,8 @@
 importFrom(methods, is)
-importFrom(stats, pbinom, qbinom, phyper, qhyper, pbeta, qbeta, pchisq, pnorm, qnorm)
+importFrom(utils, combn)
+importFrom(stats, pbinom, qbinom, phyper, qhyper, pbeta, qbeta, pchisq, pnorm, qnorm, rnorm, runif)
 
 export(z.score, z.score.pval, binom.pval, prop.cint)
 export(cont.table, sample.df)
 export(chisq, chisq.pval, fisher.pval)
+export(simulated.census, simulated.wikipedia, simulated.language.course)
