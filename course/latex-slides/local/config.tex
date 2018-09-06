@@ -18,23 +18,24 @@
 
 \usepackage{tikz}
 \usepackage{alltt}              % code examples with nicely formatted comments
+\usepackage{rotating}
 
 
 %% ----- author and copyright messages (so updates are automatically inserted into all files)
 \newcommand{\sigilauthors}{%
-  \author[SIGIL]{Designed by Marco Baroni\inst{1} and Stefan Evert\inst{2}}
-  \institute[Baroni \& Evert]{
-    \inst{1}Center for Mind/Brain Sciences (CIMeC)\\
-    University of Trento, Italy
-    \and
-    \inst{2}Corpus Linguistics Group\\
+  \author[SIGIL]{Designed by Stefan Evert\inst{1} and Marco Baroni\inst{2}}
+  \institute[Evert \& Baroni]{
+    \inst{1}Computational Corpus Linguistics Group\\
     Friedrich-Alexander-Universität Erlangen-Nürnberg, Germany
+    \and
+    \inst{2}Center for Mind/Brain Sciences (CIMeC)\\
+    University of Trento, Italy
   }
 }
 \newcommand{\sigilcopyright}{%
   \date[sigil.r-forge.r-project.org]{%
     \primary{\footnotesize\url{http://SIGIL.r-forge.r-project.org/}}\\
-    \light{\tiny Copyright \textcopyright\ 2007--2016 Baroni \& Evert}}
+    \light{\tiny Copyright \textcopyright\ 2007--2018 Evert \& Baroni}}
 }
 
 %% ----- automatically show TOC reminder at beginning of each subsection
@@ -48,11 +49,22 @@
 
 %% ----- some useful macros for the SIGIL course
 
+\newenvironment{Rcode}[1][]{%
+  \setbeamercolor{block title}{fg=counterpoint,bg=counterpoint!15!white}%
+  \setbeamercolor{block body}{bg=counterpoint!5!white}\small%
+  \begin{block}{#1}\begin{alltt}\ungap[1]}{%
+      \ungap[1]\end{alltt}\end{block}} % \end{alltt} ... to deconfuse emacs
+
+%% use \sbox{\Rbox} ... \usebox{\Rbox} to insert arbitray latex into Rcode environment
+\newsavebox{\Rbox}
+
 %% > plot(x,y)      \REM{this produces a scatterplot}
 \newcommand{\REM}[2][\small]{\textsf{#1\color{primary}\# #2}}
 
 %% nice colour for R output: \begin{Rout} .. \end{Rout}
-%% -- ugly hack: I'm sure theres a better way to do this
 \newenvironment{Rout}[1][\footnotesize]{%
-  \begin{footnotesize}#1\color{osnablue}\bfseries}{%
-  \color{black}\mdseries\end{footnotesize}}
+  \begin{footnotesize}#1\color{secondary}\bfseries}{%
+    \color{black}\mdseries\end{footnotesize}}
+
+%% rotated column labels for table (to fit long text into narrow columns
+\newcommand{\rotLabel}[2][60]{\begin{rotate}{#1}#2\end{rotate}}
