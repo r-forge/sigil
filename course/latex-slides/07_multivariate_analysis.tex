@@ -1,0 +1,644 @@
+%% \documentclass[handout,t]{beamer} % HANDOUT
+%% \documentclass[handout,notes=show,t]{beamer} % NOTES
+\documentclass[t]{beamer} % SLIDES
+
+\usetheme{SIGIL}
+\usepackage{beamer-tools-sigil}
+
+\input{lib/math}  % basic mathematical notation
+\input{lib/stat}  % notation for probability theory and statistics
+\input{lib/vector}% convenience macros for vectors and matrices
+
+\input{local/config} % local adjustments to configuration and macros
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Titlepage
+
+\title[7.\ Multivariate Analysis]{Unit 7: Multivariate Analysis}
+\subtitle{Statistics for Linguists with R -- A SIGIL Course}
+\sigilauthors
+\date[sigil.r-forge.r-project.org]{%
+  \light{\tiny \sigilcopyright}}
+
+\begin{document}
+
+\frame{\titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Outline}
+\frame{ 
+  \frametitle{Outline}
+  \tableofcontents
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Multivariate analysis}
+
+\begin{frame}
+  \frametitle{What is multivariate analysis?}
+
+  \begin{itemize}
+  \item Univariate statistics
+    \begin{itemize}
+    \item focus on a single variable of interest (at a time)
+    \item estimate population parameters ($\pi$, $\mu$, $\sigma^2$, \ldots)
+    \item comparison of two or more groups
+    \end{itemize}
+  \item<2-> Bivariate statistics
+    \begin{itemize}
+    \item focus on interdependencies of two variables
+    \item correlation \& co-occurrence
+    \end{itemize}
+  \item<3-> Regression modelling
+    \begin{itemize}
+    \item predict single target variable (``dependent'')
+    \item based on multiple other variables (``independent'')
+    \end{itemize}
+  \item<4-> Multivariate statistics
+    \begin{itemize}
+    \item combined effects of many variables
+    \item correlations \& distribution patterns
+    \item often ``unsupervised'': no target variable or comparison groups
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Application examples}
+
+  \begin{itemize}
+  \item Register variation \citep{Biber:88,Biber:93}
+  \item Translation studies\\ \citep{Evert:Neumann:16,DeSutter:Delaere:Plevoets:12}
+  \item Stylometry: authorshop attribution \citep{Evert:etc:17}
+  \item Dialectology \citep{Speelman:Grondelaers:Geeraerts:03}
+  \item Historical linguistics \citep{Sagi:Kaufmann:Clark:09,Perek:18}
+  \item Identification of confounding variables \citep{Tummers:Speelman:Geeraerts:14}
+  \item Linguistic productivity \citep{Jenset:McGillivray:12}
+  \item Correspondence analysis \citep{Greenacre:07}
+  \item Distributional semantics (see \href{http://wordspace.collocations.de/doku.php/course:esslli2018:start}{\secondary{ESSLLI course}})
+  \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Setting up}
+
+\begin{frame}
+  \frametitle{R packages}
+  % \framesubtitle{}
+
+  Required R packages:
+  \begin{itemize}
+  \item \code{corpora} ($\geq$ 0.5)
+  \item \code{wordspace} ($\geq$ 0.2)
+  \end{itemize}
+
+  Recommended packages:
+  \begin{itemize}
+  \item \code{ggplot2}, \code{reshape2} \ldots\ for plotting feature weights
+  \item \code{rgl} \ldots\ for interactive 3-d visualization
+  \item \code{Hotelling}, \code{ellipse} \ldots\ for significance testing
+  \item \code{e1071} \ldots\ for machine learning (SVM)
+  \item \code{Rtsne} \ldots\ for low-dimensional maps
+  \item \code{ca} \ldots\ for correspondence analysis
+  % \item \code{} \ldots\ for
+  \item[]
+  \end{itemize}
+
+  \hand{} install with package manager in RStudio or R GUI
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Code \& data sets}
+  % \framesubtitle{}
+
+  Download additional code \& data sets from SIGIL homepage:
+  \begin{itemize}
+  \item \href{http://www.stefan-evert.de/SIGIL/sigil_R/materials/multivar_utils.R}{\code{multivar\_utils.R}}
+  \item \href{http://www.stefan-evert.de/SIGIL/sigil_R/data/unit7_data.rda}{\code{unit7\_data.rda}}
+  \item[]
+  \end{itemize}
+
+  \hand{} put all files in RStudio project directory (or working directory)
+
+  \gap[1]
+\begin{Rcode}
+> library(corpora)           \REM{basic utilities and some data sets}
+> library(wordspace)         \REM{for large and sparse matrices}
+
+> source("multivar_utils.R") \REM{additional functions}
+
+> load("unit7_data.rda", verbose=TRUE) \REM{further data sets}
+\end{Rcode}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Overview of data sets}
+
+  \begin{itemize}
+  \item 65 Biber features for British National Corpus
+    \begin{itemize}
+    \item \code{BNCbiber} = $4048\times 65$ feature matrix
+    \item \code{BNCmeta} = complete metadata table
+    \item extensive documentation with \code{?BNCbiber}, \code{?BNCmeta}
+    \item[]
+    \end{itemize}
+  \item 67 Biber features for Brown Family corpora
+    \begin{itemize}
+    \item \code{BrownBiber\_Matrix} = $3500 x 67$ feature matrix
+    \item \code{BrownBiber\_Meta} = metadata table
+    \item features are Biber-scaled z-scores obtained with MAT v1.3\\
+      {\footnotesize\secondary{\url{http://sites.google.com/site/multidimensionaltagger/}}}
+    \item see tagger manual for feature definitions
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Overview of data sets}
+
+  \begin{itemize}
+  \item 27 SFL-inspired features for translation pairs (CroCo corpus)
+    \begin{itemize}
+    \item \code{CroCo\_Matrix} = $452\times 27$ feature matrix
+    \item \code{CroCo\_Meta} = metadata table
+    \item \code{CroCo\_orig2trans} = row numbers of translation pairs
+    \item data from \citet{Evert:Neumann:16}
+    \item[]
+    \end{itemize}
+  \item Literary authorship attribution with $\Delta$ measures
+    \begin{itemize}
+    \item data: sparse document-term matrices for 20,000 most frequent words (mfw) as \texttt{wordspace} DSM objects
+    \item \code{Delta\$DE} = $75\times 20000$ matrix (German novels, 25 authors)
+    \item \code{Delta\$EN} = $75\times 20000$ matrix (English novels, 25 authors)
+    \item \code{Delta\$FR} = $75\times 20000$ matrix (French novels, 25 authors)
+    \item \code{Delta\$DE\$rows}, \code{Delta\$EN\$rows}, \ldots\ = metadata tables
+    \item \code{DeltaLemma} = lemmatized version
+    \item data from \citet{Jannidis:etc:15,Evert:etc:17}
+    \end{itemize}
+  \end{itemize}  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Overview of data sets}
+
+  \begin{itemize}
+  \item 19 type-token complexity measures for $\Delta$ corpus
+    \begin{itemize}
+    \item complexity scores for 10,000-token text slices from 75 novels 
+    \item \code{DeltaComplexity\$DE\$Matrix} = $996\times 19$ matrix (German)
+    \item \code{DeltaComplexity\$EN\$Matrix} = $1147\times 19$ matrix (English)
+    \item \code{DeltaComplexity\$FR\$Matrix} = $679\times 19$ matrix (French)
+    \item \code{DeltaComplexity\$DE\$Meta}, \ldots\ = metadata tables
+    \item can be used to study correlational patterns between measures
+    \item[]
+    \end{itemize}
+  \item 7 syntactic complexity measures for 969 German novels
+    \begin{itemize}
+    \item \code{SyntacticComplexity\_Matrix} = $969\times 7$ feature matrix
+    \item \code{SyntacticComplexity\_Meta} = metadata tables
+    \item can be used to compare high-brow against low-brow literature
+    \end{itemize}
+  \end{itemize}  
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Mathematical background}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Feature matrix}
+
+\begin{frame}[fragile]
+  \frametitle{Feature matrix}
+  % \framesubtitle{}
+
+  \h{Feature matrix} records quantitative features for each text 
+
+  \gap[1]
+  \begin{center}
+  \(
+  \mathbf{M} = 
+  \begin{bmatrix}
+    \cdots & \vm_1 & \cdots \\
+    \cdots & \vm_2 & \cdots \\
+    & \vdots & \\
+    & \vdots & \\
+    \cdots & \vm_k & \cdots \\
+  \end{bmatrix}
+  \)
+  \hspace{3mm}
+  \begin{footnotesize}
+    \setlength{\arrayrulewidth}{0.5pt}
+    \begin{tabular}[c]{r|c@{$\;$}*{4}{|@{$\;$}c@{$\;$}}|}
+      \multicolumn{1}{c}{}
+      & \multicolumn{1}{c}{\rotLabel[30]{nominal}}
+      & \multicolumn{1}{c}{\rotLabel[30]{pass}}
+      & \multicolumn{1}{c}{\rotLabel[30]{prep}}
+      & \multicolumn{1}{c}{\rotLabel[30]{subord}}
+      & \multicolumn{1}{c}{\rotLabel[30]{ttr}} \\
+      \cline{2-6}
+      orig$_1$   & 1.205 & 5.013 & 6.883  & 4.483 & 1.285 \\ 
+      \cline{2-6}
+      orig$_2$   & 0.738 & 2.537 & 6.486  & 6.157 & 1.714 \\ 
+      \cline{2-6}
+      orig$_3$   & 1.252 & 4.462 & 8.463  & 4.785 & 2.476 \\ 
+      \cline{2-6}
+      orig$_4$   & 1.105 & 2.899 & 8.119  & 3.966 & 1.519 \\ 
+      \cline{2-6}
+      orig$_5$   & 1.764 & 4.268 & 7.167  & 3.947 & 1.792 \\ 
+      \cline{2-6}
+      orig$_8$   & 1.545 & 7.268 & 7.461  & 5.455 & 1.572 \\ 
+      \cline{2-6}
+      trans$_1$  & 0.463 & 2.208 & 6.297  & 6.089 & 2.339 \\ 
+      \cline{2-6}
+      trans$_2$  & 1.131 & 2.597 & 6.307  & 4.844 & 1.810 \\ 
+      \cline{2-6}
+      trans$_4$  & 0.935 & 1.744 & 7.098  & 4.012 & 1.403 \\ 
+      \cline{2-6}
+      trans$_5$  & 0.867 & 3.604 & 7.511  & 5.154 & 1.902 \\ 
+      \cline{2-6}
+      trans$_7$  & 1.387 & 4.290 & 8.211  & 3.998 & 1.822 \\ 
+      \cline{2-6}
+    \end{tabular}
+  \end{footnotesize}
+  \end{center}
+
+\begin{Rcode}
+> M <- MultiVar_Matrix
+> M
+\end{Rcode}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Distance metric}
+
+\begin{frame}
+  \frametitle{Geometric distance = metric}
+  %% \framesubtitle{}
+
+  \begin{columns}[T]
+    \begin{column}{60mm}
+      \begin{itemize}
+      \item \hh{Distance} between vectors $\vu, \vv \in \setR^n$ \so
+        (dis)similarity
+        \begin{itemize}
+        \item $\vu = (u_1, \ldots, u_n)$
+        \item $\vv = (v_1, \ldots, v_n)$
+        \end{itemize}
+      \item<2-> \h{Euclidean} distance $\dist[2]{\vu}{\vv}$
+      \item<3-> ``City block'' \h{Manhattan} distance $\dist[1]{\vu}{\vv}$
+      \item<4-> Both are special cases of the \h{Minkowski} $p$-distance
+        $\dist[p]{\vu}{\vv}$ (for $p\in [1, \infty]$)
+      \end{itemize}
+    \end{column}
+    \begin{column}{45mm}
+      \includegraphics[width=45mm]{img/7_distance_examples}
+    \end{column}
+  \end{columns}
+  \gap[.5]
+  \only<beamer:2| handout:0>{%
+    \[ \dist[2]{\vu}{\vv} \coloneq \sqrt{(u_1 - v_1)^2 + \dots + (u_n - v_n)^2} \] }
+  \only<beamer:3| handout:0>{%
+    \[ \dist[1]{\vu}{\vv} \coloneq \abs{u_1 - v_1} + \dots + \abs{u_n - v_n} \] }
+  \only<beamer:4-| handout:1>{%
+    \[ \dist[p]{\vu}{\vv} \coloneq \bigl(
+    \abs{u_1 - v_1}^p + \dots + \abs{u_n - v_n}^p
+    \bigr)^{1/p} \] }
+  \only<beamer:5-| handout:1>{%
+    \[ \dist[\infty]{\vu}{\vv} = \max \bigset{\abs{u_1 - v_1}, \ldots, \abs{u_n - v_n}} \] }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Geometric distance = metric}
+  %% \framesubtitle{}
+
+  \begin{columns}[T]
+    \begin{column}{60mm}
+      \begin{itemize}
+      \item \hh{Distance} between vectors $\vu, \vv \in \setR^n$ \so
+        (dis)similarity
+        \begin{itemize}
+        \item $\vu = (u_1, \ldots, u_n)$
+        \item $\vv = (v_1, \ldots, v_n)$
+        \end{itemize}
+      \item \h{Euclidean} distance $\dist[2]{\vu}{\vv}$
+      \item ``City block'' \h{Manhattan} distance $\dist[1]{\vu}{\vv}$
+      \item Extension of $p$-distance  $\dist[p]{\vu}{\vv}$ (for $0\leq p\leq 1$)
+      \end{itemize}
+    \end{column}
+    \begin{column}{45mm}
+      \includegraphics[width=45mm]{img/7_distance_examples}
+    \end{column}
+  \end{columns}
+  \gap[.5]
+  \[ \dist[p]{\vu}{\vv} \coloneq \abs{u_1 - v_1}^p + \dots + \abs{u_n - v_n}^p \]
+  \[ \dist[0]{\vu}{\vv} = \# \bigsetdef{i}{u_i \neq v_i} \]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Distance and vector length = norm}
+  %% \framesubtitle{}
+
+  \begin{columns}[T]
+    \begin{column}{50mm}
+      \begin{itemize}
+      \item<1-> Intuitively, distance $\dist{\vu}{\vv}$ should correspond to
+        length $\norm{\vu-\vv}$ of displacement vector $\vu - \vv$
+        \begin{itemize}
+        \item $\dist{\vu}{\vv}$ is a \h{metric}
+        \item $\norm{\vu-\vv}$ is a \h{norm}
+        \item $\norm{\vu} = \bigdist{\vu}{\vnull}$
+        \end{itemize}
+      \item<2-> Any norm-induced metric is \h{translation-invariant}%
+        \gap
+      \item<3-> $\dist[p]{\vu}{\vv} = \norm[p]{\vu-\vv}$
+      \end{itemize}
+    \end{column}
+    \begin{column}{50mm}
+      \includegraphics[width=50mm]{img/7_distance_norm}
+    \end{column}
+  \end{columns}
+
+  \begin{itemize}
+  \item<3-> \h{Minkowski $p$-norm} for $p\in [1,\infty]$ (not $p < 1$):
+    \[
+    \norm[p]{\vu} \coloneq \bigl(\abs{u_1}^p + \dots + \abs{u_n}^p\bigr)^{1/p}
+    \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Computing distances}
+
+Compute distances between all pairs of texts:
+\begin{Rcode}
+> round(dist(M), 2)  \REM{returns a triangular `dist' object}
+> round(dist(M, method="manhattan"), 2) \REM{Manhattan metric}
+\end{Rcode}
+
+\gap[1]\pause
+Use \texttt{wordspace} function for additional metrics:
+\begin{Rcode}
+> dist.matrix(M, method="mink", p=0.5)  \REM{full matrix}
+> dist.matrix(M, method="mink", p=0.5, as.dist=TRUE)
+\end{Rcode}
+
+\gap[1]\pause
+Standardize features for equal contribution to Euclidean metric:
+\begin{Rcode}
+> Z <- scale(M)     \REM{matrix of z-scores}
+> round(dist(Z), 2) \REM{default: Euclidean metric}
+\end{Rcode}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Orthogonal projection}
+
+\begin{frame}
+  \frametitle{Linear subspace \& basis}
+  
+  \begin{itemize}
+  \item A linear \h{subspace} $B\subseteq \setR^n$ of rank $r\leq n$ is spanned by a set of $r$ linearly independent basis vectors
+    \[
+    B = \set{\vb_1, \ldots, \vb_r}
+    \]
+  \item<2-> Every point $\vu$ in the subspace is a unique linear combination of the basis vectors
+    \[
+    \vu = x_1 \vb_1 + \ldots + x_r \vb_r
+    \]
+    with coordinate vector $\vx\in \setR^r$
+  \item<3-> Basis matrix $\mathbf{V} \in \setR^{n\times r}$ with column vectors $\vb_i$:
+    \[
+    \vu = \mathbf{V} \vx 
+    \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Linear subspace \& basis}
+  
+  \begin{itemize}
+  \item Basis matrix $\mathbf{V} \in \setR^{n\times r}$ with column vectors $\vb_i$:
+    \[
+    \vu = x_1 \vb_1 + \ldots + x_r \vb_r = \mathbf{V} \vx
+    \]
+  \end{itemize}
+
+  \[
+  \begin{array}{ccccc}
+    \begin{bmatrix}
+      x_1 b_{11} + \ldots + x_r b_{1r} \\
+      x_1 b_{21} + \ldots + x_r b_{2r} \\
+      \vdots\\
+      x_1 b_{n1} + \ldots + x_r b_{nr}
+    \end{bmatrix}
+    & = &
+    \begin{bmatrix}
+      b_{11} & \cdots & b_{1r} \\
+      b_{21} & \cdots & b_{2r} \\
+      \vdots & & \vdots \\
+      b_{n1} & \cdots & b_{nr}
+    \end{bmatrix}
+    & \cdot &
+    \begin{bmatrix}
+      x_1 \\
+      \vdots \\
+      x_r
+    \end{bmatrix} \\
+    \\
+    \mathbf{u} & = & \mathbf{V} & \cdot & \mathbf{x} \\
+    (n\times 1) & & (n\times \primary{r}) & & (\primary{r}\times 1)
+  \end{array}
+  \]
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Orthonormal basis}
+
+  \begin{itemize}
+  \item Particularly convenient with orthonormal basis:
+    \begin{align*}
+      \norm[2]{\vb_i} &= 1 \\
+      \vb_i^T \vb_j &= 0 && \text{for } i\neq j
+    \end{align*}
+  \item Corresponding basis matrix $\mathbf{V}$ is (column)-\hh{orthogonal}
+    \[
+      \mathbf{V}^T \mathbf{V} = \mathbf{I}_r
+    \]
+    and defines a \primary{Cartesian coordinate system} in the subspace
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{An aside: Matrix multiplication}
+  %% \framesubtitle{}
+
+  \ungap
+  \[
+  \begin{array}{ccccc}
+    \begin{bmatrix}
+      & \only<beamer:2| handout:0>{a_{ij}} & \only<beamer:1| handout:0>{a_{ij}} & \\
+      \only<beamer:3| handout:1>{a_{ij}} & & & \\
+      & & &
+    \end{bmatrix}
+    & = &
+    \begin{bmatrix}
+      \only<beamer:1-2| handout:0>{b_{i1}} & \only<beamer:1-2| handout:0>{\cdots} & \only<beamer:1-2| handout:0>{b_{in}} \\
+      \only<beamer:3| handout:1>{b_{i1}} & \only<beamer:3| handout:1>{\cdots} & \only<beamer:3| handout:1>{b_{in}} \\
+      & &  
+    \end{bmatrix}
+    & \cdot &
+    \begin{bmatrix}
+     \only<beamer:3| handout:1>{c_{1j}}   & \only<beamer:2| handout:0>{c_{1j}} & \only<beamer:1| handout:0>{c_{1j}} &\\
+     \only<beamer:3| handout:1>{\vdots}   & \only<beamer:2| handout:0>{\vdots} & \only<beamer:1| handout:0>{\vdots} & \\
+     \only<beamer:3| handout:1>{\vdots}   & \only<beamer:2| handout:0>{\vdots} & \only<beamer:1| handout:0>{\vdots} & \\
+     \only<beamer:3| handout:1>{c_{nj}}   & \only<beamer:2| handout:0>{c_{nj}} & \only<beamer:1| handout:0>{c_{nj}} & 
+    \end{bmatrix} \\
+    \\
+    \mathbf{A} & = & \mathbf{B} & \cdot & \mathbf{C} \\
+    (k\times m) & & (k\times \primary{n}) & & (\primary{n}\times m)
+  \end{array}
+  \]
+  \begin{itemize}
+  \item $\mathbf{B}$ and $\mathbf{C}$ must be \h{conformable} (in dimension \primary{$n$})
+  \item Element $a_{ij}$ is the inner product of the $i$-th row of $\mathbf{B}$ and the $j$-th column of $\mathbf{C}$
+    \[
+    a_{ij} = b_{i\primary{1}} c_{\primary{1}j} + \ldots + b_{i\primary{n}} c_{\primary{n}j} = \sum_{t=1}^n b_{i\primary{t}} c_{\primary{t}j}
+    \]
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{The mathematics of projections}
+  %% \framesubtitle{}
+
+  \begin{columns}[c]
+    \begin{column}{50mm}
+      \begin{itemize}
+      \item 1-d subspace spanned by basis vector
+        $\norm[2]{\vb} = 1$
+      \item For any point $\vu$, we have
+        \[
+          \cos \varphi
+          = \frac{\vb^T \vu}{\norm[2]{\vb}\cdot \norm[2]{\vu}}
+          = \frac{\vb^T \vu}{\norm[2]{\vu}}          
+        \]
+      \item<2-> Trigonometry: coordinate of point on the line is
+        $x = \norm[2]{\vu}\cdot \cos\varphi = \vb^T \vu$
+      \end{itemize}
+    \end{column}
+    \begin{column}{50mm}
+      \includegraphics[width=50mm]{img/7_cosine_projection}
+    \end{column}
+  \end{columns}
+  
+  \begin{itemize}
+  \item<3-> The projected point in original space is then given by
+    \[
+      \vb\cdot x = \vb (\vb^T \vu) = (\vb \vb^T) \vu = \mathbf{P} \vu
+    \]
+    where $\mathbf{P}$ is a \h{projection matrix} of rank 1
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{The mathematics of projections}
+  %% \framesubtitle{}
+
+  \begin{itemize}
+  \item For an orthogonal basis matrix $\mathbf{V}$ with columns
+    $\vb_1, \ldots, \vb_r$, the projection into the rank-$r$ subspace $B$ is
+    given by
+    \[
+      \mathbf{P}\vu = \left(\sum_{i=1}^r \vb_i \vb_i^T\right) \vu
+      = \mathbf{V} \mathbf{V}^T \vu
+    \]
+    and its subspace coordinates are $\vx = \mathbf{V}^T \mathbf{u}$
+  \item<2-> Projection can be seen as decomposition into the projected vector
+    and its orthogonal complement
+    \[
+      \vu = \mathbf{P} \vu + (\vu - \mathbf{P} \vu)
+      = \mathbf{P} \vu + (\mathbf{I} - \mathbf{P}) \vu
+      = \mathbf{P} \vu + \mathbf{Q} \vu
+    \]
+  \item<3-> Because of orthogonality, this also applies to the squared
+    Euclidean norm (according to the Pythagorean theorem)
+    \[
+      \norm{\vu}^2 = \norm{\mathbf{P} \vu}^2 + \norm{\mathbf{Q} \vu}^2
+    \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Optimal projections and subspaces}
+  %% \framesubtitle{}
+
+  \begin{itemize}
+  \item Orthogonal decomposition of squared distances btw vectors
+    \[
+      \norm{\vu - \vv}^2 = \norm{\mathbf{P} \vu - \mathbf{P} \vv}^2 + \norm{\mathbf{Q} \vu - \mathbf{Q} \vv}^2
+    \]
+  \end{itemize}
+
+  \begin{columns}[c]
+    \begin{column}{60mm}
+      \begin{itemize}
+      \item<2-> Define projection \hh{loss} as difference btw squared distances
+        \begin{align*}
+          & \bigabs{\,\norm{\mathbf{P}(\vu - \vv)}^2 - \norm{\vu - \vv}^2\,} \\
+          =\;& \norm{\vu - \vv}^2 - \norm{\mathbf{P}(\vu - \vv)}^2 \\
+          =\;& \norm{\mathbf{Q}(\vu - \vv)}^2
+        \end{align*}
+      \item<3-> Projection quality measure:
+        \[
+          R^2 = \frac{\norm{\mathbf{P}(\vu - \vv)}^2}{\norm{\vu - \vv}^2}
+        \]
+      \end{itemize}
+    \end{column}
+    \begin{column}{40mm}
+      \hspace*{-5mm}%
+      \includegraphics[width=45mm]{img/7_projection_loss}      
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{}
+
+% \begin{frame}
+%   \frametitle{}
+%   % \framesubtitle{}
+
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{}
+%   %% \framesubtitle{}
+
+%   % \ungap[1]
+%   \begin{alltt}
+%   \end{alltt}
+% \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% References (if any)
+
+\frame[allowframebreaks]{
+  \frametitle{References}
+  \bibliographystyle{natbib-stefan}
+  \begin{scriptsize}
+    \bibliography{sigil}
+  \end{scriptsize}
+}
+
+\end{document}
