@@ -406,16 +406,23 @@ Standardize features for equal contribution to Euclidean metric:
     \[
     B = \set{\vb_1, \ldots, \vb_r}
     \]
-  \item<2-> Every point $\vu$ in the subspace is a unique linear combination of the basis vectors
-    \[
-    \vu = x_1 \vb_1 + \ldots + x_r \vb_r
-    \]
-    with coordinate vector $\vx\in \setR^r$
-  \item<3-> Basis matrix $\mathbf{V} \in \setR^{n\times r}$ with column vectors $\vb_i$:
-    \[
-    \vu = \mathbf{V} \vx 
-    \]
   \end{itemize}
+
+  \begin{columns}[T]
+    \begin{column}{55mm}
+      \begin{itemize}
+      \item<2-> Every point $\vu$ in the subspace is a unique linear combination of the basis vectors
+        \[
+          \vu = x_1 \vb_1 + \ldots + x_r \vb_r
+        \]
+      \item<2-> Coordinate vector $\vx\in \setR^r$ with respect to the basis
+      \end{itemize}
+    \end{column}
+    \begin{column}{45mm}
+      \hspace*{-5mm}%
+      \includegraphics[width=55mm]{img/7_basis_grid}  
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}
@@ -458,23 +465,6 @@ Standardize features for equal contribution to Euclidean metric:
 \end{frame}
 
 \begin{frame}
-  \frametitle{Orthonormal basis}
-
-  \begin{itemize}
-  \item Particularly convenient with orthonormal basis:
-    \begin{align*}
-      \norm[2]{\vb_i} &= 1 \\
-      \vb_i^T \vb_j &= 0 && \text{for } i\neq j
-    \end{align*}
-  \item Corresponding basis matrix $\mathbf{V}$ is (column)-\hh{orthogonal}
-    \[
-      \mathbf{V}^T \mathbf{V} = \mathbf{I}_r
-    \]
-    and defines a \primary{Cartesian coordinate system} in the subspace
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
   \frametitle{An aside: Matrix multiplication}
   %% \framesubtitle{}
 
@@ -513,6 +503,26 @@ Standardize features for equal contribution to Euclidean metric:
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Orthonormal basis}
+
+  \begin{itemize}
+  \item Particularly convenient with orthonormal basis:
+    \begin{align*}
+      \norm[2]{\vb_i} &= 1 \\
+      \vb_i^T \vb_j &= 0 && \text{for } i\neq j
+    \end{align*}
+  \item Corresponding basis matrix $\mathbf{V}$ is (column)-\hh{orthogonal}
+    \[
+      \mathbf{V}^T \mathbf{V} = \mathbf{I}_r
+    \]
+    and defines a \primary{Cartesian coordinate system} in the subspace
+    \begin{itemize}
+    \item[]
+    \end{itemize}
+  \item<2->[\hand] From now on always assume orthonormal basis
+  \end{itemize}
+\end{frame}
 
 \begin{frame}
   \frametitle{The mathematics of projections}
@@ -580,7 +590,7 @@ Standardize features for equal contribution to Euclidean metric:
   %% \framesubtitle{}
 
   \begin{itemize}
-  \item Orthogonal decomposition of squared distances btw vectors
+  \item Orthogonal decomposition of squared distances btw.\ vectors
     \[
       \norm{\vu - \vv}^2 = \norm{\mathbf{P} \vu - \mathbf{P} \vv}^2 + \norm{\mathbf{Q} \vu - \mathbf{Q} \vv}^2
     \]
@@ -589,7 +599,7 @@ Standardize features for equal contribution to Euclidean metric:
   \begin{columns}[c]
     \begin{column}{60mm}
       \begin{itemize}
-      \item<2-> Define projection \hh{loss} as difference btw squared distances
+      \item<2-> Define projection \hh{loss} as difference btw.\ squared distances
         \begin{align*}
           & \bigabs{\,\norm{\mathbf{P}(\vu - \vv)}^2 - \norm{\vu - \vv}^2\,} \\
           =\;& \norm{\vu - \vv}^2 - \norm{\mathbf{P}(\vu - \vv)}^2 \\
