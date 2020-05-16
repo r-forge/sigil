@@ -273,8 +273,11 @@
 \end{Rcode}
 \end{frame}
 
+\todoslide[TODO: boxplots \& scaling]{
+  boxplots of features, centering \& scaling, standardisation}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Distance metric}
+\subsection{Distance metric \& angles}
 
 \begin{frame}
   \frametitle{Geometric distance = metric}
@@ -370,6 +373,10 @@
     \]
   \end{itemize}
 \end{frame}
+
+\todoslide[TODO: angles \& orthogonality]{
+  dot product, angle, cosine similarity;
+  relation to Euclidean metric; orthogonality}
 
 \begin{frame}[fragile]
   \frametitle{Computing distances}
@@ -618,6 +625,243 @@ Standardize features for equal contribution to Euclidean metric:
   \end{columns}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Exploratory techniques}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Clustering}
+
+\todoslide{hierarchical and flat clustering; examples}
+
+\todoslide{seriation \& over/underuse; examples}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Visualisation}
+
+\todoslide{GMA visualisation functions + 3D}
+
+\todoslide{embeddings: MDS, t-SNE, etc.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Geometric multivariate analysis (GMA)}
+
+\todoslide[TODO]{Introduce GMA functions for subspaces}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\subsection{PCA and factor analysis}
+
+\todoslide[TODO: PCA and SVD]{
+  find best projection into single dimension (illustration from wordspace);
+  mathematics: covariance matrix, optimal basis vector $\mathbf{b}$;
+  eigenvalue decomposition as generalisation?;
+  SVD, properties $\to$ optimal projection}
+
+\todoslide[TODO: factor analysis]{
+  similar to PCA, just different objective;
+  here focus on geometric approach with PCA}
+
+\todoslide{PCA in R/GMA; examples}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Linear discriminant analysis (LDA)}
+
+\todoslide[TODO: LDA]{
+  linear discriminant analysis to focus on specific aspects of fine-grained patterns;
+  projection as perspective on data; main shape (PCA) + salient structure (LDA);
+  discussion of minimal supervision}
+
+\todoslide{LDA in R/GMA; examples and interpretation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Interpreting dimensions}
+
+\todoslide{interpretation of latent dimensions; weights, boxplots, etc.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Validation }
+
+\begin{frame}
+  \frametitle{Comparing subspaces}
+
+  We want to compare two subspaces $A$ and $B$ of the same dimensionality $r \leq n$, with
+  orthonormal basis vectors
+  \begin{itemize}
+  \item $\va_1, \ldots, \va_r$ = \secondary{column} vectors of basis matrix $\mathbf{A}$
+  \item $\vb_1, \ldots, \vb_r$ = \secondary{column} vectors of basis matrix $\mathbf{B}$
+  \end{itemize}
+
+  \[
+    \vz = \mathbf{B} \vx =
+    \begin{bmatrix}
+      \vdots & & \vdots \\
+      \vb_1 & \cdots & \vb_r \\
+      \vdots & & \vdots
+    \end{bmatrix}
+    \cdot
+    \begin{bmatrix}
+      x_1 \\
+      \vdots \\
+      x_r
+    \end{bmatrix}
+  \]
+  
+  \begin{itemize}
+  \item[\hand] $\vx\in \setR^r$ are the subspace coordinates of a vector $\vz\in B$
+  \end{itemize}
+\end{frame}
+
+\todoslide[TODO: illustration]{
+  diagram of two oblique 2-dim subspaces overlapping in one dimension that's not aligned with their basis vectors;
+  work out something where both the original basis vectors and the intersection are relatively simple numbers}
+
+\begin{frame}
+  \frametitle{Projection between subspaces}
+
+  \begin{itemize}
+  \item The projection of $\vz$ into subspace $A$ is
+    \[
+      \mathbf{P} \vz = \mathbf{A} \mathbf{A}^T \vz = \mathbf{A} \vy
+    \]
+    with $\vy\in \setR^r$ = subspace coordinates of the projection in $A$
+  \item Hence the projection from subspace coordinates in $B$ to subspace coordinates in $A$ is given by
+    \[
+      \vy = \mathbf{A}^T \vz = (\mathbf{A}^T \mathbf{B}) \vx
+    \]
+  \item \TODO[example + illustration]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Goals}
+
+  \h{Determine overlap}
+  \begin{itemize}
+  \item<2-> Identify dimensions that $A$ and $B$ have in common
+  \item<2-> Overlap = number of shared dimensions ($\neq$ basis vectors)
+  \end{itemize}
+
+  \h{Measure similarity of subspaces}
+  \begin{itemize}
+  \item<3-> Average $R^2$ of projection from $B$ to $A$ (\hand{} symmetric?)
+    \begin{itemize}
+    \item either for random vectors in $B$ (standard multivariate normal)
+    \item or for a specific data set $M$
+    \end{itemize}
+  \item<4-> Overlap + cosine similarity
+    \begin{itemize}
+    \item number of shared dimensions plus
+    \item cosine btw.\ each non-shared dimension in $B$ and subspace $A$
+    \item prerequisite: find matching basis vectors in $B$ and $A$
+    \end{itemize}
+  \item<5-> ``Volume'' of projection image
+    \begin{itemize}
+    \item determinant of $\set{\mathbf{P}\vb_1, \ldots, \mathbf{P}\vb_r}$
+    \item not useful: single orthogonal dimension \so{} determinant = 0
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Matching basis vectors between subspaces}
+
+  \begin{itemize}
+  \item Rotate orthornomal basis vectors in both subspaces so that the new bases $\vc_1,\ldots, \vc_r$ of $A$ and $\vd_1, \ldots, \vd_r$ of $B$ are matched under projection, i.e.
+    \begin{align*}
+      \vc_i &= \vd_i = \mathbf{P} \vd_i &&\text{for shared dimensions}\\
+      \sigma_j \vc_j &= \mathbf{P} \vd_j &&\text{otherwise}
+    \end{align*}
+    (in short: $\sigma_i \vc_i = \mathbf{P} \vd_i$ with $\sigma_i = 1$ for shared dimensions)
+  \item<2-> Using subspace coordinates $\vc_i = \mathbf{A} \vu_i$ and $\vd_i = \mathbf{B} \vv_i$, we have
+    \[
+      \sigma_i \vu_i
+      = \mathbf{A}^T \underbrace{\mathbf{A} \mathbf{A}^T}_{\mathbf{P}} \mathbf{B} \vv_i
+      = \underbrace{\mathbf{A}^T \mathbf{A}}_{\mathbf{I}_r} \mathbf{A}^T \mathbf{B} \vv_i
+      = (\mathbf{A}^T \mathbf{B}) \vv_i
+    \]
+  \item<2-> Therefore, $\vu_i$ and $\vv_i$ are left and right singular vectors of $\mathbf{A}^T \mathbf{B}$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Matching basis vectors between subspaces}
+
+  \begin{itemize}
+  \item Singular value decomposition (SVD) of $\mathbf{A}^T \mathbf{B}$:
+    \[
+      \mathbf{A}^T \mathbf{B} = \mathbf{U} \Msigma \mathbf{V}^T
+      = \sum_{i=1}^r \sigma_i \vu_i \vv_i^T
+    \]
+  \item[\hand] It is easy to see that $(\mathbf{A}^T \mathbf{B}) \vv_j = \sigma_j \vu_j$ as required
+  \item<2-> Matching basis vectors for $A$ and $B$ are thus given by
+    \[
+      \vc_i = \mathbf{A} \vu_i \;\so{}\; \mathbf{C} = \mathbf{AU} \qquad
+      \vd_i = \mathbf{B} \vv_i \;\so{}\; \mathbf{D} = \mathbf{BV}
+    \]
+    (both are orthonormal because $\mathbf{U}$ and $\mathbf{V}$ are orthogonal)
+  \item<3-> And projection $\mathbf{P} \vz$ in the new coordinates reduces to
+    \[
+      \vy' = \mathbf{C}^T \mathbf{P} \vz = \mathbf{C}^T \mathbf{D} \vx'
+      = \mathbf{U}^T \underbrace{\mathbf{A}^T\mathbf{B}}_{\mathbf{U}\Msigma\mathbf{V}^T} \mathbf{V} \vx'
+      = \Msigma \vx'
+    \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Shared dimensions and subspace similarity}
+
+  \begin{itemize}
+  \item Every shared dimension has singular value $\sigma_i = 1$, i.e.
+    \[
+      \#\text{shared}(A, B) = \abs{\set{\sigma_i = 1}}
+    \]
+  \item For other dimensions, $\sigma_j$ is the cosine similarity
+    \[
+      \vc_j^T \vd_j = (\mathbf{C}^T \mathbf{D})_{jj} = \Msigma_{jj} = \sigma_j
+    \]
+  \item Similarity \h{measure of shared dimensionality} is given by
+    \[
+      \text{Sim}_1(A, B) = \sum_{i=1}^r \sigma_i
+    \]
+    \begin{itemize}
+    \item[\hand] Sim$_1$ ranges from $0$ (fully orthogonal) to $r$ (identical)
+    \item[\hand] Sim$_1$ is symmetric (because of symmetry of SVD)
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Similarity as preserved variance}
+
+  \begin{itemize}
+  \item For random vectors $\vx \sim N_r(\vnull, \mathbf{I})$ in $B$ (subspace coord)
+    \begin{itemize}
+    \item rotation to $\mathbf{C}$ and $\mathbf{D}$ doesn't affect distribution:
+      $\vx' \sim N_r(\vnull, \mathbf{I})$
+    \item projection $\vy' = \mathbf{C}^T \mathbf{D} \vx' = \Msigma \vx' \sim N_r(\vnull, \Msigma^2)$
+      \[
+        \frac{ \Exp{\norm{\vy'}^2} }{ \Exp{\norm{\vx'}^2} }
+        = \frac{ \sum_{i=1}^r \sigma_i^2 }{ r }
+      \]
+    \end{itemize}
+  \item Expected \h{proportion of preserved variance} is thus
+    \[
+      \text{Sim}_2(A, B) = \frac1r \sum_{i=1}^r \sigma_i^2
+    \]
+    \begin{itemize}
+    \item[\hand] Sim$_2$ ranges from $0$ (fully orthogonal) to $1$ (identical)
+    \end{itemize}
+  \item $\text{Sim}_2(B, A) = \text{Sim}_2(A, B)$ because the reverse projection  from $A$ to $B$ is
+    $\mathbf{B}^T\mathbf{A} = (\mathbf{A}^T\mathbf{B})^T = \mathbf{V}\Msigma\mathbf{U}^T$ with same $\Msigma$
+  \end{itemize}  
+\end{frame}
+
+
+\todoslide[TODO: Bootstrapping \& cross-validation]{
+  bootstrapping \& cross-validation to estimate overtraining / uncertainty;
+  measure ``wobble'' of dimensions; cross-validate coordinates;
+  distribution of feature weights}
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \section{}
