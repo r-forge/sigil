@@ -68,3 +68,15 @@
 
 %% rotated column labels for table (to fit long text into narrow columns
 \newcommand{\rotLabel}[2][60]{\begin{rotate}{#1}#2\end{rotate}}
+
+%% insert a big TODO slide
+\newcommand{\todoslide}[2][TODO]{%
+  \begin{frame}
+    \frametitle{\h{#1}}
+    \begin{itemize}
+    \item[\hand] #2
+    \end{itemize}
+  \end{frame}}
+
+%% additional mathematical symbols
+\newcommand{\Msigma}{\boldsymbol{\Sigma}}
