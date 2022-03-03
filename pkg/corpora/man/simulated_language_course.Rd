@@ -1,7 +1,7 @@
 \name{simulated.language.course}
 \alias{simulated.language.course}
 \alias{LanguageCourse}
-\title{Simulated study on effectiveness of language course (SIGIL)}
+\title{Simulated study on effectiveness of language course (corpora)}
 
 \description{
 
@@ -65,5 +65,5 @@ summary(LanguageCourse)
 
 }
 
-\author{Stefan Evert <\email{stefan.evert@fau.de}>}
+\author{Stephanie Evert (Rl{https://purl.org/stephanie.evert})}
 \keyword{datasets}

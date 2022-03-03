@@ -15,23 +15,24 @@
   \url{http://www.schtepf.de/History/pages/stories.html}).  The text was
   automatically segmented (tokenised) and annotated with part-of-speech
   tags (from the Penn tagset) and lemmas (base forms), using the IMS
-  TreeTagger (Schmid 1994).
+  TreeTagger (Schmid 1994) and a custom lemmatizer.
 
 }
 
 \usage{
-data(VSS)
+VSS
 }
 
 \format{
 
-  A data set with 8043 rows corresponding to tokens and the following
-  columns:
+  A data set with 8043 rows corresponding to tokens and the following columns:
 
   \describe{
     \item{\code{word}:}{the word form (or surface form) of the token}
-    \item{\code{pos}:}{the part-of-speech tag of the token (using the Penn tagset)}
-    \item{\code{word}:}{the lemma (or base form) of the token}
+    \item{\code{pos}:}{the part-of-speech tag of the token (Penn tagset)}
+    \item{\code{lemma}:}{the lemma (or base form) of the token}
+    \item{\code{sentence}:}{number of the sentence in which the token occurs (integer)}
+    \item{\code{story}:}{title of the story to which the token belongs (factor)}
   }
 
 }
@@ -92,5 +93,5 @@ data(VSS)
 %%\examples{
 %%}
 
-\author{Stefan Evert (\url{http://purl.org/stefan.evert})}
+\author{Stephanie Evert (Rl{https://purl.org/stephanie.evert})}
 \keyword{datasets}
