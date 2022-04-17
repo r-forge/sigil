@@ -49,5 +49,5 @@ z.score.pval(k, n, p = 0.5, correct = TRUE,
 %% \examples{
 %% }
   
-\author{Stephanie Evert (Rl{https://purl.org/stephanie.evert})}
+\author{Stephanie Evert (\url{https://purl.org/stephanie.evert})}
 \keyword{htest}
