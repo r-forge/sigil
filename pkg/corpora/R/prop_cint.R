@@ -1,4 +1,4 @@
-prop.cint <- function(k, n, method=c("binomial", "z.score"), correct=TRUE,
+prop.cint <- function(k, n, method=c("binomial", "z.score"), correct=TRUE, p.adjust=FALSE,
                       conf.level=0.95, alternative=c("two.sided", "less", "greater")) {
   method <- match.arg(method)
   alternative <- match.arg(alternative)
@@ -10,9 +10,16 @@ prop.cint <- function(k, n, method=c("binomial", "z.score"), correct=TRUE,
   if (length(n) < l) n <- rep(n, length.out=l)
   if (length(conf.level) < l) conf.level <- rep(conf.level, length.out=l)
 
+  ## significance level for underlying hypothesis test (with optional Bonferroni correction)
+  alpha <- if (alternative == "two.sided") (1 - conf.level) / 2 else (1 - conf.level)
+  if (!isFALSE(p.adjust)) {
+    if (isTRUE(p.adjust)) p.adjust <- l # implicit family size
+    if (!is.numeric(p.adjust)) stop("p.adjust must either be TRUE/FALSE or a number specifying the family size")
+    alpha <- alpha / p.adjust # Bonferroni correction
+  }
+  
   if (method == "binomial") {
     ## Clopper-Pearson method: invert binomial test (using incomplete Beta function)
-    alpha <- if (alternative == "two.sided") (1 - conf.level) / 2 else (1 - conf.level)
     lower <- safe.qbeta(alpha, k, n - k + 1)
     upper <- safe.qbeta(alpha, k + 1, n - k, lower.tail=FALSE)
     cint <- switch(alternative,
@@ -21,7 +28,6 @@ prop.cint <- function(k, n, method=c("binomial", "z.score"), correct=TRUE,
                    greater   = data.frame(lower = lower, upper = 1))
   } else {
     ## Wilson score method: invert z-test by solving a quadratic equation
-    alpha <- if (alternative == "two.sided") (1 - conf.level) / 2 else (1 - conf.level)
     z <- qnorm(alpha, lower.tail=FALSE) # z-score corresponding to desired confidence level
     yates <- if (correct) 0.5 else 0.0  # whether to apply Yates' correction
     
