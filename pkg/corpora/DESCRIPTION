@@ -2,7 +2,7 @@ Package: corpora
 Type: Package
 Title: Statistics and Data Sets for Corpus Frequency Data
 Version: 0.5-1
-Depends: R (>= 3.0.0)
+Depends: R (>= 3.5.0)
 Imports: methods, stats, utils, grDevices
 Date: 2022-02-22
 Authors@R: person("Stephanie", "Evert", email="stephanie.evert@fau.de", role=c("cre", "aut"), comment=c(ORCID="0000-0002-4192-2437"))
