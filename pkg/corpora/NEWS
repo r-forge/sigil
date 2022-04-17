@@ -1,6 +1,7 @@
 Ongoing work:
   - now requires R >= 3.5.0
   - add Bonferroni correction to prop.cint() and improve documentation
+  - improve documentation for central two-sided p-values computed by binom.pval() and fisher.pval()
 
 Version 0.5-1:
   - maintenance release to comply with maintainer information format required by CRAN
