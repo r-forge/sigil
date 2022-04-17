@@ -64,5 +64,5 @@ chisq.pval(k1, n1, k2, n2, correct = TRUE,
 %% \examples{
 %% }
   
-\author{Stephanie Evert (Rl{https://purl.org/stephanie.evert})}
+\author{Stephanie Evert (\url{https://purl.org/stephanie.evert})}
 \keyword{htest}
