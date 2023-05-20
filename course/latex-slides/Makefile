@@ -77,7 +77,7 @@ test:	$(IMAGES)
 	-rm -f $*.pdf
 	$(LATEXMK) $*.tex
 	-rm -f $@
-	pdfjam --nup 2x2 --paper a4paper --landscape --trim "-8mm -8mm -8mm -8mm" --outfile $@ $*.pdf
+	pdfjam --nup 2x2 --a4paper --landscape --trim "-8mm -8mm -8mm -8mm" --outfile $@ $*.pdf
 
 %.notes.pdf:	%.tex $(IMAGES)
 	perl util/EditFile.perl -HANDOUT +NOTES -SLIDES -NEVER $*.tex
@@ -85,7 +85,7 @@ test:	$(IMAGES)
 	-rm -f $*.pdf
 	$(LATEXMK) $*.tex
 	-rm -f $@
-	pdfjam --nup 2x2 --paper a4paper --landscape --trim "-8mm -8mm -8mm -8mm" --outfile $@ $*.pdf
+	pdfjam --nup 2x2 --a4paper --landscape --trim "-8mm -8mm -8mm -8mm" --outfile $@ $*.pdf
 
 %:	%.slides.pdf %.handout.pdf %.notes.pdf
 	perl util/EditFile.perl -HANDOUT -NOTES +SLIDES -NEVER $*.tex
