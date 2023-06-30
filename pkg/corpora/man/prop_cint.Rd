@@ -26,7 +26,7 @@ prop.cint(k, n, method = c("binomial", "z.score"), correct = TRUE, p.adjust=FALS
     integer vector specifying the sizes of different samples)}
   \item{method}{a character string specifying whether to compute
     a Clopper-Pearson confidence interval (\code{binomial}) or
-    a Wilson score interval (\code{z.score}) is computed}
+    a Wilson score interval (\code{z.score})}
   \item{correct}{if \code{TRUE}, apply Yates' continuity correction for
     the z-score test (default)}
   \item{p.adjust}{if \code{TRUE}, apply a Bonferroni correction to ensure
