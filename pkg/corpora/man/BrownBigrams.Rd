@@ -11,7 +11,7 @@
 \description{
 
   This data set contains bigrams of adjacent word forms from the Brown
-  corpus of written American English (Francis \& Kucera 1964).
+  corpus of written American English (Francis & Kucera 1964).
   Co-occurrence frequencies are specified in the form of an observed
   contingency table, using the notation suggested by Evert (2008).
   

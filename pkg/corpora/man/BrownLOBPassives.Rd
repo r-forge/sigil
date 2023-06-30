@@ -11,7 +11,7 @@
 \description{
 
   This data set contains frequency counts of passive verb phrases for selected texts
-  from the Brown corpus of written American English (Francis \& Kucera 1964)
+  from the Brown corpus of written American English (Francis & Kucera 1964)
   and the comparable LOB corpus of written British English (Johansson \emph{et al.} 1978).
 
 }

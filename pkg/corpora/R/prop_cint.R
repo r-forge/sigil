@@ -2,13 +2,10 @@ prop.cint <- function(k, n, method=c("binomial", "z.score"), correct=TRUE, p.adj
                       conf.level=0.95, alternative=c("two.sided", "less", "greater")) {
   method <- match.arg(method)
   alternative <- match.arg(alternative)
+
+  l <- .match.len(c("k", "n", "conf.level"), adjust=TRUE) # ensure that all vectors have the same length
   if (any(k < 0) || any(k > n) || any(n < 1)) stop("arguments must be integer vectors with 0 <= k <= n")
   if (any(conf.level <= 0) || any(conf.level > 1)) stop("conf.level must be in range [0,1]")
-
-  l <- max(length(k), length(n), length(conf.level)) # ensure that all vectors have the same length
-  if (length(k) < l) k <- rep(k, length.out=l)
-  if (length(n) < l) n <- rep(n, length.out=l)
-  if (length(conf.level) < l) conf.level <- rep(conf.level, length.out=l)
 
   ## significance level for underlying hypothesis test (with optional Bonferroni correction)
   alpha <- if (alternative == "two.sided") (1 - conf.level) / 2 else (1 - conf.level)
@@ -60,9 +57,10 @@ safe.qbeta <- function (p, shape1, shape2, lower.tail=TRUE) {
   is.0 <- shape1 <= 0
   is.1 <- shape2 <= 0
   ok <- !(is.0 | is.1)
-  x <- rep_len(NA, length(p))
+  x <- numeric(length(p))
   x[ok] <- qbeta(p[ok], shape1[ok], shape2[ok], lower.tail=lower.tail) # shape parameters are valid
   x[is.0 & !is.1] <- 0 # density concentrated at x = 0 (for alpha == 0)
   x[is.1 & !is.0] <- 1 # density concentrated at x = 1 (for beta == 0)
+  x[is.0 & is.1] <- NA # shouldn't happen in our case (alpha == beta == 0)
   x
 }
