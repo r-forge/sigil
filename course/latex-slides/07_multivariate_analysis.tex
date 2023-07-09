@@ -117,7 +117,7 @@
 
   Download additional code \& data sets from SIGIL homepage:
   \begin{itemize}
-  \item \href{http://www.stefan-evert.de/SIGIL/sigil_R/materials/multivar_utils.R}{\code{multivar\_utils.R}}
+  \item \href{http://www.stefan-evert.de/SIGIL/sigil_R/materials/multivar_utils.R}{\code{gma\_utils.R}}
   \item \href{http://www.stefan-evert.de/SIGIL/sigil_R/data/unit7_data.rda}{\code{unit7\_data.rda}}
   \item[]
   \end{itemize}
@@ -129,7 +129,7 @@
 > library(corpora)           \REM{basic utilities and some data sets}
 > library(wordspace)         \REM{for large and sparse matrices}
 
-> source("multivar_utils.R") \REM{additional functions}
+> source("gma_utils.R")      \REM{additional functions}
 
 > load("unit7_data.rda", verbose=TRUE) \REM{further data sets}
 \end{Rcode}
@@ -337,7 +337,7 @@
       \includegraphics[width=45mm]{img/7_distance_examples}
     \end{column}
   \end{columns}
-  \gap[.5]
+  \gap[1.5]
   \[ \dist[p]{\vu}{\vv} \coloneq \abs{u_1 - v_1}^p + \dots + \abs{u_n - v_n}^p \]
   \[ \dist[0]{\vu}{\vv} = \# \bigsetdef{i}{u_i \neq v_i} \]
 \end{frame}
@@ -346,6 +346,7 @@
   \frametitle{Distance and vector length = norm}
   %% \framesubtitle{}
 
+  \ungap[1]
   \begin{columns}[T]
     \begin{column}{50mm}
       \begin{itemize}
@@ -366,11 +367,47 @@
     \end{column}
   \end{columns}
 
+  \gap
   \begin{itemize}
   \item<3-> \h{Minkowski $p$-norm} for $p\in [1,\infty]$ (not $p < 1$):
     \[
     \norm[p]{\vu} \coloneq \bigl(\abs{u_1}^p + \dots + \abs{u_n}^p\bigr)^{1/p}
     \]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Angular distance = cosine similarity}
+  % \framesubtitle{}
+
+  \ungap[1]
+  \begin{columns}[c]
+    \begin{column}{5cm}
+      \begin{itemize}
+        \item Angle $\alpha$ between vectors $\vu,\vv\in \setR^n$ is given by
+          \begin{align*}
+            \cos \alpha &= 
+            \frac{\sum_{i=1}^n u_i\cdot v_i}{
+              \sqrt{\sum_i u_i^2}\cdot \sqrt{\sum_i v_i^2}}
+            \\
+            &= \frac{\vu^T \vv}{\norm[2]{\vu}\cdot \norm[2]{\vv}}
+        \end{align*}
+      \item<2-> Corresponding metric: \h{angular distance} $\alpha$
+      \end{itemize}
+    \end{column}
+    \begin{column}{5cm}
+      \includegraphics[width=5cm]{img/angular_distance_hieroglyph}
+    \end{column}
+  \end{columns}
+
+  \gap
+  \begin{itemize}
+  \item<2-> $\alpha$ is a metric on direction vectors (regardless of length)
+  \item<3-> \hh{Cosine} measure of similarity: $\cos \alpha$
+    \begin{itemize}
+    \item $\cos \alpha = 1$ \so collinear
+    \item $\cos \alpha = 0$ \so \h{orthogonal}
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
