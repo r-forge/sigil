@@ -4,7 +4,7 @@ prop.cint <- function(k, n, method=c("binomial", "z.score"), correct=TRUE, p.adj
   alternative <- match.arg(alternative)
 
   l <- .match.len(c("k", "n", "conf.level"), adjust=TRUE) # ensure that all vectors have the same length
-  if (any(k < 0) || any(k > n) || any(n < 1)) stop("arguments must be integer vectors with 0 <= k <= n")
+  if (any(k < 0) || any(k > n) || any(n < 1)) stop("arguments must be integer vectors with 0 <= k <= n and n >= 1")
   if (any(conf.level <= 0) || any(conf.level > 1)) stop("conf.level must be in range [0,1]")
 
   ## significance level for underlying hypothesis test (with optional Bonferroni correction)

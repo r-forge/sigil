@@ -1,7 +1,6 @@
-##    Author: Stefan Evert
-##   Purpose: Utility functions used by several plotting scripts
-##   Created: Sun Aug  6 18:42:17 2006
-##  Modified: Fri Jun 27 12:07:48 2014 (evert)    
+##
+## Utility functions used by several plotting scripts
+##
 
 ##
 ## compute type probabilities pi_k from LNRE model

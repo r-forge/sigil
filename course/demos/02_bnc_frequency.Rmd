@@ -1,7 +1,7 @@
 ---
 title: "Unit #2: BNC Frequency Comparisons"
 author: "Stefan Evert"
-date: "28 November 2015"
+date: "8 October 2019"
 output: pdf_document
 ---
 
@@ -15,20 +15,20 @@ R has a built-in function `read.table` for loading statistical tables from text 
 BNCqueries <- read.delim("bnc_queries.tbl", quote="", stringsAsFactors=FALSE)
 ```
 
-If you are lazy, you can also use a pre-loaded version of this data frame available in the R package `SIGIL`.
+If you are lazy, you can also use a pre-loaded version of this data frame available in the R package `corpora`.
 
 ```{r}
-library(SIGIL)
+library(corpora)
 dim(BNCqueries)
 ```
 
-The SIGIL package also contains a help page with further information about the data set, including a description of the _variables_ (columns) in the table.  You will also find queries in CEQL syntax that allow you to reproduce the frequency counts on a BNCweb server.
+The `corpora` package also contains a help page with further information about the data set, including a description of the _variables_ (columns) in the table.  You will also find queries in CEQL syntax that allow you to reproduce the frequency counts on a BNCweb server.
 
 ```{r eval=FALSE}
 ?BNCqueries
 ```
 
-In order to compile interesting subcorpora, we also need metadata information for the individual text documents.  A comprehensive metadata table is also provided in the form of a TAB-delimited text file (or pre-loaded in SIGIL as `BNCmeta`).  Note that when dealing with language data, you should always specify the character encoding of the text file; otherwise accented letters and other special characters will not load correctly.
+In order to compile interesting subcorpora, we also need metadata information for the individual text documents.  A comprehensive metadata table is also provided in the form of a TAB-delimited text file (or pre-loaded in `corpora` as `BNCmeta`).  Note that when dealing with language data, you should always specify the character encoding of the text file; otherwise accented letters and other special characters will not load correctly.
 
 ```{r}
 BNCmeta <- read.delim("bnc_metadata_utf8.tbl", quote="",
@@ -88,7 +88,7 @@ write.csv(FictM, file="fiction_male.csv", fileEncoding="utf8")
 write.csv2(FictF, file="fiction_female.csv", fileEncoding="cp1252")
 ```
 
-The last step is to compute the pooled frequency counts for each subcorpus, by adding up the relevant columns of the data frame.  Let us look at the token frequency of downtoners such as _almost_ or _scarcely_ as an example:
+The last step is to compute the pooled frequency counts for each subcorpus, by adding up the relevant columns of the data frame.  Let us look at the token frequency of downtoners such as _almost_ or _scarcely_ here:
 
 ```{r}
 k1 <- sum(FictM$downtoner)
@@ -115,7 +115,7 @@ fisher.test(ct)
 
 The frequency difference is highly significant.  Fisher's exact test also returns a confidence interval for the odds ratio $\theta$ as a measure of effect size.  Can you interpret this value?  Is the difference linguistically _meaningful_?
 
-A more intuitive effect size measure, the difference of proportions $\delta$, can be computed with the specialized proportions test.  Keep in mind that the `prop.test` expects a different input format than a contingency table.
+A more intuitive effect size measure in this setting, the difference of proportions $\delta$, can be computed with the specialized proportions test.  Keep in mind that the `prop.test` expects a different input format than a contingency table.
 
 ```{r}
 prop.test(c(k1, k2), c(n1, n2))
@@ -126,7 +126,3 @@ Can you interpret this confidence interval?  What is the difference between men 
 **Now it's your time** to experiment with other subcorpora and queries.  Can you find interesting expected or unexpected differences?  How do you compute $n$ for frequencies given as sentence counts?  And what is a reasonable sample size for a comparison of the frequency of split infinitives (`split.inf.S`)?
 
 Advanced R users should also try to automate these comparisons, either by defining their own functions or by using other data manipulation and summation tools (so it is not necessary to generate a separate table for each subcorpus).
-
-
-
-
