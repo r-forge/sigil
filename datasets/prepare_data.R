@@ -12,6 +12,16 @@ BNCmeta$title <- as.character(BNCmeta$title)
 save(BNCmeta, file="rda/BNCmeta.rda", compress="xz")
 
 
+## VSS corpus in tabular format
+fh <- pipe("cqp -f decode_vss.cqp", open="r")
+VSS <- read.delim(fh, quote="", fileEncoding="ascii", colClasses="character")
+close(fh)
+
+VSS <- transform(VSS, sentence=as.integer(sub("^[a-z]+", "", sentence))) # recode sentence IDs as integers
+VSS <- transform(VSS, story=factor(story, levels=unique(story))) # convert story as factor with original ordering of stories
+save(VSS, file="rda/VSS.rda", compress="xz")
+
+
 ## text statistics for Brown and LOB corpora
 BrownStats <- read.delim("tbl/brown.stats.txt", quote="")
 save(BrownStats, file="rda/BrownStats.rda", compress="xz")
