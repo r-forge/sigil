@@ -1,0 +1,469 @@
+\documentclass[a4paper]{article}
+
+%% -- basic setup (page layout, language, font encoding)
+\usepackage{vmargin}
+\setpapersize[portrait]{A4}
+\setmarginsrb{30mm}{10mm}{30mm}{20mm}% left, top, right, bottom
+{12pt}{15mm}% head heigth / separation
+{0pt}{15mm}% bottom height / separation
+%% \setmargnohfrb{30mm}{20mm}{20mm}{20mm}
+
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{\medskipamount}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage[T1]{fontenc}
+%% \usepackage{textcomp}  % this can break some outline symbols in CM fonts, use only if absolutely necessary
+
+%% -- standard packages that are needed most of the time
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx,rotating}
+\usepackage{array,hhline,booktabs}
+\usepackage{xspace}
+\usepackage{url}
+% \usepackage{ifthen,calc,hyphenat}
+% \usepackage{xcolor,tikz}
+\usepackage[textwidth=25mm,textsize=footnotesize,colorinlistoftodos,backgroundcolor=orange!80]{todonotes} % [disable] to hide all TODOs
+\usepackage{enumitem}
+
+%% -- this is a selection of free font packages that are included in Tex Live and similar distributions
+\usepackage{lmodern}
+
+%% -- set up references (for bibstyle "natbib-stefan")
+\usepackage{natbib}
+\bibpunct[:~]{(}{)}{;}{a}{}{,}
+
+%% -- hyperlink support in PDFs
+\definecolor{linkred}{rgb}{.5,.1,.0}
+\definecolor{linkblue}{rgb}{.0,.15,.5}
+\usepackage[colorlinks=true,linkcolor=black,urlcolor=linkred,citecolor=linkblue]{hyperref}
+
+%% -- some useful macros for mathematical and statistical notation
+\input{lib/math.tex}
+\input{lib/stat.tex}
+
+%% -- abbreviations for keyness measures (in math mode)
+\newcommand{\LLR}{G^2}          % log-likelihood test
+\newcommand{\CHI}{X^2}          % chi-squared test
+\newcommand{\SM}[1][\lambda]{\text{SM}_{#1}} % simple maths (with user parameter)
+\newcommand{\LR}{\text{LR}}     % log-ratio
+\newcommand{\LRC}{\text{LR}_{\text{cons}}} % conservative log-ratio
+\newcommand{\OR}{\text{OR}}     % odds ratio
+\newcommand{\pDIFF}{\text{\%DIFF}}     % odds ratio
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Statistical methods for corpus frequency data:\\
+Mathematical background and algorithms}
+\author{Stephanie Evert}
+\date{27 June 2022\\
+  \texttt{corpora} version 0.5}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\todo[inline]{Add papers to \texttt{.bib} file, with short summaries in appropriate sections.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\section{Keyness measures}
+\label{sec:key}
+
+\subsection{Keywords in corpus linguistics}
+\label{sec:key:keywords}
+
+Papers to look at for definition and goals of keyword analysis:\todo{@ND: order missing books for our library!}
+
+\begin{itemize}
+\item \citet{Scott:97}
+\item \citet{Rayson:12} \todo[inline]{@ND: can we buy online access to the encyclopedia?}
+\item \citet{Baker:04a}
+\item several chapters from \citet{Bondi:Scott:10}
+\item \citet{Kilgarriff:96}
+\item \citet{Oakes:Farrow:06}
+\end{itemize}
+
+\subsubsection{Definitions}
+\label{sec:key:def}
+\todo{Do we include a pointer to cultural keywords (Williams) and their relation to statistical ones (e.g. Stubbs)?}
+\begin{itemize}
+\item ``a word which occurs with unusual frequency in a given text'' \citep[236]{Scott:97}
+  \begin{itemize}[nosep]
+  \item He clarifies that this ``does not mean high frequency but unusual frequency, by comparison with a reference corpus of some kind.''
+  \item note the focus on keyness in a \emph{single text} rather than a target corpus
+  \end{itemize}
+\item ``A word has keyness both when there is a statistically significant difference between its relative frequency (i.e., raw frequency divided by the size of the text) in the Ttxt and in the RefC and when its relative frequency in the Ttxt is higher than its relative frequency in the RefC'' \citep[203]{Fidler:15}
+\item \citet[25]{OHalloran:11} ``corpus-comparative statistical keywords [\dots] are defined as being statistically more frequent in a text or set of texts than in a large reference corpus''
+\todo[inline]{Based on a bit of concordancing of my CADS paper collection, most people in practice seem to stick very close to Scott's definition (including his phrasing), even when they aren't using key keywords (although some of them apparently attribute the method to Baker instead of Scott); also people like to bring `salience' into the definition, which they often seem to equate to significance.}
+\end{itemize}
+
+\subsubsection{Settings for keyword analysis}
+\label{sec:key:settings}
+
+Keyword analysis is usually operationalised as a frequency comparison between two (sub-)corpora $A$ and $B$, as detailed in Sec.~\ref{sec:math} (with some exceptions menioned in Sec.~\ref{sec:math:extend}).  However, depending on the choice of $A$ and $B$, the method can put its focus on entirely different aspects of keyness and thus can be used for different applications.
+
+There are three important application settings for frequency-comparison keyword analysis.
+
+\paragraph{Domain keywords:} $A$ = small or medium-sized target corpus, $B$ = large reference corpus
+
+\todo[inline]{description, kinds of keywords}
+
+\paragraph{Contrastive keywords:} $A, B$ = two contrasted corpora of similar size
+
+\todo[inline]{description, kinds of keywords}
+
+\paragraph{Per-text  keywords:} $A$ = single text, $B$ = text collection or large general reference corpus
+
+\todo[inline]{description, kinds of keywords}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Corpus data \& notation}
+\label{sec:key:notation}
+
+Notation for keyness measures:\todo{contingency table and expected frequencies}
+\begin{itemize}
+\item $f_1, f_2$ = frequency of term in corpus $A$ (``target'') and corpus $B$ (``reference'')
+\item $n_1, n_2$ = size of corpus $A$ and corpus $B$ (number of tokens) 
+\item $p_1, p_2$ = relative frequency of term ($p_i = f_i / n_i$); $10^6 p_i$ is frequency pmw
+\item $\pi_1, \pi_2$ = true relative frequencies of term in underlying populations
+\item $df, dn, dp, d\pi$ refer to document frequencies rather than token frequencies
+\end{itemize}
+
+The ``true'' values of effect size measures for the two populations are always indicated by Greek letters, such as
+\begin{itemize}[nosep]
+\item $\delta = \pi_1 - \pi_2$ = difference of proportions
+\item $\rho = \pi_1 / \pi_2$ = relative risk
+\item $\theta = \pi_1 (1 - \pi_2) / (1 - \pi_1) \pi_2$ = odds ratio  
+\end{itemize}
+
+Regardless of the setting (Sec.~\ref{sec:key:settings}, we always see $A$ as the \textbf{focus corpus}, i.e.\ we are interested in \textbf{positive keywords} for $A$ and will not consider any candidates with $f_1 = 0$.
+
+A more controversial issue is whether to include words that only occur in $A$ (i.e.\ $f_2 = 0$) as keyword candidates in a joint ranking, or whether to analyse them separately as a frequency list of ``words unique to $A$'' (the approach taken by BNCweb and earlier versions of CQPweb).  A motivation for the latter strategy is that many equations fail to compute or need special cases if $f_2 = 0$.\todo{often not explicit in literature; authors rely on what their software tools produce}
+
+\todo[inline]{Issue of $f_2 = 0$ discussed by \citet[237]{Gabrielatos:18} with relation to effect size measures, which for the most part are not equipped to handle this case $\rightarrow$ recommendation: add a value close to zero}
+
+\todo[inline]{our view is that such ``unique words'' should be integrated with ``regular'' keywords in a single ranking and the ``good'' measures should be able to handle them appropriately; it is often a matter of chance whether a given word has $f_2 = 0, 1, 2$ (Evert 2004, Ch.~XX)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Keyness measures}
+\label{sec:key:measures}
+
+\textbf{log-likelihood statistic} $\LLR$ has been proposed by \citet[3]{Rayson:Garside:00}, following its introduction to collocation analysis by \citet{Dunning:93}
+
+\textbf{chi-square statistic} $\CHI$ has been used by \citet[236]{Scott:97}, who does not provide any formula or further details and just refers to the implementation in WordSmith Tools.  The online WordSmith manual mentions ``standard chi-square and other statistical tests''\footnote{\url{https://lexically.net/downloads/version7/HTML/p_value.html}}, but the actual statistical test carried out appears to be ``Ted Dunning's Log Likelihood test''\footnote{\url{https://lexically.net/downloads/version7/HTML/keywords_calculate_info.html}}.
+
+\todo[inline]{check out \citet{Oakes:Farrow:06} for $\CHI$-based keyword analysis}
+
+\citet[45]{Hardie:14} suggests \textbf{LogRatio} $\LR$ as an intutive and mathematically reasonable keyness measure, which is also suitable for lockword analysis:
+\begin{equation}
+  \label{eq:log-ratio}
+  \LR = \log_2 \frac{p_1}{p_2} = \log_2 \frac{f_1 / n_1}{f_2 / n_2} = \log_2 r
+\end{equation}
+where $r$ is the point estimate for \textbf{relative risk} $\rho = \pi_1 / \pi_2$.\footnote{Note that \citet{Hardie:14} conceptualises the two independent samples as rows of a contingency table rather than columns as in this paper.} The base-2 logarithm is intended to give a more easily interpretable scale, where $\LR = 1$ means twice as frequent as expected, $\LR = 2$ four times, $\LR = 3$ eight times, etc.
+
+An issue arises if $f_2 = 0$, leading to $\LR = \infty$. \citet[45]{Hardie:14} argues to ``add a tiny non-zero quantity in these cases only'' and proposes an amount of $0.5$ (in analogy to discounting for the odds ratio). In Hardie's approach, we thus use $f'_2 = \max \set{f_2, \frac12}$ instead of $f_2$.
+
+Statistical inference for $\LR$ is based on its asymptotic standard deviation.  It is well-known in statistical theory that $\log r$ is asymptotically normal for large samples and approaches normality more quickly than $r$. The standard deviation of the asymptotic normal distribution is given by
+\begin{equation}
+  \label{eq:log-ratio-sd}
+  \sigma(\log r) = \sqrt{
+    \frac{1 - \pi_1}{\pi_1 n_1} +
+    \frac{1 - \pi_2}{\pi_2 n_2}
+  }
+  = \sqrt{
+    \frac{1}{\pi_1 n_1} + \frac{1}{\pi_2 n_2}
+    - \frac{1}{n_1} - \frac{1}{n_2}
+  }
+\end{equation}
+\citep[73]{Agresti:02}.  
+
+Hardie uses the sample estimate $\hat{\sigma}(\log r)$ 
+\begin{equation}
+  \label{eq:log-ratio-sd-estimate}
+  \hat{\sigma}(\log r) = \sqrt{
+    \frac{1}{f_1} + \frac{1}{f_2}
+    - \frac{1}{n_1} - \frac{1}{n_2}
+  }
+  = \sqrt{
+    \frac{n_1 - f_1}{f_1  n_1} + \frac{n_2 - f_2}{f_2 n_2}
+  }
+\end{equation}
+(with $f'_2$ instead of $f_2$ as above) in order to obtain a Wald confidence interval for $\log r$ and rescale it to the $\log_2$ scale of $\LR$.  A more convenient form of his equation is
+\begin{equation}
+  \label{eq:log-ratio-conf-hardie}
+  \LR_{\pm} = \LR \pm \frac{z_{\alpha/2}}{\log 2} \cdot \sqrt{
+    \frac{n_1 - f_1}{f_1  n_1} + \frac{n_2 - f_2}{f_2 n_2}
+  }
+\end{equation}
+where $z_{\alpha/2}$ is the $z$-score corresponding to the desired significance level of the two-sided confidence interval (e.g.\ $\alpha = .01$ for a two-sided 99\% confidence interval), possibly after adjustment for multiple testing (cf.\ Sec.~\ref{sec:math:filter}).
+
+Hardie only uses this confidence interval as a significance filter (Sec.~\ref{sec:math:filter}), noting that ``An alternative to filtering by confidence interval would be simply to \emph{present} the confidence interval, allowing the user to see and take account of its upper and lower bounds. However, the risk here is that the display becomes too complex for the user to interpret effectively.'' \citep[50]{Hardie:14}
+
+By contrast, \citet{Evert:Dykes:Peters:18} propose to use the lower bound of this confidence interval as the \textbf{conservative LogRatio} keyness measure $\LRC = \LR_{-}$, which combines effect-size based ranking with an implicit significance filter (if only candidates with $\LRC > 0$ are considered).  Their implementation is based on Eq.~(\ref{eq:log-ratio-conf-hardie}), following the CQPweb implementation and arguing that it provides a good approximation to more computationally algorithms in most situations and doesn't need specialised software packages (see Sec.~\ref{sec:fisher} for further discussion).
+
+\todo[inline]{describe full procedure for computing LRC, including the conditional Poisson test, based on DH2022 paper and its supplementary material; also one- and two-sided versions of LRC and the other measures}
+
+\todo[inline]{Many other effect-size measures collected by \citet{Hardie:14}, including a large number that have not explicitly been proposed for keyword analysis (but rather as association measures for collocations).}
+
+\citet{Gabrielatos:Marchi:12} propose a simple measure called \textbf{\%DIFF}, which computes the relative difference between relative frequencies in the two corpora \citep[see also][]{Gabrielatos:18}:
+\begin{equation}
+  \label{eq:perc-diff}
+  \pDIFF = 100\cdot \frac{ p_1 - p_2 }{ p_2 }
+  = 100\cdot \frac{
+    f_1 / n_1 - f_2 / n_2
+  }{
+    f_2 / n_2
+  }
+\end{equation}
+As \citet[22]{Hardie:14} points out, this measure is equivalent to the point estimate for relative risk: $\pDIFF = 100\cdot (r - 1)$.  For the case $f_2 = 0$, \citet{Gabrielatos:Marchi:12} suggest a much smaller discount than \citet{Hardie:14} with $p_2 = 10^{-18}$.  They do not consider confidence intervals, but propose a statistical significance test ($\LLR$) as an additional filter.
+
+Another effect-size measure \textbf{odds ratio} $\OR$ was proposed by \citet{Pojanapunya:WatsonTodd:18}, who argue for combining $\LLR$-based keywords with $\OR$-based keywords to obtain different perspectives (rather than using $\LLR$ as a significance filter and the effect-size measure for ranking, as Hardie suggests).  They also report that several other effect-size measures including $\LR$ and \%DIFF ``return the same top 500 words as OR'' \citep[147]{Pojanapunya:WatsonTodd:18}.
+\begin{equation}
+  \label{eq:odds-ratio}
+  \OR = \frac{O_{11} O_{22}}{O_{21} O_{12}}
+  = \frac{f_1 (n_2 - f_2)}{(n_1 - f_1) f_2}
+  = \hat{\theta}
+\end{equation}
+is a point estimate for the population odds ratio $\theta = \pi_1 (1 - \pi_2) / \pi_2 (1 - \pi_1)$; similar to $\LR$, a logartihmic scale, i.e.\ an estimate for $\log \theta$, is more sensible and produces a less biased estimate.  Wald confidence intervals can be obtained from the asymptotic standard deviation
+\begin{equation}
+  \label{eq:odds-ratio-sd}
+  \hat{\sigma}(\log \hat{\theta}) = \sqrt{
+    \frac{1}{O_{11}} + \frac{1}{O_{12}} + \frac{1}{O_{21}} + \frac{1}{O_{22}}
+  } = \sqrt{
+    \frac{1}{f_1} + \frac{1}{n_1 - f_1} + \frac{1}{f_2} + \frac{1}{n_2 - f_2}
+  }
+\end{equation}
+\citep[71]{Agresti:02}.  Similar problems as for $\LR$ arise if $f_2 = 0$, but it has been shown in mathematical literature that adding $\frac12$ to all four cells of the contingency tables in Eq.~(\ref{eq:odds-ratio}) and (\ref{eq:odds-ratio-sd}) gives well-behaved estimators for $\theta$ and $\sigma(\log \hat{\theta})$ \citep[70f]{Agresti:02}.
+
+$\OR$ has the advantage that Clopper-Pearson confidence intervals can be obtained by inverting Fisher's exact test for two independent binomial distributions, based on the conditional noncentral hypergeometric distribution \citep[99]{Agresti:02}, see Sec.~\ref{sec:fisher} for a practical algorithm. The method is attributed to \citet{Cornfield:56}, who computes ``central'' confidence intervals \citep[53]{Fay:10a}. It can also be used to obtain a conditional point estimate $\hat{\theta}$ by solving $O_{11} = \Exp{O_{11}}$ for the noncentral hypergeometric distribution \citep[100]{Agresti:02}.
+
+\citet{Pojanapunya:WatsonTodd:18} fail to take advantage of these mathematical opportunities.  To our knowledge, no computationally efficient implementations of such confidence intervals are easily available, limiting the practical potential for a conservative $\OR$ keyness measure.
+
+Sketch Engine uses \textbf{simple maths} \citep{Kilgarriff:09}
+\begin{equation}
+  \label{eq:simple-maths}
+  \SM = \frac{10^6 p_1 + \lambda}{10^6 p_2 + \lambda}
+\end{equation}
+where $\lambda$ is a user parameter that determines whether the measure prefers low-frequency (small $\lambda$) or high-frequency (large $\lambda$) keywords. As of August 2021, the default setting in SkE is $\lambda = 1$, admissible values range from $\lambda = 10^{-3}$ to $\lambda = 10^6$ in powers of ten. The documentation says that ``a higher value (100, 1000, \ldots) focusses on higher-frequency keywords (more common words), whereas a lower value (1, 0.1, \ldots) focusses on low-frequency (rare words).''\footnote{\url{https://www.sketchengine.eu/documentation/simple-maths/}, accessed 24.08.2021}
+
+typical values seem to be in the range $\lambda = 1 \ldots 1000$.  For $\lambda = 0$, the measure is identical to relative risk and hence to plain LogRatio:
+\[
+  \LR = \log \SM[0]
+\]
+
+\subsubsection{Not implemented in \texttt{corpora}}
+\label{sec:key:nyi}
+
+\citet{Gries:21} proposes a keyness measure derived from \textbf{KL divergence}, which is hardly correlated with frequency, hence an effect-size measure\todo{insert equation and discussion}
+
+\citet{Egbert:Biber:19} argue for integrating dispersion into keyword analysis; we believe that their proposed method corresponds to our df-based keywords \citep{Evert:Dykes:Peters:18} and should therefore be listed in Sec.~\ref{sec:math:notation}.\todo{Read paper, check whether assumption is correct, add details}
+
+\citet{Gries:21} proposes -- as he has been doing for more than 10 years -- to use a multi-dimensional perspective combining an effect-size keyness measure with difference in dispersion between target and reference corpus; new is consistent use of KL-divergence-based measures for both (rather than $G^2$ and DP)\todo{read paper, add details}
+
+Effect size measures: \citet{Fidler:15} criticise Simple Maths for the arbitrarity of the chosen constant; \% Diff for its way of handling values of 0 in the reference corpus (arguing that adding the same small constant regardless of target corpus frequency will make the keyness value reflect target corpus frequency, p 228-229) $\rightarrow$ propose Difference Index, based on Difference Coefficient which `flags' words with f = 0 in one of the corpora with a value of +100 / -100 respectively
+
+
+\subsubsection{Filters}
+\label{sec:math:filter}
+
+Ranking of candidates by a keyness measure is often combined with a cutoff threshold based on frequency or statistical significance.  This is particularly important for simple effect size measures in the form of statistical point estimates, which are highly unreliable for low-frequency data and will often drastically overestimate the keyness of such candidates.
+
+\begin{itemize}
+\item ranking by chi-square scores with $p$-value cutoff $p < 10^{-6}$ and frequency threshold $f_1 \geq 2$ \citep[237]{Scott:97}
+\item a frequency threshold of $f_1 \geq 5$ can be derived from the argument made by \citet[133]{Evert:04phd} for the case of collocation analysis
+\item \citet[48--50]{Hardie:14} argues to combine a significance-based filter with ranking according to an effect-size keyness measure; he explains that the filter can either be based on a ``significance test'' or a ``confidence interval'' with similar results, but fails to recognise that a significance test and confidence interval based on the same statistic are completely equivalent
+\end{itemize}
+
+Correction for multiple testing with significance filter is proposed by \citet[51--52]{Hardie:14}, who argues for a Šidák correction. We prefer the simpler and numerically robust -- though more conservative -- Bonferroni correction.\todo{spell out details in terms of $\alpha'$ and $z_{\alpha'}$}
+
+
+\todo[inline]{@ND: Other filters, e.g.\ stopwords, POS-based, \ldots}
+\begin{itemize}
+	\item most common approach, according to \citet[3-10]{Pojanapunya:WatsonTodd:18}: n-best approach, where typically the first 100 keywords are chosen (although the number chosen in individual studies ranges from 10 to 1,000)
+	\item POS tags and grammatical features indicating specific functions, e.g. \citep{Adolphs:07} who examine keywords with regard to communicative functions like backchanneling or vagueness
+	\item dispersion threshold, e.g. used as one of several filtering criteria by \citet{Leedham:20} to establish that the key item occurs in at least 0.5\% of corpus texts
+	\item One of the criteria used by \citet{Kania:20} alongside quantitative and POS-based filters is that the word has to be key for two different corpora in relation to a reference corpus
+	\item topic-based: \citet{Handford:19} only select key items etymologically related to the words \textit{culture} or \textit{diversity}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Mathematical discussion}
+\label{sec:key:math}
+
+\citet{Hardie:14} explains the mathematical techniques behind keywords and lockwords at length, aimed at a corpus linguistic audience.
+
+\citet{Dykes:Evert:Heinrich:21} observe problems with Hardie's (\citeyear{Hardie:14}) heuristic adjustment to $\LR$ in the case of $f_2 = 0$, as well as highly counter-intuitive behaviour of their $\LRC$ measure based on corresponding Wald intervals \citep{Evert:Dykes:Peters:18}.  A better \textbf{adjustment procedure} can be derived from an adjustment for binomial proportions, which adds a count of $2$ to both successes and failures \citep{Agresti:Coull:98}.  Wald confidence intervals with this adjustment are very close to the recommended Wilson score intervals in coverage probability \citep[123]{Agresti:Coull:98}.  Since Clopper-Pearson intervals for $\LR$ are based on a conditional binomial distribution (with $f_1$ = successes and $f_2$ = failures), it seems reasonable to apply this adjustement to the first row of the contingency table: $f'_1 = f_1 + 2$ and $f'_2 = f_2 + 2$ in Eq.~(\ref{eq:log-ratio}) and (\ref{eq:log-ratio-sd-estimate}).\footnote{For consistency, sample sizes have to be adjusted accordingly to $n'_i = n_i + 2$, but in the usual case of $f_i \ll n_i$ the difference will be negligible.}
+
+We prefer \textbf{exact Clopper-Pearson} confidence intervals for effect-size measures if available.  They are known to be conservative compared to Wilson score and Wald intervals \citep[e.g.][]{Agresti:Coull:98}, but naturally include corner cases such as $f_2 = 0$ or $f_1 = 0$ without requiring heuristic (and potentially problematic) adjustments.
+
+A Clopper-Pearson interval for relative risk $r$ and hence $\LR$ can be obtained from the Poisson test for the rate parameters $\lambda_1$ and $\lambda_2$ of two independent Poisson distributions \citet[55]{Fay:10a}.  This approach treats $f_1$ and $f_2$ as Poisson variables by not conditioning on sample sizes $n_1$ and $n_2$, i.e.\
+\begin{equation}
+  \label{eq:poisson-approximation}
+  f_i \sim \text{Pois}(\lambda_i) \quad \text{with} \quad \lambda_i = \pi_i n_i
+\end{equation}
+For the usual case of $\lambda_i \ll n_i$, the Poisson distribution is a very good approximation of the conditional binomial distribution.  An UMP unbiased test and confidence intervals are obtained by conditioning on $f_1 + f_2 = R_1$ \citep[125]{Lehmann:Romano:05}, which reduces to a binomial distribution
+\begin{equation}
+  \label{eq:poisson-conditional-1}
+  \pC{f_1}{f_1 + f_2} = \binom{f_1 + f_2}{f_1}
+  \left( \frac{\lambda_1}{\lambda_1 + \lambda_2} \right)^{f_1}
+  \left( \frac{\lambda_2}{\lambda_1 + \lambda_2} \right)^{f_2}
+\end{equation}
+\begin{equation}
+  \label{eq:poisson-conditional-2}
+  f_1 | f_1 + f_2 \sim B(f_1 + f_2, \tau := \lambda_1 / (\lambda_1 + \lambda_2))
+\end{equation}
+The resulting hypothesis test \citep[314ff]{Przyborowski:Wilenski:40} corresponds to the standard exact binomial test.  For obtaining confidence intervals on the success probability $\tau$, we recommend the ``central'' method \citep[53]{Fay:10a} that is consistent with the matching hypothesis test.  A corresponding interval for relative risk is then obtained by
+\begin{equation}
+  \label{eq:poisson-ratio-to-rho}
+  \rho = \frac{n_2 \tau}{n_1 (1 - \tau)}
+\end{equation}
+\citep[55]{Fay:10a}.\footnote{Note differences to our notation: $\theta \to \tau$, $\lambda_i \to \pi_i$, $m_i \to n_i$, $m_i \lambda_i \to \lambda_i$ and index $0 \to 2$.  The transformation is monotonically increasing for $\tau < 1$.} We propose such a confidence interval as a more reliable version of $\LRC$.
+
+
+\citet{Kilgarriff:09} does not provide any mathematical background for his \textbf{simple maths}, except to claim that ``sophisticated maths needs a null hypothesis to build on and we have no null hypothesis''. He links SM$_{\lambda}$ to the popular add-one (or add-$\lambda$) smoothing heuristic, showing a poor understanding of the mathematics behind add-one smoothing.
+
+Add-$\lambda$ smoothing can be motivated from a Gamma-Poisson Bayesian sampling model.\footnote{See \url{https://en.wikipedia.org/wiki/Gamma_distribution} and \url{https://en.wikipedia.org/wiki/Poisson_distribution\#Bayesian_inference} for mathematical background.}  With a prior distribution $\Gamma(\alpha, \beta)$ and a single observation of a term with frequency $f$, the Posterior distribution is $\Gamma(f + \alpha, 1 + \beta)$ with
+\[
+  \text{mean}\; = \frac{f + \alpha}{1 + \beta} \qquad
+  \text{and mode = MAP}\; = \frac{f + \alpha - 1}{1 + \beta}
+\]
+With suitably chosen parameters, SM$_{\lambda}$ can be understood as the ratio of the MAP estimates:
+\[
+  \frac{\text{MAP}_1 / n_1}{\text{MAP}_2 / n_2} =
+  \frac{
+    \frac{f + \alpha_1 - 1}{n_1(1 + \beta)}
+  }{
+    \frac{f + \alpha_2 - 1}{n_2(1 + \beta)}
+  } =
+  \frac{
+    10^6 p_1 + 10^6 \frac{\alpha_1 - 1}{n_1}
+  }{
+    10^6 p_2 + 10^6 \frac{\alpha_2 - 1}{n_2}
+  } =
+  \frac{10^6 p_1 + \lambda}{10^6 p_2 + \lambda}
+\]
+with $\alpha_i = 10^{-6} n_i \lambda + 1$, though there doesn't seem to be any sensible motivation for this particular choice of prior distribution.  A reasonable approach would be to carry out Bayesian inference for the odds ratio, using the hypergeometric distribution and a suitable conjugate prior.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{API and implementation details}
+\label{sec:key:api}
+
+\todo[inline]{Explain API of the \texttt{keyness()} function, any technical details.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\section{Noncentral Fisher's exact test}
+\label{sec:fisher}
+
+\todo[inline]{Work out notes and algorithm}
+
+\begin{itemize}
+\item I plan to implement noncentral versions of Fisher's exact test for $2\times 2$ contingency tables and the corresponding confidence intervals for odds ratio $\theta$ in future versions of \texttt{corpora}
+\item Prospective API
+  \begin{itemize}
+  \item extend \texttt{fisher.pval()} with argument \texttt{theta=1} or \texttt{odds.ratio=1}; if $\neq 1$ or a vector, the new code is used; otherwise \texttt{phyper} as in current implementation
+  \item optionally: \texttt{method} for two-sided test, which defaults to recommended \texttt{central} but could offer alternative \texttt{minlike} using the new, expensive implementation (even for \texttt{theta=1})
+  \item implement \texttt{relative.risk.cint()} using the conditional Poisson test of the LRC keyness measure (and hence a backend for \texttt{keyness()}; API corresponds to \texttt{prop.cint} and \texttt{fisher.pval}
+  \item new function \texttt{odds.ratio.cint()} for confidence interval of $\theta$ based on binary search over the new expensive implementation of noncentral \texttt{fisher.pval()} $\to$ rather slow; supports one-sided and two-sided test (always based on central p-values)
+  \end{itemize}
+\item NB: there are \href{https://en.wikipedia.org/wiki/Noncentral_hypergeometric_distributions}{two different versions} of the noncentral hypergeometric distribution
+  \begin{itemize}
+  \item the complicated form of \href{https://en.wikipedia.org/wiki/Wallenius'_noncentral_hypergeometric_distribution}{Wallenius's noncentral hypergeometric distribution} describes biased sampling from an urn without replacement
+  \item \href{https://en.wikipedia.org/wiki/Fisher's_noncentral_hypergeometric_distribution}{Fisher's noncentral hypergeometric distribution}, which is the version we're interested in here, arises from conditioning the multinomial distribution of a $2\times 2$ contingency tables on the row and column marginals
+  \item in the null case $\theta = 1$, both distributions are equal to the central hypergeometric
+  \end{itemize}
+\item References / existing implementations
+  \begin{itemize}
+  \item basic equations and properties can be found in the \href{https://en.wikipedia.org/wiki/Fisher's_noncentral_hypergeometric_distribution}{Wikipedia article}
+  \item an efficient algorithm for computing the non-central hypergeometric distribution is described by \citet{Liao:Rosen:01}; our implementation will mostly adopt this approach
+  \item the R package \href{https://cran.r-project.org/web/packages/BiasedUrn/}{BiasedUrn} implements the Liao/Rosen algorithm for probability mass, distribution function and quantiles in C++ code
+  \item the R package \href{https://cran.r-project.org/web/packages/exact2x2/}{exact2x2} focuses on providing different algorithms for two-sided Fisher's and other exact tests, together with matching confidence intervals \citet{Fay:10a}; but it uses the inefficient R implementation in \texttt{fisher.test()} for testing $H_0: \theta = \theta_0 \neq 1$ and a much more flexible, but equally inefficient implementation for confidence intervals
+  \item BiasedUrn could be used as a backend at least for the first implementation
+    \begin{itemize}
+    \item will require a bisection algorithm written in R to obtain confidence limits, which might create too much overhead as a new object has to be created for each iteration
+    \item cannot be used to compute two-sided minlike p-values; but will only be relevant for teaching purposes, as practical applications should prefer central p-values
+    \item tail probabilites are obtained by making a complete table of probability mass values in the $\eps$-support of the distribution around the mode (all have to be computed anyway for the normalisation factor), followed by naive summation $\to$ my own implementation could be more efficient and avoid memory allocations
+    \item if I (re-)implement the algorithm myself, the BiasedUrn source code can be used for inspiration, code review, and as a point of comparison in package tests
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\subsection{Algorithm}
+\label{sec:fisher:algo}
+
+\begin{itemize}
+\item noncentral hypergeometric distribution for $k = O_{11}$ with parameters $n_1 = C_1$, $n_2 = C_2$ (or equivalently $N = n = n_1 + n_2$), $m_1 = R_1$, and odds ratio $\theta = \frac{\pi_1 (1 - \pi_2)}{(1 - \pi_1) \pi_2}$
+\item density = probability mass function $p_k = \pC{k}{m_1, n_1, n_2, \theta} = \mathop{\text{dnchyper}}(k; m_1, n_1, n_2, \theta)$
+\item $p_k$ obtained by normalising the kernel function
+  \[
+    f_k = \binom{n_1}{k} \binom{n_2}{m_1 - k} \theta^k
+  \]
+  to
+  \[
+    p_k = \frac{ f_k }{ \sum_{i=l}^h f_i } = \frac{ f_k }{ C }
+  \]
+  with $l = \max\set{m_1 - n_2, 0}$ and $u = \min\set{n_1, m_1}$
+\item practical computation with recurrence relation \citep[366]{Liao:Rosen:01}
+  \[
+    f_k = f_{k-1}\cdot r(k) \quad\text{with}\quad
+    r(k) = \frac{(n_1 - k + 1)(m_1 - k + 1)}{k (n_2 - m_1 + k)} \theta
+  \]
+  which also holds for $p_k = f_k / C$
+\item \citet[369]{Liao:Rosen:01} show that $r(x)$ is a monotonically decreasing function for $x\in\setR_+$ with $f(x) = 1$ at
+  \begin{gather*}
+    x_* = \frac{-2c}{b - \sqrt{b^2 - 4ac}}\\
+    a = \theta - 1 \qquad
+    b = -((n_1 + m_1 + 2)\theta + n_2 - m_1) \qquad
+    c = (n_1 + 1) (m_1 + 1) \theta
+  \end{gather*}
+  and the mode of $p_k$ is at $k_* = \lfloor x_* \rfloor$ (because $p_k \geq p_{k-1}$ for $k \leq k_*$ and $p_k < p_{k-1}$ for $k > k_*$)
+\item the Liao-Rosen algorithm is based on the insight that virtually all the probability mass $p_k$ is concentrated in a relatively small region around the mode; for a reasonable definition of ``virtually all'' in terms of $\epsilon$, we call this region $l_{\epsilon}\leq k\leq u_{\epsilon}$ the $\epsilon$-support of $p_k$
+\item the normalising constant $C$ can be approximated to the desired accuracy by summing over the $\epsilon$-support: $C = \sum_{k = l_{\epsilon}}^{u_{\epsilon}} f_k$; starting from the mode and summing in both directions, $l_{\epsilon}$ and $u_{\epsilon}$ are determined during the summation, as soon as the estimated remaining tail sum is small enough: $f_k / (1 - r(k+1)) < \epsilon\cdot \sum_{j=k_*}^{k} f_j$ for the right tail (and analogously with $r(k-1)^{-1}$ for the left tail)
+\item additional simplification and robustness can be gained by summing over probabilities relative to the mode instead of the kernel:
+  \[
+    p'_k = \frac{p_k}{p_{k_*}} \qquad
+    C' = \frac{C}{p_{k_*}} = \sum_{k = l_{\epsilon}}^{u_{\epsilon}} p'_k
+  \]
+  which can be computed with the recurrence equation starting from $p'_{k_*} = 1$; however, for our purposes is better to work with $f_k$ in case we need to calculate extreme tail probabilites far outside the $\epsilon$-support; in this case, direct computation of the first $f_k$ in the tail will be much faster and more accurate than a product over possibly millions of $r(j)$
+\item computation of tail probabilities uses the same principle, starting from $f_k$ and adding terms until the remaining tail sum has a sufficiently low bound (or $l$ or $u$ is reached)
+\item confidence intervals for $\theta$ are obtained by a bisection algorithm
+  \begin{itemize}
+  \item will be quite slow because $C$ has to be re-computed at each step, but there seems no other way; in most cases, each step will just require a summation over $< 10^5$ terms, which should execute in $< 10^7$ cycles, taking but a few milliseconds on a modern CPU
+  \item need to work out correct bounds, termination and corner cases for each type of CI (left, right, two-sided), using central p-values in the two-sided case
+  \end{itemize}
+\end{itemize}
+
+\todo[inline]{Work out full algorithm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\subsection{}
+\label{sec:fisher:}
+
+\todo[inline]{Test whether distribution from BiasedUrn package can be used, and whether confidence intervals written around this function are acceptable}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% \section{}
+% \label{sec:A}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% \subsection{}
+% \label{sec:A:}
+
+
+%% \renewcommand{\bibsection}{}    % avoid (or change) section heading 
+\bibliographystyle{natbib-stefan}
+\bibliography{references}  
+
+\newpage
+\listoftodos % long todo list more suitable as appendix to main document
+
+\end{document}
