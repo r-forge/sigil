@@ -1,0 +1,616 @@
+---
+title: "Measuring Keyness Using R"
+author: "Stephanie Evert"
+date: "2023-09-13"
+output: 
+  html_document:
+    fig_height: 10
+    fig_width: 10
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+    code_folding: show
+---
+
+
+# Preparation
+
+
+## R packages
+
+For this hands-on session, you will need the packages **tidyverse** packages and **corpora** (version 0.6). We start by loading these packages (ignoring warnings about name conflicts from tidyverse).
+
+```{r loadPackages}
+library(tidyverse)
+library(corpora)
+```
+
+If you did not manage to install **corpora** v0.6, you can load an implementation of the `keyness()` function from the file `keyness_function.R`. The code block below does this automatically if it detects an outdated version.
+
+```{r loadKeynessSeparately}
+corpora.version <- packageVersion("corpora")
+if (corpora.version < "0.6") {
+  cat(sprintf("Package 'corpora' v%s is outdated - loading stand-alone implementation of keyness()\n", corpora.version))
+  source("keyness_function.R")
+}
+```
+
+For some parts of the session, you will also need packages **Rtsne** and **ggrepel**, as well as **fastTextR** to apply the visualisation to your own data sets. Since not everyone may have installed these packages, we will only load them later on when they are needed.
+
+
+## A small example
+
+The `corpora` package includes a very small example data set for keyword analysis, containing the frequencies of 60 selected noun lemmas in the written and spoken part of the British National Corpus. For illustration, we show every 10th line of this table.
+
+```{r bncExample}
+BNCcomparison[seq(1, 61, 10), ]
+```
+
+Did you notice the last entry “OTHER”? This is the total frequency of *all other* nouns, allowing us to compute the sample sizes $n_1$ and $n_2$ by summing over the columns. Let us separate the information into a frequency table `bnc` without the “OTHER” row (converted into a tibble for better tidyverse support) and the sample sizes `bnc_nW` and `bnc_nS`.
+
+```{r bncPrepareData}
+bnc <- as_tibble(filter(BNCcomparison, noun != "OTHER"))
+bnc_nW <- sum(BNCcomparison$written)
+bnc_nS <- sum(BNCcomparison$spoken)
+```
+
+The sample sizes are $n_1 =$ `r bnc_nW` and $n_2 =$ `r bnc_nS`.
+
+
+# Measuring keyness
+
+
+## Contingency tables
+
+The mathematical basis for computing keyness measures are contingency tables as shown in the lecture. Let us construct a contingency table for the noun _time_ in the first line of `bnc`.
+
+> **Think break:** Assume you want to find out whether `time` is characteristic of spoken English.
+> What are the frequency counts $f_1, f_2$ and sample sizes $n_1, n_2$ you need to provide?
+> How do you combine them into a suitable contingency table?
+
+The utility function `cont.table()` from **corpora** makes it easy to build the contingency table from $f_1, n_1, f_2, n_2$:
+
+```{r contingencyTable}
+fS <- bnc$spoken[1]
+fW <- bnc$written[1]
+ct <- cont.table(fS, bnc_nS, fW, bnc_nW)
+rownames(ct) <- c("time", "OTHER")     # just for better readability
+colnames(ct) <- c("spoken", "written")
+ct
+```
+
+Relative frequencies in the two subcorpora indicate that _time_ is indeed more frequent in spoken English.
+
+```{r relFreqs}
+prop.table(ct, margin=2)
+```
+
+We can easily apply a significance test to such a contingency table, e.g. Pearson's $\chi^2$ test or Fisher's exact test (but note that the popular likelihood-ratio test is not included in R).
+
+```{r chisqTest}
+chisq.test(ct)
+```
+
+Note that Fisher's test also provides a confidence interval for the odds ratio $\theta$, which you could use as an alternative to the LRC measure (this has only become possible through recent improvements in the R implementation, though, and hasn't found wide-spread use in corpus linguistics).
+
+```{r fisherTest}
+fisher.test(ct)
+```
+
+Other keyness measures have to be computed directly using the equations from the lecture.
+
+> **Task:** Can you compute the LogRatio score? (It is more convenient to start from $f_s, n_s$ and $f_w, n_w$ then from the contingency table.) Do you think you can also implement the equation for the log-likelihood measure $G^2$?
+
+```{r logRatioScore}
+log2((fS + .5) / (bnc_nS + .5)) - log2((fW + .5) / (bnc_nW + .5))
+```
+
+For $G^2$, we need to determine the contingency table of expected frequencies $E_{ij}$ first, which we will call `ctE`. The observed frequencies $O_{ij}$ are already available in the table `ct`. Compare the code below with the formula in the lecture slides.
+
+```{r expectedFrequencies}
+p0 <- (fS + fW) / (bnc_nS + bnc_nW) # estimated relative frequency under H0
+ctE <- cont.table(p0 * bnc_nS, bnc_nS, p0 * bnc_nW, bnc_nW)
+round(ctE, 1)
+```
+
+The $G^2$ formula requires us to compute the term $O_{ij}\cdot \log\frac{O_{ij}}{E_{ij}}$ for each cell of the two contingency tables, then sum over the results.  This is easy in R because all operations are vectorised and operate on the full contingency tables at once.
+
+```{r G2Score}
+2 * sum(ct * log(ct / ctE))
+```
+
+Compare this to the similar statistic $X^2 = 11106$ computed by the $\chi^2$ test above.  In order to verify our implementation, we can compare it to the implementation in **corpora**, i.e. to the output of the `keyness()` function.
+
+```{r G2fromKeyness}
+keyness(fS, bnc_nS, fW, bnc_nW, measure="G2")
+```
+
+Note that our $G^2$ value doesn't show whether *time* is a positive or negative keyword for spoken English, just that the difference is highly significant. By contrast, the value returned by `keyness()` would have been negative in the latter case.
+
+
+## Keyword analysis
+
+In order to perform a keyword analysis, we need to compute a keyness score for each candidate item.  In our example, there are only 60 noun lemmas and we could in principle write a loop that goes through each of them, builds a contingency table, and computes e.g. the $G^2$ score.  However, in real-life applications there will be tens or hundreds of thousands of candidate items, so we need a more efficient approach.
+
+The solution is to treat the list of contingency tables as **tabular data**, i.e. construct a table where each row represents a candidate item and there are four columns for the four cells of the contingency table.  Equivalently, we can also use columns with the raw data $f_1, n_1, f_2, n_2$.
+
+The table `bnc` already has almost the required format.  Let us just relabel `spoken` as $f_1$ and `written` as $f_2$, and add columns for $n_1$ and $n_2$.  We will use tidyverse pipes to work with tabular data throughout this session, which is a convenient and recommended approach.
+
+```{r bncAsTabularData}
+bnc %>%
+  select(noun, f1=spoken, f2=written) %>%
+  mutate(
+    n1 = bnc_nS, 
+    n2 = bnc_nW
+  ) ->
+  bncTab
+
+print(bncTab, n=6)
+```
+
+It is now easy to add further columns with scores of the different keyness measures.  Thanks to vectorisation, scores for all candidate items are computed efficiently with a single statement.
+
+```{r tabularLogRatio}
+bncTab %>%
+  mutate(
+    LogRatio = log2((f1 + .5) / (n1 + .5)) - log2((f2 + .5) / (n2 + .5))
+  ) ->
+  bncTab
+```
+
+In keyword analysis, the columns `n1` and `n2` usually contain the same value for all candidate items.  It is therefore common not to include this value redundantly in the table, but rather store it as a scalar in a separate variable and use it directly in the computations.
+
+In order to see e.g. the top-10 keywords, we just have to order the table rows by decreasing LogRatio score:
+
+```{r LogRatioTop10}
+bncTab %>%
+  arrange(desc(LogRatio)) %>%
+  print(n = 10)
+```
+
+> **Task:** Compute log-likelihood scores $G^2$ in the same way. First, add four columns for the observed contingency table $O_{ij}$ and four columns for the expected contingency table $E_{ij}$.  Then, add a further column with the $G^2$ score, explicitly computing each of the four terms.  (Experienced R users might find a trick to compute all four terms with a single expression.)
+
+```{r tabularG2}
+bncTab %>%
+  mutate(
+    O11 = f1, 
+    O12 = f2,
+    O21 = n1 - f1, 
+    O22 = n2 - f2,
+    E11 = n1 * ((f1 + f2) / (n1 + n2)),
+    E12 = n2 * ((f1 + f2) / (n1 + n2)),
+    E21 = n1 - E11,
+    E22 = n2 - E12
+  ) %>%
+  mutate(
+    G2 = 2 * (
+      O11 * log(O11 / E11) 
+      + O12 * log(O12 / E12)
+      + O21 * log(O21 / E21)
+      + O22 * log(O22 / E22)
+    )
+  ) ->
+  bncG2
+```
+
+We can take a look at the top-10 keywords according to log-likelihood. In order to keep the table readable, we will only show the first row of the contingency tables.
+
+```{r G2Top10}
+bncG2 %>%
+  arrange(desc(G2)) %>%
+  select(noun, O11, E11, O12, E12, G2) %>%
+  print(n = 10)
+
+```
+
+Let us now compute $G^2$ scores more conveniently with the `keyness()` function and compare the results. See `?keyness` for detailed information about supported keyness measures and other options.
+
+```{r keynessG2}
+bncG2 %>%
+  mutate(
+    keynessG2 = keyness(f1, n1, f2, n2, measure="G2")
+  ) %>%
+  arrange(desc(G2)) %>%
+  select(noun, LogRatio, G2, keynessG2) %>%
+  print(n = 15)
+```
+
+> **Think break:** Can you spot differences between the two $G^2$ columns? If so, can you explain why the results are different? (In an interactive notebook, make sure to page through all 60 candidate items; or remove `n = 15` if this doesn't work.)
+
+
+## Significance filter & FWER
+
+We can also use $G^2$ scores to weed out non-significant candidate items by comparing them against a suitable threshold value (obtained e.g. from a statistics textbook).  But it is more convenient to use the `keyness()` function for this purpose, selecting the desired signifiance level with option `alpha`.
+
+```{r bncSig}
+bncTab %>%
+  mutate(
+    G2sig = keyness(f1, n1, f2, n2, "G2", alpha=.05, p.adjust=FALSE)
+  ) ->
+  bncSig
+
+filter(bncSig, G2sig == 0) # not significant
+```
+
+Keep in mind that this simple significance filter only controls the error rate for each individual candidate item. At our significance level $\alpha = .05$, three of our 60 candidates (i.e. 1 in 20) may well be false positives.  It is therefore recommended to control the **family-wise error rate** instead, which is the default setting in `keyness()`:
+
+```{r bncSigFWER}
+bncSig %>%
+  mutate(
+    G2fwer = keyness(f1, n1, f2, n2, "G2", alpha=.05)
+  ) ->
+  bncSig
+
+filter(bncSig, G2sig != G2fwer) # where FWER makes a difference
+```
+
+The Bonferroni correction used by `keyness()` simply divides the significance level by the number of tests carried out, i.e. the number of candidate items. In our case, the adjusted level is thus $alpha' = \alpha / 60$.
+
+```{r bncBonferroni}
+bncSig %>%
+  mutate(
+    G2adjust = keyness(f1, n1, f2, n2, "G2", alpha=.05 / 60, p.adjust=FALSE)
+  ) %>%
+  filter(abs(G2fwer) < 20) %>%
+  select(noun, starts_with("G2"))
+```
+
+Now you know everything you need to carry out a few **real-world keyword analyses**.
+
+
+# Case studies
+
+As explained in the lecture, most corpus tools can export word frequency lists in some tabular format, but the details of this format differ between tools.  It is therefore important to read documentation and inspect samples of the tabular files in order to work out how to read frequency lists correctly into R.  In order to practise this, we will look at four data sets from different tools in this session.  Only AntConc supports the MTSV format proposed by Anthony & Evert (2019), but you will find that all data sets can easily be loaded with a little care.
+
+
+## Donald Trump (CWB)
+
+Let us start by replicating the initial example from the lecture and carry out a keyword analysis based on Donald Trump's tweets (from the Trump Twitter Archive = TTA).  You will find a complete word list of verbs, nouns, adjectives, proper nouns and hashtags in the file `tta_target.tsv`, and a reference list from a general Twitter sample in `tta_reference.tsv`.  These word lists were created efficiently with the `cwb-scan-corpus` tool of the IMS Corpus Workbench (https://cwb.sourceforge.io/), so they have a very simple format quite different from MTSV.
+
+> **Task:** A good starting point is to inspect the files manually, which you can do by clicking on *tta_target.tsv* in the RStudio *Files* tab (usually located in the bottom right pane).  You can also try opening the file in a text editor.  Can you figure out the file format and what data are found in each column? Do you notice anything unusual?
+
+Unlike most TSV files, the out of `cwb-scan-corpus` doesn't include column headers, so we will have to make sure to specify suitable column names when reading the data.  The items are POS-disambiguated lemmas; it should be easy to work out the meaning of the POS codes appended after and underscore as separator.  The frequency values are in fact document frequencies, i.e. the number of tweets containing each lemma (so that repetitions within the same tweet are ignored).
+
+The tidyverse provides a powerful and convenient function `read_delim()` to load tabular files.  It will try to work out the file format by itself, though usually a few settings are still required to get a correct result.  If you know that an input file is in CSV or TSV format, you can also use `read_csv()` or `read_tsv()`, respectively.
+
+One important feature of TSV files is that they don't quote the values in cells of the table, assuming that they won't contain TAB or newline characters.  It is therefore important to specify `quote=""` so that `read_delim()` doesn't get confused.
+
+```{r loadTTA}
+tta_target <- read_delim("tta_target.tsv", quote="", col_names=c("f", "lemma"))
+tta_ref <- read_delim("tta_reference.tsv", quote="", col_names=c("f", "lemma"))
+```
+
+> **Think break:** An important bit of information for the keyword analysis is still missing. Do you know what it is?
+
+The `cwb-scan-corpus` tool doesn't include the sample size of the corpus in its output (because it doesn't fit into the simple tabular format, requiring something like MTSV).  In fact, I had to determine the sample sizes $n_1, n_2$ separately (also with `cwb-scan-corpus`) and note them down.
+
+```{r sampleSizesTTA}
+tta_n1 <- 43878     # number of tweets in TTA
+tta_n2 <- 13904798  # number of tweets in the reference corpus
+```
+
+We now have two separate frequency lists from TTA and from the reference corpus.  However, for the kewyord analysis, we need a table that combines the values $f_1$ and $f_2$ for each candidate item.  In database parlance, this is known as a **join operation** between the two frequency tables.  In this case, we need a left join because we want to include items that don't occur in the reference corpus (with $f_2 = 0$).
+
+```{r joinTTA}
+left_join(tta_target, tta_ref, by="lemma", suffix=c("1", "2")) %>%
+  mutate(f2 = coalesce(f2, 0)) %>%
+  select(lemma, f1, f2) ->
+  tta
+
+head(tta)
+```
+
+> **Think break:** Can you work out why we needed to specify the `suffix` option above? And can you imagine what `coalesce()` does?
+
+We can now easily add several keyness measures to the table, using `mutate()` and `keyness()`.  We combine LogRatio with a significance filter (corrected for FWER), as recommended by Hardie (2014).
+
+```{r keynessTTA}
+tta %>% mutate(
+  LR = keyness(f1, tta_n1, f2, tta_n2, "LogRatio", alpha=.05),
+  G2 = keyness(f1, tta_n1, f2, tta_n2, "G2"),
+  LRC = keyness(f1, tta_n1, f2, tta_n2, "LRC")
+) ->
+  tta
+```
+
+Let's have a look at top-10 keywords from each measure:
+
+```{r top10TTA}
+tta %>% arrange(desc(LR)) %>% print(n=10)
+tta %>% arrange(desc(G2)) %>% print(n=10)
+tta %>% arrange(desc(LRC)) %>% print(n=10)
+```
+
+> **Think break:** What is your first impression of the three keyness measures? How many significant keywords are there in total? Does it make sense to look at top-10 keywords? What else could you do to bring out more interesting keywords?
+
+```{r sigTTA}
+sum(tta$LR != 0) # LR = 0 if not significant
+```
+
+Unsurprisingly, many hashtags and proper names are (almost) unique to Trump's tweets.  It might make sense to filter out these parts of speech in order to focus on nouns, verbs and adjectives.  Moreover, 10 keywords are far too few to obtain interesting insights and judge the usefulness of a keyness measure (instead leading researchers towards default settings that make the top-10 keywords look good, as with SimpleMaths).  The **DT** package allows us to view a larger candidate table interactively in the knitted HTML output.
+
+```{r top200TTA}
+tta %>%
+  filter( !grepl("_[#Z]$", lemma, perl=TRUE) ) %>%
+  arrange(desc(LRC)) %>%
+  head(200) %>%
+  DT::datatable()
+```
+
+
+
+## AmE vs BrE (AntConc)
+
+AntConc conveniently provides word frequency lists in **MTSV** format (though with individual files as CSV rather than TSV).  Each word frequency list is a collection of three tables combined into a ZIP archive (saved with *Save Current Tab Database Tables*).  Since I don't use AntConc myself, I can only provide a boring example comparing keywords of AmE vs. BrE, based on the sample corpora included in AntConc.  The MTSV ZIP archives are named `antconc_AmE.zip` and `antconc_BrE.zip`.
+
+We can use R to list the contents of each ZIP file:
+
+```{r zipContentsAnt}
+unzip("antconc_AmE.zip", list=TRUE)
+unzip("antconc_BrE.zip", list=TRUE)
+```
+
+We will need the main table (`wordlist.csv`) and the corpus metadata with sample size information (`corpus_info.csv`).  These can be extracted directly from the ZIP archive using `unz()`.
+
+```{r loadAnt}
+ant_ae <- read_csv(unz("antconc_AmE.zip", "wordlist.csv"))
+ant_ae_meta <- read_csv(unz("antconc_AmE.zip", "corpus_info.csv"))
+ant_be <- read_csv(unz("antconc_BrE.zip", "wordlist.csv"), show_col_types=FALSE)
+ant_be_meta <- read_csv(unz("antconc_BrE.zip", "corpus_info.csv"), show_col_types=FALSE)
+```
+
+> **Task:** Take a look at the MTSV tables with `View(ant_ae)` and `View(ant_ae_meta)`, or by clicking the little table icons in the *Environment* tab (usually in the top right pane). Can you work out what the different columns mean and which columns we need?
+
+Let us rename columns so they match our standard notation and discard the empty columns.
+
+```{r tidyAnt}
+ant_ae %>% select(type, f=freq, df=range) -> ant_ae
+ant_be %>% select(type, f=freq, df=range) -> ant_be
+ant_ae_n  <- ant_ae_meta$token_count
+ant_ae_dn <- ant_ae_meta$file_count
+ant_be_n  <- ant_be_meta$token_count
+ant_be_dn <- ant_be_meta$file_count
+```
+
+In this case of a “symmetric” keyword analysis between two comparable corpora, we should be interested both in **positive** keywords (characteristic of AmE) and in **negative** keywords (characteristic of BrE).  Therefore we need an outer (or full) join between the two frequency tables.  Keep in mind that each of the four frequency columns $f_1, df_1, f_2, df_2$ might contain missing values that need to be filled in with 0.
+
+```{r joinAnt}
+full_join(ant_ae, ant_be, by="type", suffix=c("1", "2")) %>%
+  mutate(
+    f1  = coalesce(f1, 0),
+    df1 = coalesce(df1, 0),
+    f2  = coalesce(f2, 0),
+    df2 = coalesce(df2, 0)
+  ) ->
+  ant
+```
+
+The rest of the keyword analysis is straightforward.  Let us look at top-200 positive and negative keywords, combining them in a single ranking as e.g. done by CQPweb.
+
+```{r top200Ant}
+ant %>%
+  mutate(
+    LRC = keyness(f1, ant_ae_n, f2, ant_be_n, "LRC")
+  ) %>%
+  arrange(desc(abs(LRC))) %>% # note the abs()!
+  head(200) %>%
+  DT::datatable()
+```
+
+> **Task:** What do you think of these keywords? Try other keyness measures. How many keywords are significant? What changes if you measure keyness based on document frequency rather than token frequency? Are there different effects for different keyness measures?
+
+
+## Online newspaper comments (CQPweb)
+
+CQPweb saves its word frequency lists in a more unusual format.  The two samples provided here as `ap_guardian.txt` and `ap_telegraph.txt` are from two small corpora of online newspaper comments available on the CQPweb server at Lancaster U.
+
+> **Task:** Open the files in RStudio or a text editor. Can you figure out the format? Do you think that `read_delim()` will read them successfully? Also make sure to scroll down to the end of the file: what about the last line of the table?
+
+The informative header added by CQPweb and the blank lines break the standard TSV format.  There is also an extra row at then end with the sample size; though it looks quite different, it does fit into the TSV table (with `Total:` in the first column and the sample size in the last).
+
+Fortunately, we can tell `read_delim()` to skip the header lines and ignore blank lines, allowing us to read the CQPweb format without further pre-processing.
+
+```{r loadAP}
+ap_guardian <- read_delim("ap_guardian.txt", quote="", skip=2, skip_empty_rows=TRUE)
+ap_telegraph <- read_delim("ap_telegraph.txt", quote="", skip=2, skip_empty_rows=TRUE)
+```
+
+> **Think break:** Can you figure out why R has read the first column (`Number`) as strings (type `character`) even though it seems to contain numbers?
+
+As a first step, we need to extract the sample sizes from the tables and remove these lines.  We can also rename columns to our standard notation and drop the irrelevant `Number` column.
+
+```{r tidyAP}
+ap_guardian  %>% filter(Number == "Total:") %>% pull(Frequency) -> ap_n1
+ap_telegraph %>% filter(Number == "Total:") %>% pull(Frequency) -> ap_n2
+
+ap_guardian %>%
+  filter(Number != "Total:") %>%
+  select(lemma=Lemma, f=Frequency) ->
+  ap_guardian
+
+ap_telegraph %>%
+  filter(Number != "Total:") %>%
+  select(lemma=Lemma, f=Frequency) ->
+  ap_telegraph
+```
+
+The remainder of the analysis should be familiar and boring by now.  Since we're looking at **contrastive keywords** for the liberal vs. conservative newspapers, we will be interested in both positive and negative keywords, so we need a full outer join.
+
+```{r joinAP}
+full_join(ap_guardian, ap_telegraph, by="lemma", suffix=c("1", "2")) %>%
+  mutate(
+    f1 = coalesce(f1, 0),
+    f2 = coalesce(f2, 0)
+  ) ->
+  ap
+```
+
+Here we take a look at all significant $G^2$ keywords.
+
+```{r keynessAP}
+ap %>%
+  mutate( 
+    G2 = keyness(f1, ap_n1, f2, ap_n2, "G2", alpha=.05)
+  ) %>%
+  filter( G2 != 0 ) %>%
+  arrange( desc(abs(G2)) ) %>%
+  DT::datatable()
+```
+
+> **Think break:** Can you make sense of the positive and negative keywords? Does a clear pattern emerge? Can you think of better ways to display these keywords than as a list ranked by keyness? (Of course, you can also try some other keyness measures or look only at positive / negative keywords.)
+
+
+## Austerity in Britain (tidy CSV)
+
+As a final example, you can look at two word lists from the **AuBriN** corpus (*Austerity in British Newspapers*, see Griebel et al. 2020), which contains newspaper articles on austerity policies in the UK from Guardian and Telegraph.  This data set is provided in a tidy CSV format, though not full MTSV.
+
+```{r loadAubrin}
+aubrin_guardian <- read_csv("austerity_guardian.csv", show_col_types=FALSE)
+aubrin_telegraph <- read_csv("austerity_telegraph.csv", show_col_types=FALSE)
+aubrin_meta <- read_csv("austerity_meta.csv", show_col_types=FALSE)
+```
+
+> **Task:** Now it's your turn!
+>
+> - Work out how the relevant data are provided in these three tables
+> - Perform a join operation to combine frequencies $f_1$ and $f_2$ for each candidate item
+> - Compute different keyness measures
+> - Look at top-100 or top-200 positive and/or negative keywords for each measure
+> - Can you find ways of combining information from multiple keyness measures?  How could you compare top-200 lists from different measures?
+> - Try all of this without peeking at the examples above!
+
+
+# Visualisation
+
+Long keyword lists can be difficult to interpret, especially if they are simply ranked by keyness scores.  Linguistic interpretation often involves grouping related keywords in order to discover general topics, framings, stances or communicative patterns.  Suitable visualisations can be enormously helpful for this step, as long as you don't resort to word clouds.
+
+I will demonstrate some visualisation options based on the small CQPweb data set introduced above.  It is quite easy to generate plots in R using the **ggplot2** package together with tidyverse pipes to rearrange the tables in a suitable format.  Fine-tuning such plots has a steeper learning curve, but many textbooks and online resources are available to help you.
+
+
+## Multidimensional keyness
+
+Some authors (including Stefan Th. Gries) have suggested that keyness is a multidimensional phenomenon, while ranked keyword lists focus on a single aspect (in the form of the selected keyness measure).  They propose to visualise keywords in two or more dimensions to represent e.g. both LogRatio and $G^2$ scores.
+
+```{r vizData}
+ap %>% 
+  mutate(
+    LR = keyness(f1, ap_n1, f2, ap_n2, "LogRatio", alpha=.05),
+    G2 = keyness(f1, ap_n1, f2, ap_n2, "G2"),
+    LRC = keyness(f1, ap_n1, f2, ap_n2, "LRC")
+  ) %>%
+  filter( LRC != 0 ) -> # discard non-significant keywords
+  ap_viz
+```
+
+Here is a visualisation of all significant keywords with $G^2$ scores on the x-axis and LogRatio on the y-axis.  Since LogRatio distinguishes positive and negative keywords, it makes sense to display $|G^2|$ as a measure of how much evidence we have for keyness.  We also need to use a logarithmic scale here because of the skewed distribution of log-likelihood scores.
+
+```{r vizBasic}
+ap_viz %>%
+  ggplot(aes(x=abs(G2), y=LR, label=lemma)) +
+  scale_x_log10() +
+  geom_text()
+```
+
+> **Think break:** Many of the keywords seem to be arranged on two sloped lines at the top and bottom of the plot. Do you have any idea why this is the case?
+
+We can enrich such visualisations by conveying further information with visual variables such as (font) size and colour.  For example, font size could indicate frequency (across both corpora, and on a logarithmic scale) and colour could be used to highlight lemmas that are exclusive to one of the two corpora.
+
+```{r vizNicer}
+ap_viz %>%
+  mutate(
+    unique = fct(case_when(
+      f1 > 0 & f2 > 0 ~ "both",
+      f1 > 0 ~ "A",
+      f2 > 0 ~ "B"
+    ), levels=c("both", "A", "B"))
+  ) %>%
+  ggplot(aes(x=abs(G2), y=LR, label=lemma, size=log10(f1 + f2), col=unique)) +
+  scale_x_log10() +
+  geom_text() +
+  scale_colour_viridis_d() +
+  theme_light(base_size=8)
+```
+
+
+## Semantic maps
+
+While the visualisation above conveys rich information in a single plot, it doesn't really help us group related keywords together.  For this purpose, a much better approach are **semantic maps**, which arrange keywords by their similarity in meaning.  The semantic distances required for this visualisation are usually obtained from neural **word embeddings**, i.e. high-dimensional vector representations of the word meanings.
+
+You will find embeddings for the CQPweb data set in file `ap_embeddings.rda`. They cover all candidate items that occur at least $f_i \geq 5$ times in either **A** or **B** (which happens to include everything in `ap_viz`, but could easily be guaranteed with a suitable `filter()`).
+
+```{r loadEmbeddings}
+load("ap_embeddings.rda", verbose=TRUE)
+```
+
+The embeddings are provided as a matrix of row vectors where rows are labelled with the respective lemma.  If you wish to explore these embeddings by looking for nearest neighbour or visualising the network structure of similarities, you might want to give the **wordspace** package a try.
+
+In order to use the word embeddings for a semantic map visualisation, we need to project the high-dimensional vectors into two dimensions, preserving the semantic distances between lemmas (or, more precisely, the topological structure of the embedding space) as faithfully as possible.  A suitable state-of-the-art algorithm for this purpose is t-SNE, implemented in the **Rtsne** package.
+
+```{r tSNE}
+library(Rtsne)
+
+vocab <- ap_viz$lemma  # only project keywords to be visualised
+tSNE <- Rtsne(ap_embeddings[vocab, ], perplexity=50)
+coord <- tibble(lemma=vocab, x=tSNE$Y[, 1], y=tSNE$Y[, 2])
+```
+
+The parameter `perplexity` is a magic number that will have a substantial impact on the resulting visualisation.  Now all we have to do is to add the visualisation coordinates to `ap_viz` and call `ggplot()` again.
+
+```{r semanticMap1}
+inner_join(ap_viz, coord, by="lemma") %>%
+  ggplot(aes(x=x, y=y, label=lemma)) +
+  geom_text() +
+  theme_void()
+```
+
+Again, we improve the visualisation with additional visual variables.  In this case it makes sense to indicate (unsigned) keyness by font size and distinguish positive and negative keywords by their colour.  Let us add the relevant information to a new table first.
+
+```{r semanticMapData}
+inner_join(ap_viz, coord, by="lemma") %>%
+  mutate(
+    keyness = log10(abs(G2)),
+    source = fct(case_when(
+      LRC > 0 ~ "guardian",
+      LRC < 0 ~ "telegraph"
+    ), levels=c("guardian", "telegraph"))
+  ) ->
+  ap_smap
+```
+
+```{r semanticMap2}
+ap_smap %>%
+  ggplot(aes(x=x, y=y, label=lemma, size=keyness, col=source)) +
+  geom_text() +
+  scale_colour_discrete(type=c("darkgreen", "darkred")) +
+  scale_size(range=c(2, 7)) +
+  theme_void()
+```
+
+The only remaining problem is that the overlapping keywords can be difficult to read.  Fortunately, there's the **ggrepel** package to take care of this issue (some fiddling with its parameters will be needed, though).  The result is a meaningful and useful version of a word cloud!
+
+```{r semanticMap3, fig.width=10, fig.height=10}
+library(ggrepel)
+
+ap_smap %>%
+  ggplot(aes(x=x, y=y, label=lemma, size=keyness, col=source)) +
+  geom_text_repel(segment.size=0, force=.1, box.padding=0, max.overlaps=40) +
+  scale_colour_discrete(type=c("darkgreen", "darkred")) +
+  scale_size(range=c(1, 5)) +
+  theme_void()
+```
+
+> **Task:** Can you further improve this semantic map? Can you get rid of what appear to be usernames from the online forum? What property might identify them in the `ap_smap` table? You could also try adding more keywords even if they are not statistically significant, or visualising LRC as a keyness measure.
+
+
+## Creating your own maps
+
+If you want to create semantic maps for your own data, you will need appropriate word embedding vectors.  Though not quite state-of-the-art, **FastText** embeddings are popular because they are convenient to use and are available for 157 different languages.  First, you have to download a pre-trained FastText model from https://fasttext.cc/docs/en/crawl-vectors.html#models (be sure to pick the binary version, e.g. `cc.en.300.bin`) and save it in the current project directory.  You may also need to decompress the downloaded file so that it has the extension `.bin`.  **NB:** These models are very large (usually around 6.7 GiB)!
+
+Then install the **fastTextR** package to access the embeddings from within R:
+
+```{r fastTextR, eval=FALSE}
+library(fastTextR)
+model <- ft_load("cc.en.300.bin")
+my_embeddings <- ft_word_vectors(model, vocab)
+dim(my_embeddings) # you can now pass them on to Rtsne
+```
