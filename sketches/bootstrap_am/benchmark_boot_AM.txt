@@ -1,0 +1,64 @@
+[1] 4619295       4
+151.1 MiB
+76.8 MiB
+           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+Ncells   527054  28.2    1138237  60.8         NA   669674  35.8
+Vcells 36960899 282.0   71200019 543.3      65536 61319520 467.9
+   user  system elapsed 
+  0.102   0.015   0.029 
+   user  system elapsed 
+  0.012   0.002   0.015 
+           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+Ncells   589501  31.5    1138237  60.8         NA   719998  38.5
+Vcells 40016582 305.4   71200019 543.3      65536 44419456 338.9
+           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+Ncells   589549  31.5    1138237  60.8         NA   595548  31.9
+Vcells 51598114 393.7   85520022 652.5      65536 70906681 541.0
+
+
+-- standard R vector lookup + merge()
+   user  system elapsed 
+ 58.438  16.037  21.397 
+           used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
+Ncells   600299  32.1    1138237   60.8         NA   1138237   60.8
+Vcells 56639390 432.2  148069797 1129.7      65536 148062264 1129.7
+Key: <l1, l2>
+          l1     l2    tf    df     mean       sd      med
+      <char> <char> <num> <int>    <num>    <num>    <num>
+1: abandoned    car    12    12 109.0573 41.63398 103.4927
+
+
+-- join on keyed data.tables + merge()
+   user  system elapsed 
+ 73.622   9.003  21.071 
+           used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
+Ncells   616888  33.0    1138237   60.8         NA   1138237   60.8
+Vcells 56665606 432.4  148071186 1129.7      65536 148071186 1129.7
+Key: <l1, l2>
+          l1     l2    tf    df     mean      sd      med
+      <char> <char> <num> <int>    <num>   <num>    <num>
+1: abandoned    car    12    12 101.9483 41.2011 93.88245
+
+
+-- standard R vector lookup + index join with temporary data.table
+   user  system elapsed 
+ 49.415   8.913  16.303 
+           used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
+Ncells   616888  33.0    1138237   60.8         NA   1138237   60.8
+Vcells 56665602 432.4  148071186 1129.7      65536 148070773 1129.7
+Key: <l1, l2>
+          l1     l2    tf    df     mean       sd      med
+      <char> <char> <num> <int>    <num>    <num>    <num>
+1: abandoned    car    12    12 113.2004 39.97464 104.6489
+
+
+-- join on keyed data.tables + index join with temporary data.table
+   user  system elapsed 
+ 67.495   6.032  18.911 
+           used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
+Ncells   616893  33.0    1138237   60.8         NA   1138237   60.8
+Vcells 56667682 432.4  148071186 1129.7      65536 148048539 1129.6
+Key: <l1, l2>
+          l1     l2    tf    df     mean       sd      med
+      <char> <char> <num> <int>    <num>    <num>    <num>
+1: abandoned    car    12    12 102.1934 44.52627 95.13858
