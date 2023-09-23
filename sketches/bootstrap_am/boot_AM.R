@@ -81,6 +81,14 @@ setcolorder(bnc, qw("text l1 l2 f"))
 # print(object.size(bnc5), units="MiB") # ~ 136 MiB for ~ 2.9M rows
 
 
+# test different bootstrapping algorithms
+#   - j1=TRUE:  use data.table joins on keyed tables
+#   - j1=FALSE: use standard R vector lookup
+#   - j2=TRUE:  merge by index joins with temporary tables
+#   - j2=FALSE: merge with merge() for data.tables
+#   - mem=TRUE: run GC and print memory usage at intermediate steps (reduces RAM overhead)
+#   - verbose=TRUE: show progress bar (should be used in interactive mode only)
+#   - check=FALSE:  disable consistency checks for slightly faster performance
 bootstrap.test <- function (cooc, margin1, margin2, size, measure, min.tf=NULL, min.df=NULL, replicates=10, details=FALSE,
                             j1=FALSE, j2=TRUE, mem=FALSE, check=TRUE, verbose=TRUE) {
   if (check) {
@@ -174,6 +182,42 @@ bootstrap.test <- function (cooc, margin1, margin2, size, measure, min.tf=NULL, 
   if (verbose) close(pb)
   pairs
 }
+
+# -- these lines are for interactive testing and exploration
+if (FALSE) {
+  system.time(res <- bootstrap.test(bnc, margin.adj, margin.noun, sample.size, "simple-ll", replicates=50,
+                                    min.tf=5, j1=FALSE, j2=TRUE, mem=FALSE, details=FALSE, verbose=TRUE, check=TRUE)); memCheck()
+  res
+}
+
+# benchmark different algorithms when running as script
+#  - consistency checks are disabled for optimal performance
+#  - print first line of bootstrapped table to verify functionality
+cat("\n\n-- standard R vector lookup + merge()\n")
 system.time(res <- bootstrap.test(bnc, margin.adj, margin.noun, sample.size, "simple-ll", replicates=50,
-                                  min.tf=5, j1=FALSE, j2=TRUE, mem=FALSE, details=FALSE, verbose=TRUE)); memCheck()
-res
+                                  min.tf=5, j1=FALSE, j2=FALSE, mem=FALSE, details=FALSE, verbose=FALSE, check=FALSE))
+memCheck()
+print(head(res, 1))
+
+cat("\n\n-- join on keyed data.tables + merge()\n")
+system.time(res <- bootstrap.test(bnc, margin.adj, margin.noun, sample.size, "simple-ll", replicates=50,
+                                  min.tf=5, j1=TRUE, j2=FALSE, mem=FALSE, details=FALSE, verbose=FALSE, check=FALSE))
+memCheck()
+print(head(res, 1))
+
+cat("\n\n-- standard R vector lookup + index join with temporary data.table\n")
+system.time(res <- bootstrap.test(bnc, margin.adj, margin.noun, sample.size, "simple-ll", replicates=50,
+                                  min.tf=5, j1=FALSE, j2=TRUE, mem=FALSE, details=FALSE, verbose=FALSE, check=FALSE))
+memCheck()
+print(head(res, 1))
+
+cat("\n\n-- join on keyed data.tables + index join with temporary data.table\n")
+system.time(res <- bootstrap.test(bnc, margin.adj, margin.noun, sample.size, "simple-ll", replicates=50,
+                                  min.tf=5, j1=TRUE, j2=TRUE, mem=FALSE, details=FALSE, verbose=FALSE, check=FALSE))
+memCheck()
+print(head(res, 1))
+
+
+
+
+
