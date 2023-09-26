@@ -1,15 +1,35 @@
 [1] 4619295       4
 151.1 MiB
            used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
-Ncells   828778  44.3    9567186 511.0         NA 11958982 638.7
-Vcells 31583894 241.0   79737413 608.4      65536 73975234 564.4
+Ncells   828820  44.3    9567072 511.0         NA 11958840 638.7
+Vcells 31583938 241.0   79737506 608.4      65536 73968989 564.4
 
 
 -- base R algorithm
    user  system elapsed 
- 96.513   2.199  98.732 
+ 97.978   2.202 100.201 
            used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
-Ncells   838268  44.8    4898400 261.7         NA   6123000  327.1
-Vcells 36997201 282.3  121284374 925.4      65536 151605467 1156.7
+Ncells   841116  45.0    4898342 261.6         NA   6122927  327.0
+Vcells 37003747 282.4  121289669 925.4      65536 151612086 1156.8
+   tf df        l1  l2     mean       sd     med
+53 12 12 abandoned car 108.7586 33.42473 114.612
+
+
+-- parallel on 4 cores (watch Activity Monitor for true RAM usage)
+   user  system elapsed 
+119.155   3.876  46.357 
+           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+Ncells  1024610  54.8    3656313 195.3         NA   4570391 244.1
+Vcells 37674745 287.5  116502082 888.9      65536 120535275 919.7
    tf df        l1  l2     mean       sd      med
-53 12 12 abandoned car 100.8412 34.45166 93.81121
+53 12 12 abandoned car 106.2776 39.24429 103.7036
+
+
+-- parallel on 8 cores (watch Activity Monitor for true RAM usage)
+   user  system elapsed 
+129.618   5.515  35.173 
+           used  (Mb) gc trigger  (Mb) limit (Mb)  max used  (Mb)
+Ncells  1024610  54.8    4313631 230.4         NA   5392038 288.0
+Vcells 37674745 287.5  111905999 853.8      65536 116414215 888.2
+   tf df        l1  l2     mean       sd      med
+53 12 12 abandoned car 111.6607 39.43584 114.6015
