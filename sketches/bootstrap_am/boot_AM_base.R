@@ -1,5 +1,6 @@
 library(dplyr)
 library(readr)
+library(parallel)
 library(corpora)
 
 memCheck <- function(show=FALSE) {res <- gc(); gc(reset=TRUE); if (!show) return(res); print(res); invisible(res)}
@@ -49,7 +50,7 @@ AM <- function (measure=qw("MI2 simple-ll"), f, f1, f2, N) {
 #   - verbose=TRUE: show progress bar (should be used in interactive mode only)
 #   - check=FALSE:  disable consistency checks for slightly faster performance
 bootstrap.test <- function (cooc, margin1, margin2, size, measure, min.tf=NULL, min.df=NULL, replicates=10, details=FALSE,
-                            mem=FALSE, check=TRUE, verbose=TRUE) {
+                            parallel=1L, mem=FALSE, check=TRUE, verbose=TRUE) {
   cooc <- as.data.frame(cooc) # make sure we don't accidentally rely on special features of tibbles
   margin1 <- as.data.frame(margin1)
   margin2 <- as.data.frame(margin2)
@@ -68,6 +69,7 @@ bootstrap.test <- function (cooc, margin1, margin2, size, measure, min.tf=NULL, 
     stopifnot(all(cooc$l1 %in% margin1$l1))
     stopifnot(all(cooc$l2 %in% margin2$l2))
   }
+  if (parallel > 1) verbose <- FALSE # progress bar doesn't work well with parallelisation
 
   if (verbose) pb <- txtProgressBar(min=0, max=replicates + 1, style=3)
 
@@ -95,36 +97,65 @@ bootstrap.test <- function (cooc, margin1, margin2, size, measure, min.tf=NULL, 
 
   text.id <- unique(size$text)
   n.texts <- length(text.id)
-  boot.res <- matrix(nrow=nrow(pairs), ncol=replicates) # per-allocate boostrap data table
-  for (i in seq_len(replicates)) {
-    if (verbose) setTxtProgressBar(pb, i)
 
-    # obtain bootstrapped per-text counts
-    text.cnt <- structure(as.vector(rmultinom(1, n.texts, rep(1, n.texts))), names=text.id)
-    cooc <- transform(cooc, f.boot = f * text.cnt[text])
-    margin1 <- transform(margin1, f1.boot = f1 * text.cnt[text])
-    margin2 <- transform(margin2, f2.boot = f2 * text.cnt[text])
-    size <- transform(size, N.boot = N * text.cnt[text])
-    if (mem) memCheck(TRUE)
+  if (!(parallel > 1)) {
+    # -- standard iterative algorithm
+    boot.res <- matrix(nrow=nrow(pairs), ncol=replicates) # per-allocate boostrap data table
+    for (i in seq_len(replicates)) {
+      if (verbose) setTxtProgressBar(pb, i)
 
-    # aggregate bootstrapped counts in vectors with rowsum
-    f <- rowsum(cooc$f.boot, cooc$pair, reorder=TRUE)[, 1] # extract single column vector with labels preserved
-    f1 <- rowsum(margin1$f1.boot, margin1$l1)[, 1]
-    f2 <- rowsum(margin2$f2.boot, margin2$l2)[, 1]
-    N <- sum(size$N.boot)
+      # obtain bootstrapped per-text counts
+      text.cnt <- structure(as.vector(rmultinom(1, n.texts, rep(1, n.texts))), names=text.id)
+      cooc <- transform(cooc, f.boot = f * text.cnt[text])
+      margin1 <- transform(margin1, f1.boot = f1 * text.cnt[text])
+      margin2 <- transform(margin2, f2.boot = f2 * text.cnt[text])
+      size <- transform(size, N.boot = N * text.cnt[text])
+      if (mem) memCheck(TRUE)
 
-    # look up marginal frequencies for full frequency signatures
-    if (check) stopifnot(all.equal( names(f), as.character(pairs$pair) ))
-    f1 <- f1[ pairs$l1 ]
-    f2 <- f2[ pairs$l2 ]
-    if (mem) memCheck(TRUE)
+      # aggregate bootstrapped counts in vectors with rowsum
+      f <- rowsum(cooc$f.boot, cooc$pair, reorder=TRUE)[, 1] # extract single column vector with labels preserved
+      f1 <- rowsum(margin1$f1.boot, margin1$l1)[, 1]
+      f2 <- rowsum(margin2$f2.boot, margin2$l2)[, 1]
+      N <- sum(size$N.boot)
 
-    boot.res[, i] <- AM(measure, f, f1, f2, N)
-    rm(f, f1, f2, N)
-    if (mem) memCheck(TRUE)
+      # look up marginal frequencies for full frequency signatures
+      if (check) stopifnot(all.equal( names(f), as.character(pairs$pair) ))
+      f1 <- f1[ pairs$l1 ]
+      f2 <- f2[ pairs$l2 ]
+      if (mem) memCheck(TRUE)
+
+      boot.res[, i] <- AM(measure, f, f1, f2, N)
+      rm(f, f1, f2, N)
+      if (mem) memCheck(TRUE)
+    }
+
+    if (verbose) setTxtProgressBar(pb, replicates + 1)
   }
+  else {
+    # -- parallel processing (here with fork(), using a cluster will be much worse due to data transfer)
+    .worker <- function (n) {
+      text.cnt <- structure(as.vector(rmultinom(1, n.texts, rep(1, n.texts))), names=text.id)
+      cooc <- transform(cooc, f.boot = f * text.cnt[text])
+      margin1 <- transform(margin1, f1.boot = f1 * text.cnt[text])
+      margin2 <- transform(margin2, f2.boot = f2 * text.cnt[text])
+      size <- transform(size, N.boot = N * text.cnt[text])
 
-  if (verbose) setTxtProgressBar(pb, replicates + 1)
+      # aggregate bootstrapped counts in vectors with rowsum
+      f <- rowsum(cooc$f.boot, cooc$pair, reorder=TRUE)[, 1] # extract single column vector with labels preserved
+      f1 <- rowsum(margin1$f1.boot, margin1$l1)[, 1]
+      f2 <- rowsum(margin2$f2.boot, margin2$l2)[, 1]
+      N <- sum(size$N.boot)
+
+      # look up marginal frequencies for full frequency signatures
+      if (check) stopifnot(all.equal( names(f), as.character(pairs$pair) ))
+      f1 <- f1[ pairs$l1 ]
+      f2 <- f2[ pairs$l2 ]
+
+      AM(measure, f, f1, f2, N)
+    }
+    boot.res <- mclapply(seq_len(replicates), .worker, mc.cores=parallel)
+    boot.res <- do.call(cbind, boot.res) # convert into expected matrix format
+  }
 
   if (details) {
     # return full bootstrap data for detailed analysis
@@ -144,7 +175,7 @@ bootstrap.test <- function (cooc, margin1, margin2, size, measure, min.tf=NULL, 
 ## -- these lines are for interactive testing and exploration
 if (FALSE) {
   system.time(res <- bootstrap.test(bnc, margin.adj, margin.noun, sample.size, "simple-ll", replicates=10,
-                                    min.tf=5, mem=FALSE, details=FALSE, verbose=TRUE, check=TRUE)); memCheck()
+                                    min.tf=50, parallel=5, mem=FALSE, details=FALSE, verbose=TRUE, check=TRUE)); memCheck()
   head(res, 10) # already sorted by pair (l1, l2)
 }
 
@@ -154,5 +185,17 @@ if (FALSE) {
 cat("\n\n-- base R algorithm\n")
 system.time(res <- bootstrap.test(bnc, margin.adj, margin.noun, sample.size, "simple-ll", replicates=50,
                                   min.tf=5, mem=FALSE, details=FALSE, verbose=FALSE, check=FALSE))
+memCheck()
+print(head(res, 1))
+
+cat("\n\n-- parallel on 4 cores (watch Activity Monitor for true RAM usage)\n")
+system.time(res <- bootstrap.test(bnc, margin.adj, margin.noun, sample.size, "simple-ll", replicates=50,
+                                  min.tf=5, parallel=4, mem=FALSE, details=FALSE, verbose=FALSE, check=FALSE))
+memCheck()
+print(head(res, 1))
+
+cat("\n\n-- parallel on 8 cores (watch Activity Monitor for true RAM usage)\n")
+system.time(res <- bootstrap.test(bnc, margin.adj, margin.noun, sample.size, "simple-ll", replicates=50,
+                                  min.tf=5, parallel=8, mem=FALSE, details=FALSE, verbose=FALSE, check=FALSE))
 memCheck()
 print(head(res, 1))
