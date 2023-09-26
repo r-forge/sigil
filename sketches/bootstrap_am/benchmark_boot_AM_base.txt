@@ -1,0 +1,15 @@
+[1] 4619295       4
+151.1 MiB
+           used  (Mb) gc trigger  (Mb) limit (Mb) max used  (Mb)
+Ncells   828778  44.3    9567186 511.0         NA 11958982 638.7
+Vcells 31583894 241.0   79737413 608.4      65536 73975234 564.4
+
+
+-- base R algorithm
+   user  system elapsed 
+ 96.513   2.199  98.732 
+           used  (Mb) gc trigger  (Mb) limit (Mb)  max used   (Mb)
+Ncells   838268  44.8    4898400 261.7         NA   6123000  327.1
+Vcells 36997201 282.3  121284374 925.4      65536 151605467 1156.7
+   tf df        l1  l2     mean       sd      med
+53 12 12 abandoned car 100.8412 34.45166 93.81121
