@@ -1,0 +1,6 @@
+/* GOPHER -- Good Old Plain Html for the occasional writER */
+/* gopher_web_purple.css: MS Web fonts (Georgia/Verdana) with purple colour scheme (default) */
+
+@import url(common.css);
+@import url(fonts_web.css);
+@import url(colour_purple.css);

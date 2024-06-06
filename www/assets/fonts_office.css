@@ -1,0 +1,11 @@
+/* GOPHER -- Good Old Plain Html for the occasional writER */
+/* fonts_standard.css: font definitions for standard text fonts used by MS Office (with fallbacks) */
+
+body {font-size:small; font-family:Arial,sans-serif;}
+.serif {font-size:110%; font-family:STIXGeneral,Times New Roman,serif;}
+.narrow {font-size:110%; font-family:Arial Narrow,sans-serif;}
+h1,h2,h3,h4,h5,h6 {font-family:Arial Rounded MT Bold; font-weight:medium;}
+code {font-size:110%; font-family:Courier,Courier New,monospace;}
+pre {font-size:110%; font-family:Courier,Courier New,monospace;}
+div.banner {font-family:Arial Rounded MT Bold; font-weight:medium;}
+div.navigation {font-family:Arial Rounded MT Bold; font-weight:medium;}

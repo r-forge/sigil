@@ -1,0 +1,351 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>SIGIL - R for Corpus Data</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="stylesheet" type="text/css" href="assets/gopher_web_purple.css">
+  <meta name="author" content="Stephanie Evert">
+  <meta name="description" content="An online course on the Statistical Analysis of Corpus Data with R">
+  <meta name="keywords" content="Marco Baroni, Stephanie Evert, R, statistics, corpus data, computational linguistics, SIGIL, corpora">
+  <meta name="robots" content="index">
+  <meta name="robots" content="follow">
+</head>
+
+<body>
+  <div class="banner" id="top">
+    <b>Statistical Analysis of Corpus Data with R</b><br>
+    <small>A Gentle Introduction for Computational Linguists and Similar Creatures</small>
+  </div>
+  <p class="navigation">
+    <a href="#software">R Package</a> &ndash;
+    <a href="#handouts">Course Materials</a> &ndash; 
+    <a href="https://r-forge.r-project.org/projects/sigil/" class="external">Source Code</a> (R-Forge)
+  </p>
+
+  <p>
+    <strong>Statistical Analysis of Corpus Data with R</strong> is an online course originally developed by <a href="https://marcobaroni.org/" target="_blank" class="external"><strong>Marco Baroni</strong></a> and <a href="https://www.stephanie-evert.de/" target="_blank" class="external"><strong>Stephanie Evert</strong></a> starting in 2007.  Since then it has grown thanks to contributions, feedback and suggestions from many generous people. This Web page provides <span class="fg1">slides</span>, <span class="fg1">exercises</span>, <span class="fg1">worked examples</span>, and illustrative <span class="fg1">data sets</span>, as well as an R package accompanying the course.
+  </p>
+  <p>
+    All materials and R code are made available under open licenses (CC-BY-SA for the course and GPL 3 for programme code). All source files are available in the SVN repository of the <a href="https://r-forge.r-project.org/projects/sigil/" target="_blank" class="external">SIGIL R-Forge page</a>. Share and enjoy!
+  </p>
+
+  <p>
+    Recent changes:
+    <ul>
+      <li>2024-06-06: The SIGIL course has finally moved to its proper home on R-Forge.</li>
+      <li>2024-06-06: Slides for Unit #9 (inter-annotator agreement) are available online now.</li>
+    </ul>
+  </p>
+
+  
+  <h1 id="software">R package</h1>
+  <p class="backlink"><a href="#top">back to top</a></p>
+
+  <p>
+    This course is supported by an R package that contains useful functions for analysing corpus frequency data, some illustrative data sets, as well as convenience functions.  R code examples in the course slide and exercises make use of these functions and data sets, so please make sure that you have installed the R package.  Further add-on packages that will be needed in this course are listed in Unit 1.
+
+    <ul>
+      <li>The <code class="fg1"><b>corpora</b></code> package (<span class="fg1">version 0.6</span>) is available on <a href="https://cran.r-project.org/web/packages/corpora/" class="external" target="_blank">CRAN</a> and can be installed with any standard R package manager.
+      </li>
+    </ul>
+
+    In addition to data sets and utilities directly connected to the SIGIL course, the <code>corpora</code> package provides useful <span class="fg1">functionality for analysing corpus frequency data</span>, such as:
+    <ul>
+      <li> efficient p-values for Fisher's exact test on 2x2 contingency tables (<code>fisher.pval</code>) </li>
+      <li> efficient confidence intervals for proportions (<code>prop.cint</code>) </li>
+      <li> reference implementations of keyness measures, including recently suggested LRC (<code>keyness</code>) </li>
+      <li> many small convenience functions (<code>qw</code>, <code>cont.table</code>, <code>sample.df</code>, <code>corpora.palette</code>, <code>colVector</code>,  …) </li>
+      <li> further reference implementations of corpus-statistical techniques will be added in future package releases! </li>
+    </ul>
+  </p>
+  
+  <p>
+    Archive of older <code>corpora</code> package versions:
+    <ul>
+      <li>
+        version 0.6 (08/2023): 
+        <a href="release/corpora_0.6.zip" class="external">Windows</a> &ndash;
+        <a href="release/corpora_0.6.tgz" class="external">Mac OS X</a> &ndash;
+        <a href="release/corpora_0.6.tar.gz" class="external">source code</a>
+      </li>
+      <li>
+        version 0.5-1 (03/2022): 
+        <a href="release/corpora_0.5-1.zip" class="external">Windows</a> &ndash;
+        <a href="release/corpora_0.5-1.tgz" class="external">Mac OS X</a> &ndash;
+        <a href="release/corpora_0.5-1.tar.gz" class="external">source code</a>
+      </li>
+      <li>
+        version 0.5 (06/2016): 
+        <a href="release/corpora_0.5.zip" class="external">Windows</a> &ndash;
+        <a href="release/corpora_0.5.tgz" class="external">Mac OS X</a> &ndash;
+        <a href="release/corpora_0.5.tar.gz" class="external">source code</a>
+      </li>
+    </ul>
+  </p>
+  
+
+  <h2 id="handouts_pdf">SIGIL course units</h2>
+
+  <p>
+    In order to follow worked examples and solve exercises, it is recommended that you put all relevant data and code files in an RStudio project directory (or your current working directory). All code examples in the slides and exercises will make this assumption.
+    Some slides may still refer to data sets in the <code>SIGIL</code> package, which was rejected by CRAN. Please use the <code>corpora</code> package instead, making sure that you have installed version 0.6 or newer.
+  </p>
+
+  
+  <ul>
+    
+    <li id="unit01">
+      Unit 1: <strong>General introduction / First steps in R</strong>
+      <ul>
+        <li>
+          handouts:
+          <a href="materials/01_introduction.slides.pdf" target="_blank">slides</a> (1.2 MiB) &ndash;
+          <a href="materials/01_introduction.handout.pdf" target="_blank">print version</a> (0.8 MiB)
+        </li>
+        <li>
+          <a href="ex/01_exercise.pdf" target="_blank">exercise sheet</a> &ndash;
+          <a href="ex/01_solution.R" target="_blank">solution notes</a>
+        </li>
+        <li>
+          data:
+          <a href="data/brown.stats.txt"><tt>brown.stats.txt</tt></a> &ndash;
+          <a href="data/lob.stats.txt"><tt>lob.stats.txt</tt></a>
+        </li>
+      </ul>
+    </li>
+    
+    <li id="unit02">
+      Unit 2: <strong>Corpus frequency data &amp; statistical inference</strong>
+      <ul>
+        <li>
+          handouts:
+          <a href="materials/02_corpus_frequency_data.slides.pdf" target="_blank">slides</a> (7.6 MiB) &ndash;
+          <a href="materials/02_corpus_frequency_data.handout.pdf" target="_blank">print version</a> (4.7 MiB)
+        </li>
+        <li>
+          worked example on <i>BNC frequency comparisons</i>:
+          <a href="materials/02_bnc_frequency.Rmd" target="_blank">RMarkdown</a> &ndash;
+          <a href="materials/02_bnc_frequency.pdf" target="_blank">PDF</a>
+        </li>
+        <li>
+          <a href="ex/02_exercise.pdf" target="_blank">exercise sheet</a> &ndash;
+          <a href="ex/02_solution.R" target="_blank">solution notes</a>
+        </li>
+        <li>
+          data:
+          <a href="data/passives.brown.csv"><tt>passives.brown.csv</tt></a> &ndash;
+          <a href="data/passives.lob.csv"><tt>passives.lob.csv</tt></a> &ndash;
+          <a href="data/bnc_queries.tbl"><tt>bnc_queries.tbl</tt></a> &ndash;
+          <a href="data/bnc_metadata_utf8.tbl"><tt>bnc_metadata_utf8.tbl</tt></a> (1.2 MiB)
+        </li>
+      </ul>
+    </li>
+
+    <li id="unit03">
+      Unit 3: <strong>Descriptive and inferential statistics for continuous data</strong>
+      <ul>
+        <li>
+          part 1:
+          <a href="materials/03a_continuous_descriptive.slides.pdf" target="_blank">slides</a> (1.0 MiB) &ndash;
+          <a href="materials/03a_continuous_descriptive.handout.pdf" target="_blank">print version</a> (0.8 MiB)
+        </li>
+        <li>
+          part 2:
+          <a href="materials/03b_continuous_inferential.slides.pdf" target="_blank">slides</a> (0.5 MiB) &ndash;
+          <a href="materials/03b_continuous_inferential.handout.pdf" target="_blank">print version</a> (0.4 MiB)
+        </li>
+        <li>
+          worked example on the <i>effectiveness of a corpus-driven language course</i>:
+          <a href="materials/03_language_course.Rmd" target="_blank">RMarkdown</a> &ndash;
+          <a href="materials/03_language_course.pdf" target="_blank">PDF</a>
+        </li>
+        <li>
+          <a href="ex/03_exercise.pdf" target="_blank">exercise sheet</a> &ndash;
+          <a href="ex/03_solution.R" target="_blank">solution notes</a>
+        </li>
+      </ul>
+    </li>
+
+    <li id="unit04">
+      Unit 4: <strong>Collocations, keywords &amp; contingency tables</strong>
+      <ul>
+        <li>
+          measuring keyness: 
+          <a href="materials/04_measuring_keyness.slides.pdf" target="_blank">slides</a> (5.3 MiB) &ndash;
+          <a href="materials/04_measuring_keyness.handout.pdf" target="_blank">print version</a> (4.9 MiB) &ndash;
+          <a href="https://corpora.linguistik.uni-erlangen.de/data/SIGIL/04_measuring_keyness_CC.mp4" target="_blank" class="external">screencast</a> (MP4, 195 MiB)
+          <span class="fg2">(new on 11.09.2023)</span> <span class="inv2">new</span>
+        </li>
+        <li>
+          worked example on <i>keyword analysis</i>: RStudio project <a href="materials/04_keyness_hands_on.zip"><tt>04_keyness_hands_on.zip</tt></a> (5.8 MiB) &ndash;
+          <a href="materials/04_keyness_hands_on.html" target="_blank" class="external">HTML report</a> 
+          <span class="fg2">(new on 13.09.2023)</span> <span class="inv2">new</span>
+        </li>
+        <li>
+          screencast from hands-on session:
+          <a href="https://corpora.linguistik.uni-erlangen.de/data/SIGIL/04_measuring_keyness_hands_on_1.mp4" target="_blank" class="external">part 1</a> (MP4, 348 MiB) &ndash;
+          <a href="https://corpora.linguistik.uni-erlangen.de/data/SIGIL/04_measuring_keyness_hands_on_2.mp4" target="_blank" class="external">part 2</a> (MP4, 217 MiB)
+          <span class="fg2">(new on 17.09.2023)</span> <span class="inv2">new</span>
+        </li>
+        <li>
+          collocations part 1:
+          <a href="materials/04a_collocations_1.slides.pdf" target="_blank">slides</a> (0.8 MiB) &ndash;
+          <a href="materials/04a_collocations_1.handout.pdf" target="_blank">print version</a> (0.5 MiB)
+        </li>
+        <li>
+          collocations part 2:
+          <a href="materials/04b_collocations_2.slides.pdf" target="_blank">slides</a> (1.0 MiB) &ndash;
+          <a href="materials/04b_collocations_2.handout.pdf" target="_blank">print version</a> (0.7 MiB)
+        </li>
+        <li>
+          worked example on <i>collocations and keywords</i>:
+          <a href="materials/04_collocation_analysis.Rmd" target="_blank">RMarkdown</a> &ndash;
+          <a href="materials/04_collocation_analysis.pdf" target="_blank">PDF</a> &ndash;
+          <a href="materials/cont_table_observed_expected.png" target="_blank">PNG figure</a> (for typesetting)
+        </li>
+        <li>
+          <a href="ex/04_exercise.pdf" target="_blank">exercise sheet</a> &ndash;
+          <a href="ex/04_solution.txt" target="_blank">solution notes</a>
+        </li>        
+        <li>
+          data:
+          <a href="data/brown_bigrams.tbl"><tt>brown_bigrams.tbl</tt></a> &ndash;
+          <a href="data/krenn_pp_verb.tbl"><tt>krenn_pp_verb.tbl</tt></a>
+        </li>
+      </ul>
+    </li>
+
+    <li id="unit05">
+      Unit 5: <strong>Word frequency distributions and Zipf's law: Using add-on packages</strong>
+      <ul>
+        <li>
+          handouts:
+          <a href="materials/05_zipfr.slides.pdf" target="_blank">slides</a> (1.6 MiB) &ndash;
+          <a href="materials/05_zipfr.handout.pdf" target="_blank">print version</a> (1.4 MiB)
+        </li>
+        <li>
+          worked example in the zipfR package tutorial: <a href="https://zipfr.r-forge.r-project.org/materials/zipfr-tutorial.pdf" target="_blank" class="external">PDF</a>
+        </li>
+        <li>
+          <a href="ex/05_exercise.pdf" target="_blank">exercise sheet</a> &ndash;
+          <a href="ex/05_solution.R" target="_blank">solution notes</a>
+        </li>
+        <li>
+          data:
+          <a href="data/bigrams.100k.tfl"><tt>bigrams.100k.tfl</tt></a> (1.1 MiB) &ndash;
+          <a href="data/bigrams.100k.spc"><tt>bigrams.100k.spc</tt></a>
+        </li>
+        <li>
+          much more information on type-token distributions can be found in Stephanie's <a href="https://zipfr.r-forge.r-project.org/lrec2018.html" target="_blank" class="external">LNRE tutorial</a>
+        </li>
+      </ul>
+    </li>
+
+    <li id="unit06">
+      Unit 6: <strong style="color:#888888;">Regression and the general linear model</strong>
+      <!--
+      <ul>
+        <li>
+          handouts:
+          <a href="materials/02_corpus_frequency_data.slides.pdf" target="_blank">slides</a> (5.8 MiB) &ndash;
+          <a href="materials/02_corpus_frequency_data.handout.pdf" target="_blank">print version</a> (3.4 MiB) &ndash;
+          <a href="ex/02_exercise.pdf" target="_blank">exercise sheet</a>
+          (<a href="ex/02_solution.txt" target="_blank">solution notes</a>) 
+        </li>
+        <li>
+          data:
+          <a href="data/passives.brown.csv"><tt>passives.brown.csv</tt></a> &ndash;
+          <a href="data/passives.lob.csv"><tt>passives.lob.csv</tt></a>
+        </li>
+      </ul>
+      -->
+    </li>
+
+    <li id="unit07">
+      Unit 7: <strong>Multivariate analysis</strong>
+      <span class="fg2">(updated on 06.04.2023)</span>
+      <ul>
+        <li>
+          overview talk:
+          <a href="materials/07_multivar_talk.slides.pdf" target="_blank">slides</a> (5.8 MB) &ndash;
+          <a href="materials/07_multivar_talk.handout.pdf" target="_blank">handout</a> (5.8 MB) &ndash;
+          <a href="materials/07_multivar_talk.pptx" target="_blank">powerpoint</a> (86 MB, with embedded animations)
+          <span class="fg2">(updated on 04.04.2023)</span>
+        </li>
+        <li>
+          mathematical background:
+          <a href="materials/07_multivariate_analysis.slides.pdf" target="_blank">slides</a> (0.8 MiB) &ndash;
+          <a href="materials/07_multivariate_analysis.handout.pdf" target="_blank">print version</a> (0.8 MiB) 
+          <span class="inv1">update pending</span>
+          <!--
+              &ndash;
+          <a href="ex/02_exercise.pdf" target="_blank">exercise sheet</a>
+          (<a href="ex/02_solution.txt" target="_blank">solution notes</a>)  -->
+        </li>
+         <li>
+          worked examples:
+          <a href="materials/07_tutorial.pdf" target="_blank">Multivariate analysis in R</a> &ndash;
+          <a href="materials/07_GMA.pdf" target="_blank">Geometric Multivariate Analysis</a>
+          <span class="fg2">(updated on 06.04.2023)</span>
+        </li>
+       <li>
+          RStudio project:
+          <a href="materials/07_project.zip"><tt>07_project.zip</tt></a> (7.3 MB; ZIP archive including all code &amp; data)
+          <span class="fg2">(updated on 06.04.2023)</span>
+        </li>
+       <!--
+       <li>
+          data:
+          <a href="data/unit7_data.rda"><tt>unit7_data.rda</tt></a> (4.3 MiB; archive with all required data sets)
+        </li>
+        <li>
+          support functions:
+          <a href="materials/multivar_utils.R"><tt>multivar_utils.R</tt></a> <span class="fg2">(updated on 15.09.2018)</span> 
+        </li>
+        -->
+      </ul>
+    </li>
+
+    <li id="unit08">
+      Unit 8: <strong>The non-randomness of corpus data &amp; generalised linear models</strong>
+      <ul>
+        <li>
+          handouts:
+          <a href="materials/08_nonrandomness_glm.slides.pdf" target="_blank">slides</a> (6.0 MiB) &ndash;
+          <a href="materials/08_nonrandomness_glm.handout.pdf" target="_blank">print version</a> (4.5 MiB) <!--  &ndash;
+          <a href="ex/04_exercise.pdf" target="_blank">exercise sheet</a>
+          (<a href="ex/04_solution.txt" target="_blank">solution notes</a>) 
+          -->
+        </li>
+        <li>
+          Worked example on <i>The frequency of passives</i>:
+          <a href="materials/08_passives.Rmd" target="_blank">RMarkdown</a> &ndash;
+          <a href="materials/08_passives.pdf" target="_blank">PDF</a>
+        </li>
+        <li>
+          data:
+          <a href="data/passives_by_text.tbl"><tt>passives_by_text.tbl</tt></a>
+        </li>
+      </ul>
+    </li>
+
+    <li id="unit09">
+      Unit 9: <strong>Inter-annotator agreement</strong>
+      <span class="fg2">(new on 06.06.2024)</span> <span class="inv2">new</span>
+      <ul>
+        <li>
+          handouts:
+          <a href="materials/09_iaa.slides.pdf" target="_blank">slides</a> (0.7 MiB) &ndash;
+          <a href="materials/09_iaa.handout.pdf" target="_blank">print version</a> (0.4 MiB)
+        </li>
+      </ul>
+    </li>
+
+  </ul>
+
+
+  <hr/>
+  <small><a href="https://www.stephanie-evert.de/Imprint.html">imprint & privacy</a></small>
+
+  </body>
+</html>

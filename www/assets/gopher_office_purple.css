@@ -1,0 +1,6 @@
+/* GOPHER -- Good Old Plain Html for the occasional writER */
+/* gopher_standard_purple.css: Standard text fonts (MS Office) with purple colour scheme */
+
+@import url(common.css);
+@import url(fonts_office.css);
+@import url(colour_purple.css);

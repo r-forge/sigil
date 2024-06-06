@@ -1,0 +1,105 @@
+/* GOPHER -- Good Old Plain Html for the occasional writER */
+/* colour_purple.css: default colour scheme with purple header and blue/green page structure */
+
+.banner {
+    background-color:#080;
+    border-top: 4px #260 solid;
+    border-bottom: 4px #260 solid;
+    color:white;
+}
+
+div.navigation {
+    margin-bottom:2em;
+    background-color:#FDB;
+}
+
+tr.sitenav {
+    background-color:#FDB;
+    border-bottom: 2px #800 solid;
+    color:#800;
+}
+tr.sitenav td.current {
+    background-color:#C22;
+    color:white;
+    border-top: 2px #800 solid;
+    border-left: 2px #800 solid;
+    border-right: 2px #800 solid;
+    border-bottom: 2px #C22 solid;
+}
+tr.sitenav a {
+    color:#800;
+}
+tr.sitenav a:visited {
+    color:#800; /* IE6 requires explicit override of a:visited as well! */
+}
+
+tr.subnav {
+    background-color:#C22;
+    border: 2px #800 solid;
+    color:white;
+}
+tr.subnav td {
+    /* IE6 doesn't seem to draw borders around table rows, so make sure we have at least some borders */
+    border-left: 2px #800 solid; 
+    border-bottom: 2px #800 solid;
+    border-right: 2px #800 solid;
+}
+tr.subnav a {
+    color:white;
+}
+tr.subnav a:visited {
+    color:#FDD; /* IE6 requires explicit override of a:visited as well! */
+}
+tr.subnav .current {
+    color:#FF6;
+    border-top: 2px #FF6 solid;
+}
+
+h1 {
+    border-bottom: 4px solid #31F;
+}
+h2 {
+    border-bottom: 2px solid #170;
+}
+h3 {
+    /* no coloured border for minor headings */
+}
+
+a {
+    color:#C22;
+}
+a:visited {
+    color:#800;
+}
+a.external:after {
+    content: " " url(link_external_green.png); 
+}
+pre {
+    background-color:#EFF;
+    border:2px #260 dotted;
+}
+.box {
+    background-color:#FDB;
+    border:2px #800 solid;
+}
+
+.fg1 {
+    color:#C22;
+}
+.bg1 {
+    background-color:#FDB;    
+}
+.inv1 {
+    color:white;
+    background-color:#C22;
+}
+.fg2 {
+    color:#080;
+}
+.bg2 {
+    background-color:#CFA;
+}
+.inv2 {
+    color:white;
+    background-color:#080;
+}

@@ -1,0 +1,6 @@
+/* GOPHER -- Good Old Plain Html for the occasional writER */
+/* gopher_web_rgb.css: MS Web fonts (Georgia/Verdana) with RGB colour scheme */
+
+@import url(common.css);
+@import url(fonts_web.css);
+@import url(colour_rgb.css);
