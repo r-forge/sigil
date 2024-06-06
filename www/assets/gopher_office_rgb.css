@@ -1,0 +1,6 @@
+/* GOPHER -- Good Old Plain Html for the occasional writER */
+/* gopher_standard_rgb.css: Standard text fonts (MS Office) with RGB colour scheme */
+
+@import url(common.css);
+@import url(fonts_office.css);
+@import url(colour_rgb.css);

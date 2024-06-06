@@ -1,0 +1,6 @@
+/* GOPHER -- Good Old Plain Html for the occasional writER */
+/* gopher_mac_rgb.css: Fonts for Mac OS X with RGB colour scheme */
+
+@import url(common.css);
+@import url(fonts_mac.css);
+@import url(colour_rgb.css);

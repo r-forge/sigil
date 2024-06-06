@@ -1,0 +1,172 @@
+/* GOPHER -- Good Old Plain Html for the occasional writER */
+/* common.css: common format definitions shared by all fonts sets and colour schemes */
+
+body {
+  margin: 1em auto;
+  padding-left: 2em;
+  padding-right: 2em;
+  max-width:80em;
+}
+
+/* <div class="banner"> ... </div>  <!-- banner with page/site name at top of page --> */
+.banner {
+    font-size:200%;
+    padding:10px 0 10px 40px;
+    margin:0px 0px 1em 0px;
+}
+
+/* <p class="navigation"> ... </p>  <!-- simple navigation within HTML page (jump to subsection) --> */
+p.navigation {
+    text-align:center;
+    margin-bottom:2em;
+}
+
+/* <div class="navigation">  <!-- navigation across multiple pages, with subsection links for each page -->
+     <table>
+        <tr class="sitenav"> ... </tr>  <!-- best to auto-generate links with PHP code -->
+        <tr class="subnav" colspan=".."> ... </tr>
+     </table>
+   </div> */
+div.navigation {
+    margin-bottom:2em;
+}
+
+div.navigation table {
+    margin:0px;
+    padding:0px;
+    width:100%;
+    border-collapse:collapse;
+    font-size:110%;
+}
+
+tr.sitenav {
+    margin:0px;
+    padding:0px;
+    font-weight:bold;
+}
+
+tr.sitenav td {
+    text-align:center;
+    padding: 2px 2em 2px 2em;
+}
+
+tr.sitenav td.space {
+    padding: 2px 4em 2px 4em;
+}
+
+tr.sitenav td.current {
+    /* only colour and border changes */
+}
+
+tr.sitenav a {
+    text-decoration:none;
+}
+
+tr.subnav {
+    margin:0px;
+    padding:0px;
+    font-weight:normal;
+}
+
+tr.subnav td {
+    padding: 2px 1em 2px 1em;
+}
+tr.subnav td.php {
+    padding-top: 5px;
+}
+
+tr.subnav a {
+    /* only colour change */
+}
+
+tr.subnav .current {
+    /* only colour and border changes */
+}
+
+/* <h1>, <h2>, <h3>  <!-- page structure: section, subsection and minor heading --> 
+   <p class="backlink"> .. </p>  <!-- for optional "back to top" below section/subsection heading -->
+*/
+h1 {
+    font-size:180%;
+    margin:1.5em 0 0em 0;
+}
+
+h2 {
+    font-size:150%;
+    margin:1.5em 0 0em 0;
+}
+
+h3 {
+    font-size:130%;
+    margin:1.5em 0 0em 0;
+}
+
+p.backlink {
+    margin:0 0 -.5em 0;
+    font-size:80%;
+    text-align:right;
+}
+
+/* Standard HTML formatting: paragraphs, hyperlinks, lists, preformatted code blocks, ... */
+p {
+    line-height:150%;  /* increased line spacing makes text much more readable on screen */
+}
+
+a {
+    text-decoration:none;
+}
+a:hover {
+    text-decoration:underline;
+}
+a:visited {
+    /* only colour change */
+}
+a.external:after {
+    /* image inserted in colour definition files (to match colour scheme) */
+}
+
+pre {
+    margin-left:2em;
+    margin-right:2em;
+    padding:6px;
+}
+
+ul,ol,dl {
+    line-height:150%;
+}
+ul.compressed, ol.compressed, dl.compressed {
+    line-height:120%;
+}
+ul {
+    list-style-type:square;
+    margin-left:4em;  /* used by IE and Opera for automatic list indentation */
+    padding-left:0em; /* used by Firefox and WebKit; set both for consistent layout */
+}
+
+.box {
+    margin-left:2em;
+    margin-right:2em;
+    margin-top:1em;
+    margin-bottom:1em;
+    padding:6px;
+}
+
+.figure-left {
+    float:left;
+    margin-left:10px;
+    margin-right:2em;
+    margin-top:4px;
+    margin-bottom:4px;
+}
+.figure-right {
+    float:right;
+    margin-left:2em;
+    margin-right:10px;
+    margin-top:4px;
+    margin-bottom:1em;
+}
+.caption {
+    font-size:90%;
+    margin-top:1em;
+    margin-bottom:1em;
+}

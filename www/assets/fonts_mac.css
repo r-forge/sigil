@@ -1,0 +1,11 @@
+/* GOPHER -- Good Old Plain Html for the occasional writER */
+/* fonts_mac.css: font definitions for Mac OS X (clean and elegant fonts shipped with OS X) */
+
+body {font-size:small; font-family:Helvetica,Arial,sans-serif;}
+.serif {font-size:115%; font-family:Baskerville,Hoefler Text,Times New Roman,serif;}
+.narrow {font-size:105%; font-family:Arial Narrow,Futura Condensed,Arial,Helvetica,sans-serif;}
+h1,h2,h3,h4,h5,h6 {font-family:Gill Sans,Optima,Arial,sans-serif;}
+code {font-size:90%; font-family:Monaco,Courier,Courier New,monospace;}
+pre {font-size:85%; font-family:Monaco,Courier,Courier New,monospace;}
+div.banner {font-family:Papyrus,Gill Sans,Optima,Arial,sans-serif;}
+div.navigation {font-size:105%; font-family:Gill Sans,Optima,Arial,sans-serif;}
