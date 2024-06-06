@@ -14,7 +14,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Titlepage
 
-\title[8.\ Inter-annotator agreement]{Unit 8: Inter-Annotator Agreement}
+\title[9.\ Inter-annotator agreement]{Unit 8: Inter-Annotator Agreement}
 \subtitle{Statistics for Linguists with R -- A SIGIL Course}
 \sigilauthors
 \date[sigil.r-forge.r-project.org]{%
@@ -732,7 +732,7 @@
     $\alpha_e$ & $\pi_{1\cdot}\cdot \pi_{\cdot 1} + 
     \pi_{2\cdot}\cdot \pi_{\cdot 2}$ \\
     \multicolumn{2}{c}{}\\
-    $\hat{\kappa}$ & $\dfrac{\alpha_o - \alpha_e}{1 - \alpha_e}$
+    $\kappa$ & $\dfrac{\alpha_o - \alpha_e}{1 - \alpha_e}$
   \end{tabular}
 
   \gap[2]
@@ -750,7 +750,7 @@
     $A_e$ & $p_{1\cdot}\cdot p_{\cdot 1} + 
     p_{2\cdot}\cdot p_{\cdot 2}$ \\
     \multicolumn{2}{c}{}\\
-    $\kappa$ & $\dfrac{A_o - A_e}{1 - A_e}$
+    $\hat{\kappa}$ & $\dfrac{A_o - A_e}{1 - A_e}$
   \end{tabular}
 \end{frame}
 
@@ -763,7 +763,7 @@
     follows Gaussian distribution if samples are large enough
   \item<2-> Show (or hope) that $\hat{\kappa}$ is unbiased estimator: $\Exp{\hat{\kappa}} = \kappa$
   \item<3-> Compute standard deviation of $\hat{\kappa}$
-    \citep{Fleiss:Cohen:Everitt:69}:
+    \citep[325]{Fleiss:Cohen:Everitt:69}:
     \begin{footnotesize}
     \begin{equation*}
       \begin{split}
@@ -961,13 +961,13 @@ vs.~NN & value & \multicolumn{1}{c}{min} & \multicolumn{1}{c}{max} & size \\
     \hh{\citet{Artstein:Poesio:08}}
     
     \gap[1]
-    Everyone should at least read this article.
+    \emph{Everyone should at least read this article.}
 
     \gap[3]
-    \counterpoint{\url{http://faculty.vassar.edu/lowry/kappa.html}}
+    R package \code{\h{irr}} (inter-rater reliability)
 
     \gap[1]
-    Online calculator for Kappa coefficient
+    \emph{Lacks confidence intervals \so to be included in} \code{corpora} \emph{package.}
     
   \end{center}
 \end{frame}
