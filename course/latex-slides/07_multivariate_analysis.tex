@@ -677,6 +677,27 @@ Standardize features for equal contribution to Euclidean metric:
 
 \todoslide{GMA visualisation functions + 3D}
 
+\begin{frame}
+  \frametitle{GMA: A geometric approach}
+
+  \begin{itemize}
+  \item data set represents a geometric configuration of data points in $\setR^d$, esp.\ with Euclidean metric (\so angles, orthogonality, \ldots)
+  \item for \h{Geometric Multivariate Analysis} \citep[\hh{GMA}: ][]{Diwersy:Evert:Neumann:14,Evert:Neumann:16} this geometric strucuture is the primary object of study
+  \item[\So] low-dimensional visualisation by \hh{orthogonal projection} (which is geometry-preserving)
+  \item GMA: \h{focus space} $B\subseteq \setR^d$ + orthogonal complement $B^{\perp}$
+    \begin{itemize}
+    \item usually $\dim B = r \leq 6$; $\setR^d = B \times B^{\perp}$
+    \item always use \hh{orthonormal basis} $B = \Span{\vb_1, \ldots, \vb_r}$
+    \end{itemize}
+  \item orthogonal projection of $\vx\in \setR^d$ into $B$ with basis matrix $\mathbf{V}$:
+    \begin{itemize}
+    \item focus subspace coordinates: $\mathbf{V}^T \vx$
+    \item projection $\setR^d \to B$: $\mathbf{P} \vx$ with $\mathbf{P} = \mathbf{V} \mathbf{V}^T$
+    \item complement projection $\setR^d \to B^{\perp}$: $\mathbf{Q} \vx$ with $\mathbf{Q} = \mathbf{I} - \mathbf{P}$
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
 \todoslide{embeddings: MDS, t-SNE, etc.}
 
 
@@ -684,6 +705,136 @@ Standardize features for equal contribution to Euclidean metric:
 \section{Geometric multivariate analysis (GMA)}
 
 \todoslide[TODO]{Introduce GMA functions for subspaces}
+
+\begin{frame}
+  \frametitle{GMA: manipulating the focus space}
+
+  \begin{itemize}
+  \item GMA perspective is determined by the focus space (and its basis vectors, esp.\ if $r > 3$)
+  \item manipulate focus space to obtain different perspectives on data set \so sufficient to change basis vectors, then project
+  \item focus space usually determined by unsupervised (PCA) or minimally supervised (LDA) algorithm
+  \item but may also want to manipulate basis \emph{within} focus space to make visualisation more interpretable or reveal another perspective \so based on visual impression
+  \item transformation must be \hh{isometric map} to preserve orthonormality of basis \so called \h{rotation} in GMA
+  \item also rotation for subset of basis, i.e. within $B'\subseteq B$, or for a reordering of the basis vectors (if relevant)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{GMA: rotations}
+
+  \begin{itemize}
+  \item \hh{PCA} rotation: rotate basis to correspond to the principal components of the projection of the data set into $B$ (or $B'$)
+    \begin{itemize}
+    \item[\hand] can directly use principal components since they are orthonormal within $B'$
+    \end{itemize}
+  \item \hh{swap} or reorder basis vectors (\so e.g.\ for scatterplot matrix)
+  \item \hh{flip} / invert single basis vector $\vb'_i = -\vb_i$ \so reflection
+  \item \hh{rotate} two basis vectors $\vb_i, \vb_j$ ccw by angle $\varphi$
+    \begin{itemize}
+    \item[\hand] apply rotation matrix to $\vb_i, \vb_j$ in their coordinate system
+      \[
+        \begin{bmatrix}
+          \vb'_i & \vb'_j
+        \end{bmatrix}
+        = 
+        \begin{bmatrix}
+          \vb_i & \vb_j
+        \end{bmatrix}
+        \begin{bmatrix}
+          \cos \varphi & -\sin \varphi \\
+          \sin \varphi & \cos \varphi
+        \end{bmatrix}
+      \]
+    \item[\hand] i.e.\ $\vb'_i = \vb_i \cos \varphi + \vb_j \sin \varphi$ and $\vb'_j = -\vb_i \sin \varphi + \vb_j \cos \varphi$ 
+    \item[\hand] rotates basis vectors ccw, but visualisation of data set cw
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{GMA: rotations}
+
+  \begin{itemize}
+  \item general \hh{planar rotation} by $\varphi$ with orthonormal basis $\vu, \vv$
+    \begin{itemize}
+    \item[\hand] given by rotation matrix wrt.\ basis $\vu, \vv$ and identitiy on orthogonal complement $\Span{\vu, \vv}^{\perp}$
+    \item[\hand] rotation matrix: project into planar coordinates, apply rotation, map back to $\setR^d$
+      \[
+        \mathbf{R} =
+        \begin{bmatrix}
+          \vu & \vv
+        \end{bmatrix}
+        \begin{bmatrix}
+          \cos \varphi & -\sin \varphi \\
+          \sin \varphi & \cos \varphi
+        \end{bmatrix}
+        \begin{bmatrix}
+          \vu^T \\
+          \vv^T
+        \end{bmatrix}
+        +
+        \left(
+          \mathbf{I} -
+          \begin{bmatrix}
+            \vu & \vv
+          \end{bmatrix}
+          \begin{bmatrix}
+            \vu^T \\
+            \vv^T
+          \end{bmatrix}
+        \right)
+      \]
+    \item[\hand] can be simplified to
+      \[
+        \mathbf{R} =
+        \mathbf{I} +
+        \sin \varphi \left(
+          \vv \vu^T - \vu \vv^T
+        \right) +
+        (\cos \varphi - 1) \left(
+          \vu \vu^T + \vv \vv^T
+        \right)
+      \]
+    \item[\hand] if $\Span{\vu, \vv} \subseteq B$ then rotation is confined to focus space $B$, i.e.\ $\mathbf{R}\vx = \vx$ for $\vx\in B^{\perp}$
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{GMA: rotations}
+
+  \begin{itemize}
+  \item \hh{manual} rotation to align first $k < r$ basis vectors of focus space with manual specified orthonormal axes $\va_1, \ldots, \va_k$
+    \begin{itemize}
+    \item[\hand] apply rotation in plane $\Span{\vb_1, \va_1}$ so that $\vb'_1 = \va_1$
+    \item[\hand] with $\cos \varphi = \va_1^T \vb_1$, $\vu = \vb_1$ and $\vv = (\va_1 - \vb_1 \cos \varphi) / \sin \varphi$
+      \TODO[draw illustration]
+    \item[\hand] poorly conditioned if $\varphi \approx 0^{\circ}$ or $\varphi \approx 180^{\circ}$ \so no-op
+    \item[\hand] we now have $\vb_2, \ldots, \vb_r \in \Span{\va_1}^{\perp}$ and $\va_2, \ldots, \va_k \in \Span{\vb_1}^{\perp}$
+    \item[\hand] apply process recursively to align $\vb_2, \ldots, \vb_r$ with $\va_2, \ldots, \va_k$
+    \item[\hand] $\vb_1$ unaffected by all further rotations (which are confined to $\Span{\vb_1}^{\perp}$ because $\vb_2, \va_2 \in \Span{\vb_1}^{\perp}$)
+    \end{itemize}
+  \item can be used to match up $\vb_1, \ldots, \vb_k$ with basis vectors of another GMA focus space
+    \begin{itemize}
+    \item[\hand] project basis vectors into $B$, then re-orthogonalise
+    \item[\hand] helps to align visualisation perspective with other GMA
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{GMA: rotations}
+
+  \begin{itemize}
+  \item \hh{align} basis with another GMA focus space of same dim $r$
+    \begin{itemize}
+    \item[\hand] i.e.\ find optimally matching orthonormal basis vectors in both spaces \so algorithm is described later (subspace similarity)
+    \item[\hand] algorithm provides unique matching bases in both spaces (up to reflections) \so directly use as new basis vectors
+    \item[\hand] rotation needs to be applied to both GMA spaces (consecutively) to ensure that bases are in fact aligned
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 \subsection{PCA and factor analysis}
@@ -760,7 +911,7 @@ Standardize features for equal contribution to Euclidean metric:
     \[
       \mathbf{P} \vz = \mathbf{A} \mathbf{A}^T \vz = \mathbf{A} \vy
     \]
-    with $\vy\in \setR^r$ = subspace coordinates of the projection in $A$
+    with $\vy\in \setR^r$ = subspace coordinates of the projection within $A$
   \item Hence the projection from subspace coordinates in $B$ to subspace coordinates in $A$ is given by
     \[
       \vy = \mathbf{A}^T \vz = (\mathbf{A}^T \mathbf{B}) \vx
