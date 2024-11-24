@@ -14,7 +14,8 @@
 
 \usage{
 
-keyness(f1, n1, f2, n2, measure=c("LRC", "PositiveLRC", "G2", "LogRatio", "SimpleMaths"),
+keyness(f1, n1, f2, n2, 
+        measure=c("LRC", "PositiveLRC", "G2", "LogRatio", "SimpleMaths", "Lockwords"),
         conf.level=.95, alpha=NULL, p.adjust=TRUE, lambda=1)
 
 }
@@ -139,11 +140,34 @@ keyness(f1, n1, f2, n2, measure=c("LRC", "PositiveLRC", "G2", "LogRatio", "Simpl
         There does not appear to be a convincing mathematical justification behind this measure. It is 
         included here only because of the popularity of the Sketch Engine platform.
       }
+      
+      \item{\code{Lockwords}}{
+        This measure is designed for identifying so-called \bold{lockwords}, whose frequencies are remarkably stable
+        across different corpora (Baker 2011: 73). It is based on the same confidence intervals for \eqn{\log_2 r}
+        as the LRC measure. Here, the maximum over all \eqn{|\log_2 r|} values inside the confidence interval is taken
+        as a conservative upper bound for the true log ratio of the relative frequencies (which satisfies all the
+        requirements on such a measure discussed by Hardie 2014).
+
+        In line with its purpose, the Lockwords measure does not distinguish between positive and negative differences 
+        and always returns a positive value. For example, a Lockwords value of 2 means that we have good evidence that
+        the candidate item is at most 4 times as frequent in one population than in the other. In other words,
+        the true relative risk \eqn{r = \pi_1 / \pi_2} falls into the range \eqn{[\frac14, 4]}{[1/4, 4]}.
+        Note that the Lockwords value will be \eqn{+\infty}{+Inf} if \eqn{f_1 = 0} or \eqn{f_2 = 0}.
+      }
     }
   }
 }
 
-\seealso{\code{\link{prop.cint}}, which is used by the exact conditional Poisson test of the LRC measure}
+\seealso{
+
+  \code{\link{prop.cint}}, which is used by the exact conditional Poisson test of the LRC measure
+
+  A gentle and detailed introduction to keyness measures can be found in Unit 4 of the SIGIL course at
+  \url{https://SIGIL.R-Forge.R-Project.org/}, which explains the intuition of LRC visually.
+  The unit also includes a worked example carrying out several keyword analyses with real-life corpus
+  data as well as visualisation in the form of \dQuote{scattertext} or semantic maps.
+
+}
   
 \examples{
 # compute all keyness measures for a single candidate item with f1=7, f2=2 and n1=n2=1000
@@ -162,7 +186,12 @@ kw <- transform(BNCcomparison,
   LogRatio = keyness(spoken, n1, written, n2, measure="LogRatio"),
   LRC = keyness(spoken, n1, written, n2))
 kw <- kw[order(-kw$LogRatio), ]
-head(kw, 20)
+head(kw, 20)               # top LogRatio keywords
+
+kw <- transform(kw,
+  Lock = keyness(spoken, n1, written, n2, measure="Lockwords"))
+kw <- kw[order(kw$Lock), ] # note increasing sort
+head(kw, 20)               # top lockwords
 
 # collocations of "in charge of" with LRC as an association measure
 colloc <- transform(BNCInChargeOf, 
@@ -172,6 +201,8 @@ head(colloc, 30)
 }
 
 \references{
+
+  Baker, P. (2011). Times may change, but we will always have money: Diachronic variation in recent British English. \emph{Journal of English Linguistics}, \bold{39}(1):65-88.
 
   Evert, S. (2022). Measuring keyness. In \emph{Digital Humanities 2022: Conference Abstracts}, pages 202-205, Tokyo, Japan / online. 
   \url{https://osf.io/cy6mw/}

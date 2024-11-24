@@ -4,11 +4,9 @@ chisq <- function (k1, n1, k2, n2, correct=TRUE, one.sided=FALSE) {
   if (any(k2 < 0) || any(k2 > n2) || any(n2 <= 0)) stop("k2 and n2 must be integers with 0 <= k2 <= n2")
   if (any(k1 + k2 <= 0)) stop("either k1 or k2 must be non-zero")
 
-  storage.mode(k1) <- "double" # coerce to floating point so we don't get integer overflow for products below
-  storage.mode(n1) <- "double"
-  storage.mode(k2) <- "double"
-  storage.mode(n2) <- "double"
-  
+  ## ensure that all frequency data are floating-point (double), in particular guarding against bit64::integer64 vectors
+  .ensure.double(c("k1", "k2", "n1", "n2"))
+
   O11 <- k1                             # construct "observed" contingency table
   O21 <- n1 - k1
   O12 <- k2

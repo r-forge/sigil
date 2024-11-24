@@ -1,7 +1,8 @@
-keyness <- function (f1, n1, f2, n2, measure=c("LRC", "PositiveLRC", "G2", "LogRatio", "SimpleMaths"),
+keyness <- function (f1, n1, f2, n2, measure=c("LRC", "PositiveLRC", "G2", "LogRatio", "SimpleMaths", "Lockwords"),
                      conf.level=.95, alpha=NULL, p.adjust=TRUE, lambda=1) {
   measure <- match.arg(measure)
-
+  if (measure == "Lockwords" && !is.null(alpha)) stop("the Lockwords measure cannot be combined with a significance filter")
+  
   l <- length(f1) # ensure that all vectors have the same length (n1, n2 may be scalars)
   if (length(f2) != l) stop("arguments f1, f2 must be vectors of the same length")
   if (!(length(n1) == 1 || length(n1) == l)) stop("argument n1 must be scalar or have same length as f1, f2")
@@ -23,6 +24,9 @@ keyness <- function (f1, n1, f2, n2, measure=c("LRC", "PositiveLRC", "G2", "LogR
   }
   if (!is.null(alpha)) alpha <- alpha / p.adjust # adjust level of significance filter
   
+  ## ensure that all frequency data are floating-point (double), in particular guarding against bit64::integer64 vectors
+  .ensure.double(c("f1", "f2", "n1", "n2"))
+  
   ## compute desired keyness measure (implementations follow below)
   res <- switch(
     measure,
@@ -31,6 +35,7 @@ keyness <- function (f1, n1, f2, n2, measure=c("LRC", "PositiveLRC", "G2", "LogR
     G2 = .G2(f1, f2, n1, n2, alpha=alpha),
     LogRatio = .LogRatio(f1, f2, n1, n2),
     SimpleMaths = .SimpleMaths(f1, f2, n1, n2, lambda=lambda),
+    Lockwords = .LockLRC(f1, f2, n1, n2, conf.level=conf.level, p.adjust=p.adjust),
     stop("internal error -- ", measure, " not implemented yet")
   )
   
@@ -121,4 +126,13 @@ keyness <- function (f1, n1, f2, n2, measure=c("LRC", "PositiveLRC", "G2", "LogR
            pmax(log2( (N2 / N1) * tau$lower / (1 - tau$lower) ), 0),  # p1 >= p2 -> use lower bound (clamped to >= 0)
            pmin(log2( (N2 / N1) * tau$upper / (1 - tau$upper) ), 0))  # p1 < p2  -> use upper bound (clamped to <= 0)
   }
+}
+
+## ----- Lockwords measure based on LRC confidence interval -----
+.LockLRC <- function (f1, f2, N1, N2, conf.level=.95, p.adjust=FALSE) {
+  ## exact confidence interval from conditional Poisson test (two-sided)
+  tau <- prop.cint(f1, f1 + f2, conf.level=conf.level, p.adjust=p.adjust, alternative="two.sided")
+  lr.lower <- log2( (N2 / N1) * tau$lower / (1 - tau$lower) )
+  lr.upper <- log2( (N2 / N1) * tau$upper / (1 - tau$upper) )
+  pmax(abs(lr.lower), abs(lr.upper))
 }
