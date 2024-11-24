@@ -7,6 +7,9 @@ prop.cint <- function(k, n, method=c("binomial", "z.score"), correct=TRUE, p.adj
   if (any(k < 0) || any(k > n) || any(n < 1)) stop("arguments must be integer vectors with 0 <= k <= n and n >= 1")
   if (any(conf.level <= 0) || any(conf.level > 1)) stop("conf.level must be in range [0,1]")
 
+  ## ensure that all frequency data are floating-point (double), in particular guarding against bit64::integer64 vectors
+  .ensure.double(c("k", "n"))
+  
   ## significance level for underlying hypothesis test (with optional Bonferroni correction)
   alpha <- if (alternative == "two.sided") (1 - conf.level) / 2 else (1 - conf.level)
   if (!isFALSE(p.adjust)) {

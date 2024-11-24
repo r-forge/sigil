@@ -3,6 +3,9 @@ z.score <- function (k, n, p=.5, correct=TRUE) {
   if (any(k < 0) || any(k > n) || any(n < 1)) stop("arguments must be integer vectors with 0 <= k <= n")
   if (any(p < 0) || any(p > 1)) stop("null hypothesis proportion p must be in range [0,1]")
 
+  ## ensure that all frequency data are floating-point (double), in particular guarding against bit64::integer64 vectors
+  .ensure.double(c("k", "n"))
+  
   expected <- n * p                     # compute z-score (with optional Yates' correction)
   variance <- n * p * (1-p)
   d <- k - expected

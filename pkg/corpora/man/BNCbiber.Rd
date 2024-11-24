@@ -22,10 +22,9 @@
   using query patterns based on part-of-speech tags (Gasthaus 2007).  Note that
   features 60 and 65 had to be omitted because they cannot be identified
   with sufficient accuracy by the automatic methods.  For further information on
-  the extraction methodology, see Gasthaus (2007, 20-21).  The original data set
-  and the Python scripts used for feature extraction are available from
-  \url{https://portal.ikw.uni-osnabrueck.de/~CL/download/BSc_Gasthaus2007/}; the
-  version included here contains some bug fixes.
+  the extraction methodology, see Gasthaus (2007, 20-21).  Unfortunately, the original
+  data set   and the Python scripts used for feature extraction do not seem to be
+  publicly available any more; the version included here contains some bug fixes.
 
 }
 
@@ -143,7 +142,7 @@ BNCbiber
 
   Gasthaus, Jan (2007). \emph{Prototype-Based Relevance Learning for Genre Classification.}
   B.Sc.\ thesis, Institute of Cognitive Science, University of \enc{Osnabrück}{Osnabrueck}.
-  Data sets and software available from \url{https://portal.ikw.uni-osnabrueck.de/~CL/download/BSc_Gasthaus2007/}.
+  %% Data sets and software available from \url{https://portal.ikw.uni-osnabrueck.de/~CL/download/BSc_Gasthaus2007/}.
 
 }
 

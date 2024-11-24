@@ -1,3 +1,8 @@
+Version 0.6-1:
+  - add Lockwords measure to keyness() function
+  - keyness() and some other functions now explicitly convert integer vectors to double() in order to avoid numerical overflow and other errors
+  - also addresses problem that data.table reads large integer counts as bit64::integer64, which wreak havoc on some built-in maths and stats functions (because they masquerade as doubles); kudos to Mark McGlashan for the bug report with repro code
+
 Version 0.6:
   - keyness() function implements best-practice keyness measures according to Evert (2022)
   - some documentation improvements

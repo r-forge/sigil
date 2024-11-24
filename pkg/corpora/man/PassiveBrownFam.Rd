@@ -53,7 +53,7 @@ PassiveBrownFam
 
 \section{Acknowledgements}{
 
-  Frequency information for this data set was kindly provided by Gerold Schneider, University of Zurich (\url{http://www.cl.uzh.ch/de/people/team/compling/gschneid.html}).
+  Frequency information for this data set was kindly provided by Gerold Schneider, University of Zurich (\url{https://www.cl.uzh.ch/de/about-us/people/team/compling/gschneid.html}).
   
 }
 
