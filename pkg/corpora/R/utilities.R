@@ -1,11 +1,12 @@
 # validate that vector arguments have same length (or are scalars) 
 #  - if adjust=TRUE replicate scalars to common length (NB: directly modifies the specified variables in the calling frame)
+#  - checks that all vectors are numeric (unlesss check.numeric=FALSE)
 #  - len= can be explicitly specified, otherwise inferred from arguments
 #  - invisibly returns len
-.match.len <- function (vars, len=NULL, adjust=FALSE, envir=parent.frame()) {
+.match.len <- function (vars, len=NULL, adjust=FALSE, check.numeric=TRUE, envir=parent.frame()) {
   vecs <- setNames(lapply(vars, get, envir=envir), vars)
   ok <- sapply(vecs, is.numeric)
-  if (any(!ok)) stop("argument(s) ", paste(vars[!ok], collapse=", "), " must be numeric vector(s)")
+  if (check.numeric && any(!ok)) stop("argument(s) ", paste(vars[!ok], collapse=", "), " must be numeric vector(s)")
   if (is.null(len)) len <- max(sapply(vecs, length))
   for (v in vars) {
     if (length(vecs[[v]]) == 1) {

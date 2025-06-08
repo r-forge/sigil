@@ -72,11 +72,6 @@ keyness <- function (f1, n1, f2, n2, measure=c("LRC", "PositiveLRC", "G2", "LogR
   res
 }
 .G2 <- function (f1, f2, N1, N2, alpha=NULL) {
-  storage.mode(f1) <- "double" # ensure floating-point representation so we don't get integer overflows below
-  storage.mode(f2) <- "double"
-  storage.mode(N1) <- "double"
-  storage.mode(N2) <- "double"
-  
   ## observed and expected contingency tables
   N <- N1 + N2
   R1 <- f1 + f2
