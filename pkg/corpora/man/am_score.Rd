@@ -230,20 +230,24 @@ head(SurfaceColloc$f1) # tables of marginal frequencies
 head(SurfaceColloc$f2)
 
 # add association scores (MI and p-values from log-likelihood test) to data frame
+# keep in mind that we need to adjust expected frequencies for the total span size of 4 tokens
 colloc <- transform(
   SurfaceColloc$cooc,
-  MI = am.score(w1, w2, f, SurfaceColloc$f1, SurfaceColloc$f2, SurfaceColloc$N, "MI"),
-  pval = am.score(w1, w2, f, SurfaceColloc$f1, SurfaceColloc$f2, SurfaceColloc$N, "G2.pv")
+  MI = am.score(w1, w2, f, SurfaceColloc$f1, SurfaceColloc$f2, SurfaceColloc$N, 
+                "MI", span.size=4),
+  pval = am.score(w1, w2, f, SurfaceColloc$f1, SurfaceColloc$f2, SurfaceColloc$N, 
+                  "G2.pv", span.size=4)
 )
 colloc <- colloc[order(colloc$MI, decreasing=TRUE), ] # ordered by MI scores
 colloc
 
 # apply significance filter
-subset(colloc, pval > 3) # significant at p < .001
+subset(colloc, pval > 3) # significant positive association at p < .001
 
 # can also obtain labelled vector of scores
 with(SurfaceColloc$cooc,
-     am.score(w1, w2, f, SurfaceColloc$f1, SurfaceColloc$f2, SurfaceColloc$N, "Dice", labels=TRUE))
+     am.score(w1, w2, f, SurfaceColloc$f1, SurfaceColloc$f2, SurfaceColloc$N, 
+              "z", span.size=4, labels=TRUE))
 
 
 ## syntactic collocations from pre-computed frequency signatures (must specify named arguments!)
