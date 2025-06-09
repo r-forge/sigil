@@ -45,9 +45,21 @@ BrownBigrams <- transform(BrownBigrams, O11=as.numeric(O11), O12=as.numeric(O12)
 save(BrownBigrams, file="rda/BrownBigrams.rda", compress="xz")
 
 
-## PP-verb collocations annotated by Brigitte Krenn
-KrennPPV <- read.delim("tbl/krenn_pp_verb.tbl", quote="", fileEncoding="UTF-8", encoding="UTF-8", stringsAsFactors=FALSE)
+## PP-verb collocations annotated by Brigitte Krenn, exported from UCS FR-30 data set with
+## $ ucs-select -nh l1 l2 b.TP b.fvg b.figur f f1 f2 N am.MI am.Dice am.z.score am.t.score am.chi.squared am.chi.squared.corr am.log.likelihood am.Fisher.pv from hgc-fr-pnv.30.scores.ds.gz INTO tbl/krenn_pp_verb.ds
+## $ recode latin1..utf8 tbl/krenn_pp_verb.ds
+KrennPPV <- read.delim("tbl/krenn_pp_verb.ds", quote="", fileEncoding="UTF-8", encoding="UTF-8", stringsAsFactors=FALSE)
+colnames(KrennPPV) <- c("PP", "verb", "is.colloc", "is.SVC", "is.figur", "freq", "f.PP", "f.verb", "N", "MI", "Dice", "z.score", "t.score", "chisq", "chisq.corr", "log.like", "Fisher")
+KrennPPV <- transform(KrennPPV, is.colloc=as.logical(is.colloc), is.SVC=as.logical(is.SVC), is.figur=as.logical(is.figur))
 save(KrennPPV, file="rda/KrennPPV.rda", compress="xz")
+
+if (FALSE) {
+	# compare with old version (rounded to lower precision)
+	PPVold <- read.delim("tbl/krenn_pp_verb_old.tbl", quote="", fileEncoding="UTF-8", encoding="UTF-8", stringsAsFactors=FALSE)
+	PPVnew <- KrennPPV[, -(7:9)] # old data set did not include full frequency signatures
+	all.equal(PPVnew, PPVold, tol=1e-5) # and AM scores were rounded to ~5 significant digits, possibly to keep .tbl and .rda files smaller
+}
+
 
 
 ## lookup vector for genre labels (indexed by section code)
