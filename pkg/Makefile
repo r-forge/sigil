@@ -25,7 +25,7 @@ build_corpora:
 check:	check_corpora
 
 check_corpora:	clean_corpora build_corpora $(CORPORA)
-	R CMD check --multiarch --as-cran $(CORPORA)
+	R CMD check --as-cran $(CORPORA)
 
 
 install:	install_corpora
