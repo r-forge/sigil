@@ -110,8 +110,13 @@ builtin.am
         This implementation computes \emph{signed} association scores, which are negative iff \eqn{O_{11} < E_{11}}{O11 < E11}.
         Log-likelihood has a strong bias towards high co-occurrence frequency and often produces a highly skewed distribution of scores. It may therefore be advisable to combine it with an additional log transformation (\code{log=TRUE}).
       }
+      
       \item{\code{G2.pv}}{
         The \bold{p-values} corresponding to the \eqn{G^2} scores of the likelihood ratio test. In order to achieve sensible scaling and ensure that larger values correspond to higher collocability, the negative base-10 logarithm \eqn{-\log_{10} p}{-log10(p)} is returned, with negative sign iff \eqn{O_{11} < E_{11}}{O11 < E11}. Family-wise error rates are controlled with a Bonferroni correction to the p-values if \code{p.adjust=TRUE} (the default). Note that scores above 2 correspond to a significance level \eqn{p < .01}.
+      }
+
+      \item{\code{Fisher.pv}}{
+        The \bold{p-values} of a one-sided \bold{Fisher's exact test} for independence of rows and columns in a contingency table, conditioned on the marginal frequencies. As usual for p-values, the negative base-10 logarithm \eqn{-\log_{10} p}{-log10(p)} is returned, which is always non-negative (keep in mind that the one-sided test only detects positive association). Family-wise error rates are controlled with a Bonferroni correction to the p-values if \code{p.adjust=TRUE} (the default).
       }
 
       \item{\code{simple.ll}}{
@@ -152,6 +157,12 @@ builtin.am
         }{ 2 O11 / (R1 + C1) }
       }
       
+      \item{\code{odds.ratio}}{
+        Discounted log \bold{odds ratio}, an effect-size measure that is sensitive to small marginal frequencies: \deqn{
+          \log \frac{(O_{11} + \frac12)(O_{22} + \frac12)}{(O_{12} + \frac12)(O_{21} + \frac12)}
+        }{ log( (O11 + .5) * (O22 + .5) / (O12 + .5) * (O21 + .5) ) }
+      }
+      
       \item{\code{DP}}{
         The asymmetric \bold{Delta P} measure \eqn{\Delta P_{2|1} = P(w_2|w_1) - P(w_2|\neg w_1)}{Delta P_(2|1) = P(w2 | w1) - P(w2 | !w1)} proposed by Gries (2013: 143-144): \deqn{
           \frac{O_{11}}{R_1} - \frac{O_{21}}{R_2}
@@ -161,7 +172,7 @@ builtin.am
       \item{\code{LRC}}{
         The \bold{conservative LogRatio} (LRC) keyness measure (see \code{\link{keyness}}) can also be applied as an association measure. The implementation here always computes \code{PositiveLRC}, i.e. the lower boundary of a one-sided confidence interval for \eqn{\log_2 r}, in order to ensure a sensible and consistent scaling of the association score. Please keep in mind that negative scores do not necessarily indicate negative association (\eqn{O_{11} < E_{11}}{O11 < E11}), but rather lack of significant evidence for a positive association.
         
-        Confidence intervals are deternubed at confidence level \code{conf.level} and adjusted with a Bonferroni correction if \code{p.adjust=TRUE} (the default). Note that LRC is applied to the rows of the contingency table rather than its columns, in order to obtain relative risk for \eqn{w_2} given \eqn{w_1}.
+        Confidence intervals are determined at confidence level \code{conf.level} and adjusted with a Bonferroni correction if \code{p.adjust=TRUE} (the default). Note that LRC is applied to the rows of the contingency table rather than its columns, in order to obtain relative risk for \eqn{w_2} given \eqn{w_1}.
       }
     }
     
@@ -213,13 +224,55 @@ builtin.am
 }
   
 \examples{
-## TODO -- REWRITE EXAMPLE BELOW, ADD FURTHER EXAMPLES
+## surface collocations with L2/R2 window
+head(SurfaceColloc$cooc, 10) # table of word pairs with co-occurrence frequencies
+head(SurfaceColloc$f1) # tables of marginal frequencies
+head(SurfaceColloc$f2)
 
-# collocations of "in charge of" with LRC as an association measure
-colloc <- transform(BNCInChargeOf, 
-  PosLRC = keyness(f.in, N.in, f.out, N.out, measure="PositiveLRC"))
-colloc <- colloc[order(-colloc$PosLRC), ]
-head(colloc, 30)
+# add association scores (MI and p-values from log-likelihood test) to data frame
+colloc <- transform(
+  SurfaceColloc$cooc,
+  MI = am.score(w1, w2, f, SurfaceColloc$f1, SurfaceColloc$f2, SurfaceColloc$N, "MI"),
+  pval = am.score(w1, w2, f, SurfaceColloc$f1, SurfaceColloc$f2, SurfaceColloc$N, "G2.pv")
+)
+colloc <- colloc[order(colloc$MI, decreasing=TRUE), ] # ordered by MI scores
+colloc
+
+# apply significance filter
+subset(colloc, pval > 3) # significant at p < .001
+
+# can also obtain labelled vector of scores
+with(SurfaceColloc$cooc,
+     am.score(w1, w2, f, SurfaceColloc$f1, SurfaceColloc$f2, SurfaceColloc$N, "Dice", labels=TRUE))
+
+
+## syntactic collocations from pre-computed frequency signatures (must specify named arguments!)
+head(KrennPPV)
+colloc <- transform(
+  KrennPPV[, 1:9], # omit pre-computed association scores
+  t = am.score(f=freq, f1=f.PP, f2=f.verb, N=N, measure="t"),
+  OR = am.score(f=freq, f1=f.PP, f2=f.verb, N=N, measure="odds.ratio"))
+
+all.equal(colloc$t, KrennPPV$t.score) # compare with pre-computed scores
+
+colloc <- colloc[order(colloc$t, decreasing=TRUE), ]
+head(colloc, 20) # top collocates (among all pairs)
+subset(colloc, verb == "legen") # top collocates of verb "legen"
+
+
+## collocations of "in charge of" with LRC as an association measure
+colloc <- transform(
+  BNCInChargeOf, # reconstruct frequency signature from O11, O12, C1, C2
+  f = f.in,
+  f1 = N.in,
+  f2 = f.in + f.out,
+  N = N.in + N.out
+)
+colloc <- transform(
+  colloc,
+  LRC = am.score("in charge of", collocate, f, f1, f2, N, "LRC"))
+colloc <- colloc[order(colloc$LRC, decreasing=TRUE), ]
+head(colloc, 20)
 }
 
 \references{

@@ -1,3 +1,6 @@
+Version 0.7:
+  - am.score() function implements wide-range of standard association measures as well as user-defined formulae
+
 Version 0.6-1:
   - add Lockwords measure to keyness() function
   - keyness() and some other functions now explicitly convert integer vectors to double() in order to avoid numerical overflow and other errors

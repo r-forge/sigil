@@ -13,7 +13,8 @@
   This data set lists 5102 frequent combinations of verbs and prepositional phrases (PP)
   extracted from a German newspaper corpus.  The collocational status of each
   PP-verb combination was manually annotated by Brigitte Krenn (2000).  In addition,
-  pre-computed scores of several standard association measures are provided.
+  pre-computed scores of several standard association measures are provided as well
+  as the underlying frequency signatures.
    
   The \code{KrennPPV} candidate set forms part of the data used in the evaluation study
   of Evert & Krenn (2005). 
@@ -42,6 +43,9 @@ KrennPPV
     \item{\code{is.SVC}:}{whether a PP-verb collocation is a support verb construction (logical)}
     \item{\code{is.figur}:}{whether a PP-verb-collocation is a figurative expression (logical)}
     \item{\code{freq}:}{co-occurrence frequency of the PP-verb combination within clauses (integer)}
+    \item{\code{f.PP}:}{marginal frequency of the PP (integer)}
+    \item{\code{f.verb}:}{marginal frequency of the verb (integer)}
+    \item{\code{N}:}{sample size of the data set, which is the same for all items (integer)}
     \item{\code{MI}:}{Mutual Information association measure}
     \item{\code{Dice}:}{Dice coefficient association measure}
     \item{\code{z.score}:}{z-score association measure}
@@ -52,7 +56,8 @@ KrennPPV
     \item{\code{Fisher}:}{Fisher's exact test as an association measure (negative logarithm of one-sided p-value)}
   }
 
-  See Evert (2008) and \url{http://www.collocations.de/AM/} for details on these association measures.
+  More information on the compilation and annotation of the data set can be found in Evert & Krenn (2005).
+  See Evert (2008) and \url{http://www.collocations.de/AM/} for details on the pre-computed association measures.
 }
 
 %% \details{

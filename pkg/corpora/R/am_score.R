@@ -14,6 +14,7 @@ am.score <- function(w1, w2, f, f1, f2, N, measure,
   if (is.null(names(f1))) {
     .match.len("f1", len=l)
   } else {
+    if (missing(w1)) stop("argument w1 is required for lookup in table of marginal frequencies")
     f1 <- f1[w1]
     if (any(is.na(f1))) stop("f1 must provide marginal frequencies for all distinct strings in w1")
   }
@@ -21,6 +22,7 @@ am.score <- function(w1, w2, f, f1, f2, N, measure,
   if (is.null(names(f2))) {
     .match.len("f2", len=l)
   } else {
+    if (missing(w2)) stop("argument w2 is required for lookup in table of marginal frequencies")
     f2 <- f2[w2]
     if (any(is.na(f2))) stop("f2 must provide marginal frequencies for all distinct strings in w2")
   }
@@ -47,7 +49,7 @@ am.score <- function(w1, w2, f, f1, f2, N, measure,
   if (span.size != 1) f1 <- pmin(f1 * span.size, N - 1)
   
   ## add implicit parameters
-  if (!is.list(param) || is.null(names(param))) stop("param must be a named list")
+  if (!is.list(param) || (length(param) > 0 && is.null(names(param)))) stop("param must be a named list")
   param$conf.level <- conf.level
   param$p.adjust <- p.adjust # effective family size m
   
@@ -106,6 +108,12 @@ builtin.am <- list(
     if (m > 1) pv <- pmin(pv + log(m), 0) # Bonferroni: p = p * m 
     sign(O11 - E11) * (-pv / log(10)) # convert to -log10(p), add sign for negative assocation
   },
+  Fisher.pv = function (O11, R1, O21, R2, param, ...) {
+    m <- param$p.adjust
+    pv <- fisher.pval(O11, R1, O21, R2, alternative="greater", log.p=TRUE)
+    if (m > 1) pv <- pmin(pv + log(m), 0) # Bonferroni: p = p * m 
+    -pv / log(10) # convert to -log10(p), but don't add sign to one-sided test
+  },
   simple.ll = function (O, E, ...) {
     term <- O * log(O / E)
     term[O <= 0] <- 0
@@ -114,7 +122,7 @@ builtin.am <- list(
   t = function (O, E, ...) {
     (O - E) / sqrt(O)
   },
-  X2 = function (O11, O12, O21, O22, R1, R2, C1, C2, N, ...) {
+  X2 = function (E11, O11, O12, O21, O22, R1, R2, C1, C2, N, ...) {
     ## common form for homogeneity test with Yates' correction (Evert 2004: 82)
     term <- abs(O11 * O22 - O12 * O21)
     term <- pmax(term - N/2, 0) # Yates' correction
@@ -128,6 +136,10 @@ builtin.am <- list(
       sign(x) * ifelse(x.abs >= 1, x.abs - 0.5, x.abs / 2)
     }
     .yates.corr(O - E) / sqrt(E)
+  },
+  odds.ratio = function (O11, O12, O21, O22, ...) {
+    theta <- ((O11 + .5) * (O22 + .5)) / ((O12 + .5) * (O21 + .5))
+    log(theta)
   },
   Dice = function (O11, R1, C1, ...) {
     2 * O11 / (R1 + C1)

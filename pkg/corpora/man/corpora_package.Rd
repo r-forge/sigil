@@ -24,6 +24,7 @@ Starting with version 0.6 the package also includes best-practice implementation
   \subsection{Analysis functions}{
     \itemize{
       \item \code{\link{keyness}()} provides reference implementations for best-practice keyness measures, including the recommended LRC measure (Evert 2022)
+      \item \code{\link{am.score}()} computes various standard association measures for collocation analysis (Evert 2004, 2008) as well as user-defined formulae
       \item \code{\link{binom.pval}()} is a vectorised function that computes p-values of the binomial test more efficiently than \code{\link{binom.test}} (using central p-values in the two-sided case)
       \item \code{\link{fisher.pval}()} is a vectorised function that efficiently computes p-values of Fisher's exact test on \eqn{2\times 2}{2x2} contingency tables for large samples (using central p-values in the two-sided case)
       \item \code{\link{prop.cint}()} is a vectorised function that computes multiple binomial confidence intervals much more efficiently than \code{\link{binom.test}}
