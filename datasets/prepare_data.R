@@ -57,9 +57,22 @@ if (FALSE) {
 	# compare with old version (rounded to lower precision)
 	PPVold <- read.delim("tbl/krenn_pp_verb_old.tbl", quote="", fileEncoding="UTF-8", encoding="UTF-8", stringsAsFactors=FALSE)
 	PPVnew <- KrennPPV[, -(7:9)] # old data set did not include full frequency signatures
-	all.equal(PPVnew, PPVold, tol=1e-5) # and AM scores were rounded to ~5 significant digits, possibly to keep .tbl and .rda files smaller
+	all.equal(PPVnew, PPVold, tol=1e-4) # and AM scores were rounded to ~5 significant digits, possibly to keep .tbl and .rda files smaller
 }
 
+
+## small sample data set for surface co-occurrences (modified from DSM_TermTerm example in wordspace package, based on WP500 corpus)
+SurfaceColloc <- list(
+  cooc = data.frame(
+  	w1 = c("cat", "dog", "animal", "time", "cat", "dog", "animal", "time", "cat", "dog", "animal", "time", "cat", "dog", "animal", "time", "reason", "cause", "effect", "animal", "time", "reason", "cause", "effect", "animal", "time", "reason", "cause", "effect", "animal", "time", "reason", "cause", "effect"), 
+  	w2 = c("breed", "breed", "breed", "breed", "tail", "tail", "tail", "tail", "feed", "feed", "feed", "feed", "kill", "kill", "kill", "kill", "kill", "kill", "kill", "important", "important", "important", "important", "important", "explain", "explain", "explain", "explain", "explain", "likely", "likely", "likely", "likely", "likely"),
+  	f = c(84, 579, 45, 19, 17, 14, 11, 8, 8, 32, 86, 29, 38, 63, 136, 134, 18, 3, 6, 13, 94, 71, 55, 62, 5, 44, 140, 35, 37, 4, 100, 39, 51, 14),
+  	stringsAsFactors=FALSE),
+  f1 = c(cat = 6103, dog = 14180, animal = 21538, time = 316591, reason = 26470, cause = 15913, effect = 36951),
+  f2 = c(breed = 10329, tail = 6511, feed = 8307, kill = 49534, important = 53824, explain = 17939, likely = 11096),
+  N = 229943282
+)
+save(SurfaceColloc, file="rda/SurfaceColloc.rda", compress="xz")
 
 
 ## lookup vector for genre labels (indexed by section code)
